@@ -1,0 +1,18 @@
+
+  
+
+
+ .ant-table-tbody > tr:hover {
+  background-color: transparent !important; /* Prevent the hover color change */
+  cursor: default; /* Optional: Make cursor default */
+}
+.ant-table-cell-row-hover:hover {
+    background-color: transparent !important; /* Removes any background color change on hover */
+    color: inherit !important; /* Ensures the text color does not change */
+    box-shadow: none !important; /* Removes any box shadow */
+  }
+
+  .ant-table-tbody > tr {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* الظل يكون خفيف ومتناسق */
+    transition: box-shadow 0.3s ease; /* إضافة تأثير انتقال ناعم عند تغيير الشادو */
+  }

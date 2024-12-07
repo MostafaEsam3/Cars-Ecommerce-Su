@@ -1,0 +1,17 @@
+.checked{
+    color: #FFAD33;
+}
+.wraber{
+    flex-wrap: nowrap;
+    overflow-x: scroll; /* للسماح بالتمرير */
+    scrollbar-width: none; /* إخفاء الشريط في المتصفحات */
+    scroll-behavior: smooth; /* تمرير سلس */
+
+  }
+  
+  .wraber::-webkit-scrollbar {
+    display: none; /* إخفاء الشريط في Chrome و Safari */
+  }
+  /*  */
+
+  
