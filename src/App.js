@@ -12,27 +12,32 @@ import Login from './component/AuthComponent/Login/Login';
 import Cart from './component/Cart/Cart';
 import Checkout from './component/CheckOut/Checkout';
 import About from './component/About/About';
+import { Context } from './component/context/context'; // استيراد الـ Context
+import Slide from './component/HeroSection/SliderAnimation/Slider';
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Main Layout with Nested Routes */}
-        <Route path="/" element={<Layout />}>
-          {/* Default route rendered in Outlet */}
-          <Route index element={<Hero />} />
-          {/* Additional routes */}
-          <Route path="sign" element={<SignUp />} />
-          <Route path="login" element={<Login />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="checkout" element={<Checkout />} />
-          <Route path="about" element={<About />} />
+      {/* <Context> وضع Context أعلى شجرة المكونات */}
+        <Routes>
+          {/* Main Layout with Nested Routes */}
+          <Route path="/" element={<Layout />}>
+            {/* Default route rendered in Outlet */}
+            <Route index element={<Hero />} />
+            {/* Additional routes */}
+            <Route path="sign" element={<SignUp />} />
+            <Route path="login" element={<Login />} />
+            <Route path="cart" element={<Cart />} />
+            <Route path="checkout" element={<Checkout />} />
+            <Route path="about" element={<About />} />
+            <Route path="s" element={            <Slide/>} />
 
-        </Route>
-      </Routes>
+
+          </Route>
+        </Routes>
+      {/* </Context> */}
     </BrowserRouter>
   );
 }
 
 export default App;
-

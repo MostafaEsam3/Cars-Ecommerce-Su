@@ -11,3 +11,6 @@ p{
   margin: 0;
   padding: 0;
 }
+.dir-ar{
+  direction: rtl;
+}
