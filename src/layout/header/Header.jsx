@@ -88,7 +88,7 @@ const Header = () => {
       <div className="row justify-content-between align-items-center">
         {/* Left Section */}
         <div className="-info col-12 col-md-3 text-center py-2">
-          <span>Exclusive</span>
+          <span>بلاكو </span>
         </div>
 
         {/* Center Navigation */}
@@ -109,23 +109,22 @@ const Header = () => {
               <ul className="navbar-nav">
                 <Link className="nav-item" to={"/"}>
                   <a className="nav-link text-dark" href="#">
-                    Home
+                    الرئيسيه
                   </a>
                 </Link>
                 <li className="nav-item">
                   <a className="nav-link text-dark" href="#">
-                    Contact
+                    تواصل معنا
                   </a>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link text-dark" href="#">
-                    About
+                    عن بلاكو
                   </a>
                 </li>
                 <Link className="nav-item" to={"/login"}>
                   <a className="nav-link text-dark" >
-                    Sign Up
-                  </a>
+تسجيل الدخول                  </a>
                 </Link>
               </ul>
             </div>
@@ -144,8 +143,8 @@ const Header = () => {
           </div>
           <div className="d-flex align-items-center">
             <span style={{ marginRight: "1rem", cursor: "pointer" }}>❤</span>
-            <span style={{ cursor: "pointer" }}>Cart</span>
-          </div>
+            <Link to={"/cart"} style={{color:"black"}}><i className="fa fa-shopping-cart"></i></Link>
+            </div>
         </div>
       </div>
     </header>

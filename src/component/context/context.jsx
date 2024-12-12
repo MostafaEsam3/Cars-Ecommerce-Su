@@ -1,15 +1,18 @@
-import React, { createContext } from 'react'
-export const product = createContext() 
- export function Context({children}) {
-    const value = "mostafa and context"
-  return (
-   <>
+// import React, { createContext, useState } from 'react'
+// export const scrollerContext = createContext() 
+//  export function Context({children}) {
+//   const [Scroll , setScroll]=useState(true)
+//   const changeScroll = () => {
+//       setScroll((prev) => !prev); // إعادة القيمة الجديدة
+//   }
+//     return (
+//    <>
 
-   <product.Provider value={value}>
-   {children}
-   </product.Provider>
+//    <scrollerContext.Provider value={{Scroll,changeScroll}}>
+//    {children}
+//    </scrollerContext.Provider>
    
    
-   </>
-  )
-}
+//    </>
+//   )
+// }
