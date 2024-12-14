@@ -85,48 +85,56 @@ const Header = () => {
 
 
 <header className="container -warning py-1">
-      <div className="row justify-content-between align-items-center">
-        {/* Left Section */}
-        <div className="-info col-12 col-md-3 text-center py-2">
-          <span>بلاكو </span>
-        </div>
 
-        {/* Center Navigation */}
-        <nav className="col-12 col-md-6 -danger">
-          <div className="navbar navbar-expand-md navbar-light">
-            <button
-              className="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarNav"
-              aria-controls="navbarNav"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
-              <ul className="navbar-nav">
-                <Link className="nav-item" to={"/"}>
-                  <a className="nav-link text-dark" href="#">
-                    الرئيسيه
-                  </a>
-                </Link>
-                <li className="nav-item">
-                  <a className="nav-link text-dark" href="#">
-                    تواصل معنا
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link text-dark" href="#">
-                    عن بلاكو
-                  </a>
-                </li>
-                <Link className="nav-item" to={"/login"}>
-                  <a className="nav-link text-dark" >
-تسجيل الدخول                  </a>
-                </Link>
-              </ul>
+<div className="row justify-content-between align-items-center">
+    {/* Left Section */}
+    <div className="col-12 col-md-3 d-flex align-items-center py-2 justify-content-start">
+      {/* Logo Section */}
+      <img
+        src="/capitano_brandai_1_.pdf_-_Personal_-_Microsoft__Edge_12_12_2024_09_42_06_ص-removebg-preview.png"
+        alt="Brand Logo"
+        style={{ width: "150px", height: "auto", cursor: "pointer" }}
+      />
+      {/* <span className="ms-2">Exclusive</span> */}
+    </div>
+
+    {/* Center Navigation */}
+    <nav className="col-12 col-md-6 -danger">
+      <div className="navbar navbar-expand-md navbar-light">
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
+          <ul className="navbar-nav">
+            <Link className="nav-item" to={"/"}>
+              <a className="nav-link text-dark" href="#">
+                Home
+              </a>
+            </Link>
+            <li className="nav-item">
+              <a className="nav-link text-dark" href="#">
+                Contact
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link text-dark" href="#">
+                About
+              </a>
+            </li>
+            <Link className="nav-item" to={"/login"}>
+              <a className="nav-link text-dark">
+                Sign Up
+              </a>
+            </Link>
+          </ul>
             </div>
           </div>
         </nav>
@@ -147,7 +155,27 @@ const Header = () => {
             </div>
         </div>
       </div>
-    </header>
+    </nav>
+
+    {/* Right Section */}
+    <div className="col-12 col-md-3 d-flex justify-content-between align-items-center py-2">
+      <div className="search" style={{ flexGrow: 1, marginRight: "1rem" }}>
+        <input
+          className="form-control"
+          type="text"
+          placeholder="Search..."
+          style={{ backgroundColor: "#F5F5F5" }}
+        />
+      </div>
+      <div className="d-flex align-items-center">
+        <span style={{ marginRight: "1rem", cursor: "pointer" }}>❤</span>
+        <span style={{ cursor: "pointer" }}>Cart</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+
     <div className='border-bottom' style={{marginTop:"0px"}} >
 </div>
 
