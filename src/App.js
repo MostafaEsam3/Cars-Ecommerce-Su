@@ -14,6 +14,8 @@ import Checkout from './component/CheckOut/Checkout';
 import Checkout1 from './component/Checkout1/Checkout.jsx';
 import About from './component/About/About';
 import Invoice from './component/Invoice/Invoice';
+import { Context } from './component/context/context'; // استيراد الـ Context
+import Slide from './component/HeroSection/SliderAnimation/Slider';
 
 function App() {
   return (
@@ -31,13 +33,16 @@ function App() {
           <Route path="checkout1" element={<Checkout1 />} />
           <Route path="about" element={<About />} />
           <Route path="invoice" element={<Invoice />} />
+           <Route path="s" element={            <Slide/>} />
 
 
-        </Route>
-      </Routes>
+
+
+          </Route>
+        </Routes>
+      {/* </Context> */}
     </BrowserRouter>
   );
 }
 
 export default App;
-

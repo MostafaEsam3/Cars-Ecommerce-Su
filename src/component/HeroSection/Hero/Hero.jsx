@@ -8,24 +8,24 @@ import BeutyImage from '../BeutyImage/BeutyImage';
 import NewArrival from '../NewArrival/NewArrival';
 import Icon from '../IconsSection/Icon';
 import Footer from '../Footer/Footer';
+import CarouselComponent from '../SliderAnimation/Slider';
+import Slide from '../SliderAnimation/Slider';
 
 const Hero = () => {
     return (
         <>
         <div className='container mt-4  pb-3'style={{height:"auto"}}>
         <FirstHero/>
+        < Category/>
         <SecondHero/>
         <Cards/>
-       < Category/>
-       <BestSelling/>
-       <BeutyImage/>
-       <NewArrival/>
-       <Icon/>
-
-            
-
-
+        <Slide/>
+       {/* <BestSelling/> */}
+       {/* <BeutyImage/> */}
+       {/* <NewArrival/>
+       <Icon/> */}
         </div>
+
         </>
     );
 }

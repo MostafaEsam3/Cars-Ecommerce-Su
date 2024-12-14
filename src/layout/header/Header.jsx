@@ -85,7 +85,8 @@ const Header = () => {
 
 
 <header className="container -warning py-1">
-  <div className="row justify-content-between align-items-center">
+
+<div className="row justify-content-between align-items-center">
     {/* Left Section */}
     <div className="col-12 col-md-3 d-flex align-items-center py-2 justify-content-start">
       {/* Logo Section */}
@@ -134,6 +135,24 @@ const Header = () => {
               </a>
             </Link>
           </ul>
+            </div>
+          </div>
+        </nav>
+
+        {/* Right Section */}
+        <div className="col-12 col-md-3 d-flex justify-content-between align-items-center py-2">
+          <div className="search" style={{ flexGrow: 1, marginRight: "1rem" }}>
+            <input
+              className="form-control"
+              type="text"
+              placeholder="Search..."
+              style={{ backgroundColor: "#F5F5F5" }}
+            />
+          </div>
+          <div className="d-flex align-items-center">
+            <span style={{ marginRight: "1rem", cursor: "pointer" }}>❤</span>
+            <Link to={"/cart"} style={{color:"black"}}><i className="fa fa-shopping-cart"></i></Link>
+            </div>
         </div>
       </div>
     </nav>

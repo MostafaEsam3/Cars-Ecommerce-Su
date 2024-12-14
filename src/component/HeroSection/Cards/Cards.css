@@ -13,5 +13,80 @@
     display: none; /* إخفاء الشريط في Chrome و Safari */
   }
   /*  */
-
+  /* .wraber_all_cards {
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    width: 100%; 
+  }
+   */
+  .moving-container {
+    display: flex;
+  }
   
+  @keyframes scrollCards {
+    0% {
+      transform: translateX(0); /* Start position */
+    }
+    100% {
+      transform: translateX(calc(-250px*5)); /* Move all the cards out of view */
+    }
+  }
+  
+  .card-template {
+    flex-shrink: 0; /* Prevent cards from shrinking */
+    margin-right: 10px; /* Space between cards */
+  }
+  
+
+.text-slider {
+  position: relative;
+  width: 200px; /* تحديد عرض الحاوية */
+  height: 50px; /* ارتفاع الحاوية */
+  overflow: hidden;
+}
+
+.text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  animation: slideText 4s infinite;
+}
+
+
+.text:nth-child(2) {
+  animation-delay: 2s; /* تأخير ظهور النص الثاني */
+}
+
+@keyframes slideText {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  25% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  75% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.btn-yellow{
+  background-color: #fee440;
+  color: #000000;
+
+}
+
