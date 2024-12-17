@@ -339,10 +339,17 @@ const Cart = () => {
                     </button>
                   </motion.div>
 
+                  {/* تعديل موقع الأيقونة */}
                   <FaSearch
                     onClick={() => openModal(image)}
-                    className="position-absolute bottom-2 end-2 bg-black text-white rounded-circle p-2"
-                    style={{ cursor: "pointer" }}
+                    className="position-absolute bg-black text-white rounded-circle p-2"
+                    style={{
+                      cursor: "pointer",
+                      bottom: "10px",
+                      right: "10px",
+                      fontSize: "30px",
+                      color: "white",
+                    }}
                   />
                 </div>
 
@@ -417,12 +424,17 @@ const Cart = () => {
                     {/* زر البحث */}
                     <FaSearch
                       onClick={() => openModal(image)}
-                      className="position-absolute bottom-2 end-2 bg-black text-white rounded-circle p-2"
-                      style={{ cursor: "pointer" }}
+                      className="position-absolute bg-black text-white rounded-circle p-2"
+                      style={{
+                        cursor: "pointer",
+                        bottom: "10px",
+                        right: "10px",
+                        fontSize: "30px",
+                        color: "white",
+                      }}
                     />
                   </div>
 
-                  
                   <p className="text-center mt-2">{image.description}</p>
                   <p className="text-center mt-2">ر.س{image.price}</p>
                 </div>
@@ -430,7 +442,6 @@ const Cart = () => {
             </div>
           </div>
 
-          
           <div className="text-center mt-4">
             <button
               className="btn"
@@ -451,7 +462,6 @@ const Cart = () => {
             <div className="col-12">
               <label htmlFor="carSelect">اختر السيارة</label>
 
-              
               <div className="dropdown">
                 <button
                   className="btn w-100 btn-outline-to-filled"
