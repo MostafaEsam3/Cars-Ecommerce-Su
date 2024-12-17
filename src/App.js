@@ -1,11 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './layout/Layout';
-import Table from './component/table/table';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'font-awesome/css/font-awesome.min.css';
 import './App.css';
+import Dashboard from './Dashboard/DashboardLayout/DashboardLayout';
 import Hero from './component/HeroSection/Hero/Hero';
 import SignUp from './component/AuthComponent/SignUp/SignUp';
 import Login from './component/AuthComponent/Login/Login';
@@ -17,15 +16,15 @@ import Invoice from './component/Invoice/Invoice';
 import { Context } from './component/context/context'; // استيراد الـ Context
 import Slide from './component/HeroSection/SliderAnimation/Slider';
 
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* Main Layout with Nested Routes */}
         <Route path="/" element={<Layout />}>
-          {/* Default route rendered in Outlet */}
+           {/* Main Layout with Nested Routes */}
           <Route index element={<Hero />} />
-          {/* Additional routes */}
           <Route path="sign" element={<SignUp />} />
           <Route path="login" element={<Login />} />
           <Route path="cart" element={<Cart />} />
@@ -33,14 +32,9 @@ function App() {
           <Route path="checkout1" element={<Checkout1 />} />
           <Route path="about" element={<About />} />
           <Route path="invoice" element={<Invoice />} />
-           <Route path="s" element={            <Slide/>} />
-
-
-
-
-          </Route>
-        </Routes>
-      {/* </Context> */}
+        </Route>
+        <Route path="/admin-dashboard/*" element={<Dashboard/>} /> {/* Ensure it is accessible under this route */}
+      </Routes>
     </BrowserRouter>
   );
 }
