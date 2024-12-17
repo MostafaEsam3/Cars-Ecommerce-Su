@@ -1,0 +1,108 @@
+/* الأنماط العامة */
+.section-container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .text-section {
+    width: 50%;
+    padding: 20px;
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.6;
+    background-color: #919e04;
+  }
+  
+  .image-section {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+ 
+  @media (max-width: 768px) {
+    .section-container {
+      flex-direction: column; 
+      align-items: center;
+    }
+  
+    .text-section {
+      width: 100%; 
+      text-align: center; 
+      font-size: 14px; 
+    }
+   
+  
+    .image-section {
+      width: 100%;
+      margin-top: 20px;
+    }
+  
+    .image-section img {
+      width: 100%; 
+      height: auto; 
+    }
+  }
+  
+/* الحاوية العامة لشريط الإعلان */
+.announcement-ticker {
+  position: fixed; /* يظل في مكانه دائمًا */
+  bottom: 0; /* أسفل الشاشة */
+  width: 100%; /* عرض الشاشة بالكامل */
+  background-color: #333; /* لون الخلفية */
+  color: #fff; /* لون النص */
+  font-size: 16px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  overflow: hidden; /* إخفاء أي نص زائد */
+  white-space: nowrap; /* النص في سطر واحد */
+  display: flex;
+  align-items: center;
+  height: 50px; /* ارتفاع الشريط */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* النصوص المتحركة */
+.ticker-text {
+  display: flex; /* لجعل العناصر أفقية */
+  animation: scroll-ticker 20s linear infinite; /* حركة مستمرة */
+  padding-left: 100%; /* تبدأ من خارج الشاشة */
+}
+
+/* حركة النصوص */
+@keyframes scroll-ticker {
+  from {
+    transform: translateX(0); /* تبدأ من اليمين */
+  }
+  to {
+    transform: translateX(-100%); /* تنتهي في اليسار */
+  }
+}
+
+/* كل عنصر في النصوص */
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* مسافة بين الصورة والنص */
+  margin-right: 50px; /* مسافة بين كل رسالة */
+}
+
+/* تنسيق الصورة */
+.ticker-logo {
+  width: 90px;
+  height: 90%;
+  object-fit: contain; /* لضمان تناسب الصورة */
+}
+
+
+  
