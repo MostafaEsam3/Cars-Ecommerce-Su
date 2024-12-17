@@ -1,7 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
-
+import "./Header.css";
+import { FaShoppingCart } from "react-icons/fa"
+import { motion } from "framer-motion";
 const Header = () => {
+
+const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const [cartItems, setCartItems] = useState([]);
+const [subTotal, setSubTotal] = useState(0);
+
+// حساب الإجمالي الفرعي عند تحديث cartItems
+const calculateSubTotal = (items) => {
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  setSubTotal(total);
+};
+
+// جلب البيانات من localStorage عند فتح القائمة
+const handleCartClick = () => {
+  const savedItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+  setCartItems(savedItems);
+  calculateSubTotal(savedItems);
+  setIsSidebarOpen(true); // فتح القائمة الجانبية
+};
 
 
     return (
@@ -118,9 +138,9 @@ const Header = () => {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-dark" href="#">
+              <Link className="nav-link text-dark" to={"/about"}>
                 About
-              </a>
+              </Link>
             </li>
             <Link className="nav-item" to={"/login"}>
               <a className="nav-link text-dark">
@@ -144,7 +164,27 @@ const Header = () => {
       </div>
       <div className="d-flex align-items-center">
         <span style={{ marginRight: "1rem", cursor: "pointer" }}>❤</span>
-        <span style={{ cursor: "pointer" }}>Cart</span>
+        <span style={{ position: "relative", cursor: "pointer" }} onClick={handleCartClick}>
+  <FaShoppingCart size={24} />
+  {cartItems.length > 0 && (
+    <span
+      style={{
+        position: "absolute",
+        top: "-8px",
+        right: "-8px",
+        backgroundColor: "red",
+        color: "white",
+        borderRadius: "50%",
+        padding: "2px 6px",
+        fontSize: "12px",
+        fontWeight: "bold",
+      }}
+    >
+      {cartItems.length}
+    </span>
+  )}
+</span>
+
       </div>
     </div>
   </div>
@@ -153,6 +193,49 @@ const Header = () => {
 
     <div className='border-bottom' style={{marginTop:"0px"}} >
 </div>
+
+
+{/* القائمة الجانبية */}
+{isSidebarOpen && (
+  <motion.div
+    className="sidebar"
+    initial={{ x: "100%" }}
+    animate={{ x: 0 }}
+    exit={{ x: "100%" }}
+    transition={{ duration: 0.3, ease: "easeInOut" }}
+  >
+    <button onClick={() => setIsSidebarOpen(false)} className="close-btn">
+      &times;
+    </button>
+    <h3>سلتي</h3>
+    {cartItems.length > 0 ? (
+      <ul>
+        {cartItems.map((item, index) => (
+          <li key={index} className="cart-item">
+            {item.group1Image && (
+              <img
+                src={item.group1Image}
+                alt={item.group1Name || "Group Image"}
+                className="group1-image"
+              />
+            )}
+            <div className="item-details">
+              <p>{item.name}</p>
+              <p>Price: {item.price} ر.س</p>
+              <p>Quantity: {item.quantity}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>Your cart is empty.</p>
+    )}
+    <div className="subtotal">
+      <h4>Subtotal: {subTotal.toFixed(2)} ر.س</h4>
+    </div>
+  </motion.div>
+)}
+
 
 
 
