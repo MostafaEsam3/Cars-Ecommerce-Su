@@ -1,0 +1,4 @@
+:where(.css-dev-only-do-not-override-1x0dypw).ant-layout.ant-layout-has-sider > .ant-layout,
+:where(.css-dev-only-do-not-override-1x0dypw).ant-layout.ant-layout-has-sider > .ant-layout-content {
+    width: auto;
+}

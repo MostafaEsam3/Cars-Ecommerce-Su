@@ -1,0 +1,76 @@
+/* تصميم الحاوية الخاصة بالمودال */
+.modal-container {
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.5); /* طبقة مظلمة خلف المودال */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    animation: modalFadeIn 0.5s forwards;
+}
+
+/* تأثير التلاشي عند عرض المودال */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* تصميم المودال نفسه */
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 250px;
+    max-width: 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(-20px);
+    animation: modalSlideUp 0.5s ease-in-out forwards;
+}
+
+/* تأثير السلاسة (تحريك المودال للأعلى) */
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* تصميم زر الإغلاق */
+.modal-content button {
+    margin-top: 10px;
+}
+
+/* تصميم المودال بناءً على نوع الرسالة (نجاح أو فشل) */
+.modal-container.success .modal-content {
+    border: 2px solid #4CAF50;  /* أخضر للنجاح */
+}
+
+.modal-container.failure .modal-content {
+    border: 2px solid #b98480;  /* أحمر للفشل */
+}
+
+.modal-container.success .modal-content h2 {
+    color: #4CAF50;  /* أخضر للنجاح */
+}
+
+.modal-container.failure .modal-content h2 {
+    color: #f44336;  /* أحمر للفشل */
+}
