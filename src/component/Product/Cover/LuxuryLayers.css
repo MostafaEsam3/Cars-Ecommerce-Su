@@ -1,0 +1,90 @@
+/* الحاوية الرئيسية */
+.luxury-layers-container {
+    background: linear-gradient(180deg, #000, #333); /* خلفية جذابة */
+    padding: 50px 0;
+  }
+  
+  /* Swiper */
+  .luxury-layers-swiper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .swiper-button-next,
+  .swiper-button-prev {
+    color: #ffd700; /* سهام باللون الذهبي */
+    font-size: 20px;
+  }
+  
+  /* تصميم الكارت */
+  .layer-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+    background: rgba(255, 215, 0, 0.1); /* خلفية ذهبية شفافة */
+    border-radius: 20px;
+    padding: 30px;
+    gap: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .layer-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* صورة الطبقة */
+  .layer-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .layer-image img {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); /* تأثير ذهبي حول الصورة */
+  }
+  
+  /* محتوى النصوص */
+  .layer-content {
+    flex: 2;
+    padding-left: 20px;
+  }
+  
+  .layer-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #ffd700; /* اللون الذهبي */
+    margin-bottom: 20px;
+  }
+  
+  .layer-description {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 3.5vh;
+    line-height: 1.8;
+    color: #eee;
+  }
+  
+  .layer-description li {
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 20px;
+  }
+  
+  .layer-description li::before {
+    content: "✔";
+    position: absolute;
+    left: 0;
+    color: #ffd700; /* أيقونة تحقق ذهبية */
+  }
+  

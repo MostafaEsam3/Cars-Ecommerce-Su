@@ -1,49 +1,55 @@
-import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { REMOVE_FROM_CART } from "../../redux/Types/types";
 
 const Invoice = () => {
-  const [cartItems, setCartItems] = useState([]);
-  const [subTotal, setSubTotal] = useState(0);
-  const VAT_RATE = 0.15;
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const savedItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-    setCartItems(savedItems);
-    calculateSubTotal(savedItems);
-  }, []);
+  // جلب بيانات السلة من Redux
+  const cartItems = useSelector((state) => state.cart.cartArray);
 
-  const calculateSubTotal = (items) => {
-    const total = items.reduce((acc, item) => acc + (item.totalPrice || 0), 0);
-    setSubTotal(total);
-  };
-
-  const handleDeleteItem = (indexToDelete) => {
-    const updatedItems = cartItems.filter((_, index) => index !== indexToDelete);
-    setCartItems(updatedItems);
-    calculateSubTotal(updatedItems);
-    localStorage.setItem("cartItems", JSON.stringify(updatedItems));
-  };
-
+  // حساب المجموع الفرعي
+  const subTotal = cartItems.reduce(
+    (acc, item) => acc + parseFloat(item.totalPrice || 0),
+    0
+  );
+  const VAT_RATE = 0.15;
   const vatValue = (subTotal * VAT_RATE).toFixed(2);
   const totalWithVat = (subTotal + parseFloat(vatValue)).toFixed(2);
+
+ 
+  const handleDeleteItem = (index) => {
+    dispatch({ type: "REMOVE_FROM_CART", payload: index });
+  };
+  
 
   // التنقل إلى صفحة Checkout القديمة
   const handleProceedToCheckout = () => {
     localStorage.setItem(
       "invoiceData",
-      JSON.stringify({ cartItems, subTotal, vatValue: parseFloat(vatValue), totalWithVat: parseFloat(totalWithVat) })
+      JSON.stringify({
+        cartItems,
+        subTotal,
+        vatValue: parseFloat(vatValue),
+        totalWithVat: parseFloat(totalWithVat),
+      })
     );
-    navigate("/checkout"); // التنقل إلى الصفحة القديمة
+    navigate("/checkout");
   };
 
   // التنقل إلى صفحة Checkout1 الجديدة
   const handleProceedToCheckout1 = () => {
     localStorage.setItem(
       "invoiceData",
-      JSON.stringify({ cartItems, subTotal, vatValue: parseFloat(vatValue), totalWithVat: parseFloat(totalWithVat) })
+      JSON.stringify({
+        cartItems,
+        subTotal,
+        vatValue: parseFloat(vatValue),
+        totalWithVat: parseFloat(totalWithVat),
+      })
     );
-    navigate("/checkout1"); // التنقل إلى الصفحة الجديدة
+    navigate("/checkout1");
   };
 
   return (
@@ -61,12 +67,13 @@ const Invoice = () => {
                   <div className="card shadow-sm h-100">
                     <button
                       className="btn-close position-absolute top-0 end-0 m-2"
-                      onClick={() => handleDeleteItem(index)}
+                      onClick={() => handleDeleteItem(index)} // استخدم uniqueId
                       title="حذف العنصر"
                       style={{
                         zIndex: 2,
                       }}
                     ></button>
+
                     {item.group1Image && (
                       <div className="position-relative">
                         <img
@@ -148,12 +155,16 @@ const Invoice = () => {
               <span>الإجمالي الكلي:</span>
               <span>{totalWithVat} ر.س</span>
             </p>
-            
-            <button className="btn btn-success w-100 mt-3" onClick={handleProceedToCheckout}>
+            <button
+              className="btn btn-success w-100 mt-3"
+              onClick={handleProceedToCheckout}
+            >
               التقدم لإتمام الطلب (Checkout)
             </button>
-           
-            <button className="btn btn-primary w-100 mt-3" onClick={handleProceedToCheckout1}>
+            <button
+              className="btn btn-primary w-100 mt-3"
+              onClick={handleProceedToCheckout1}
+            >
               التقدم لإتمام الطلب (Checkout1)
             </button>
           </div>

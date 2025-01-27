@@ -3,28 +3,36 @@ import bshkash from "./../../assets/Bkash.svg";
 import visa from "./../../assets/Visa.svg";
 import master from "./../../assets/Mastercard.svg";
 import nagad from "./../../assets/Nagad.svg";
+import { useSelector, useDispatch } from "react-redux";
+import { REMOVE_FROM_CART, UPDATE_CART_ITEM } from "../../redux/Types/types";
+
 
 
 const Checkout = () => {
-  const [invoiceData, setInvoiceData] = useState(null);
+  // const [invoiceData, setInvoiceData] = useState(null);
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
-  const [cartItems, setCartItems] = useState([]);
+  // const [cartItems, setCartItems] = useState([]);
 
-  useEffect(() => {
-    const storedInvoiceData = JSON.parse(localStorage.getItem("invoiceData"));
-    if (storedInvoiceData) {
-      setInvoiceData(storedInvoiceData);
-      setCartItems(storedInvoiceData.cartItems || []);
-    }
-  }, []);
-
+  // useEffect(() => {
+  //   const storedInvoiceData = JSON.parse(localStorage.getItem("invoiceData"));
+  //   if (storedInvoiceData) {
+  //     setInvoiceData(storedInvoiceData);
+  //     setCartItems(storedInvoiceData.cartItems || []);
+  //   }
+  // }, []);
+  const cartItems = useSelector((state) => state.cart.cartArray);
+  const dispatch = useDispatch();
+  
+  const subTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const vatValue = subTotal * 0.15;
+  const totalWithVat = subTotal + vatValue;
   // التأكد من وجود البيانات
-  if (!invoiceData) {
-    return <p>Loading...</p>;
-  }
+  // if (!invoiceData) {
+  //   return <p>Loading...</p>;
+  // }
 
-  const { subTotal, vatValue, totalWithVat } = invoiceData;
+  // const { subTotal, vatValue, totalWithVat } = invoiceData;
 
   // حساب القيمة المضافة
   const getPriceWithVAT = (price) => {
@@ -43,36 +51,31 @@ const Checkout = () => {
   };
 
   // حذف المنتج
-  const handleRemoveItem = (id) => {
-    const updatedItems = cartItems.filter((item) => item.id !== id);
-    setCartItems(updatedItems);
-    calculateSubtotal(updatedItems);
+  const handleRemoveItem = (index) => {
+    dispatch({ type: REMOVE_FROM_CART, payload: index });
   };
+  
+  
+  
 
   // تعديل الكمية
   const handleQuantityChange = (id, change) => {
-    const updatedItems = cartItems.map((item) =>
+    const updatedCartItems = cartItems.map((item) =>
       item.id === id
-        ? { ...item, quantity: Math.max(1, item.quantity + change) }
+        ? { ...item, quantity: Math.max(1, item.quantity + change) } // لا تسمح بالكمية < 1
         : item
     );
-    setCartItems(updatedItems);
-    calculateSubtotal(updatedItems);
+    dispatch({ type: "UPDATE_CART_ITEMS", payload: updatedCartItems }); // تحديث Redux
   };
+  
+  
+  
 
   // حساب الإجمالي بعد التحديث
-  const calculateSubtotal = (items) => {
-    const newSubtotal = items.reduce((sum, item) => sum + item.totalPrice * item.quantity, 0);
-    const newVatValue = newSubtotal * 0.15;
-    const newTotalWithVat = newSubtotal + newVatValue;
-
-    setInvoiceData({
-      ...invoiceData,
-      subTotal: newSubtotal,
-      vatValue: newVatValue,
-      totalWithVat: newTotalWithVat,
-    });
+  const calculateSubtotal = () => {
+    return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   };
+  
 
   // حساب الإجمالي النهائي
   const finalTotal = totalWithVat - discount;
@@ -146,25 +149,26 @@ const Checkout = () => {
                     <h6 className="mb-1">{item.group1Name}</h6>
                     <p className="mb-0">Price (VAT Included): ر.س {priceWithVAT.toFixed(2)}</p>
                     <div className="d-flex align-items-center mt-1">
-                        الكميه:
-                      <button
-                        className="btn btn-sm btn-light"
-                        onClick={() => handleQuantityChange(item.id, -1)}
-                      >
-                        -
-                      </button>
-                      <span className="mx-2">{item.quantity}</span>
-                      <button
-                        className="btn btn-sm btn-light"
-                        onClick={() => handleQuantityChange(item.id, 1)}
-                      >
-                        +
-                      </button>
-                    </div>
+  الكميه:
+  <button
+    className="btn btn-sm btn-light"
+    onClick={() => handleQuantityChange(item.id, -1)}
+  >
+    -
+  </button>
+  <span className="mx-2">{item.quantity}</span>
+  <button
+    className="btn btn-sm btn-light"
+    onClick={() => handleQuantityChange(item.id, 1)}
+  >
+    +
+  </button>
+</div>
+
                   </div>
                   <button
                     className="btn btn-danger btn-sm"
-                    onClick={() => handleRemoveItem(item.id)}
+                    onClick={() => handleRemoveItem(index)}
                     style={{ borderRadius:"50%" }}
                   >
                     ✕
