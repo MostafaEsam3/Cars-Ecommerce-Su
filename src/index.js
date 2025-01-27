@@ -4,12 +4,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import 'antd/dist/reset.css';
 
+import { Provider } from "react-redux"; // استيراد Provider من react-redux
+import mystore from "../src/redux/store"; // استيراد الـ store الخاص بـ Redux
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={mystore}> {/* لف التطبيق بـ Provider */}
+      <App />
+    </Provider>
   </React.StrictMode>
 );
 

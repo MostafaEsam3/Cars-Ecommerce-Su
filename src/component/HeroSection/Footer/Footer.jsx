@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 // import "./Footer.css"
 
 export default function Footer() {
@@ -25,14 +26,29 @@ export default function Footer() {
             </div>
 
             <div class="col-md-3  mb-4 " style={{lineHeight:"37px"}}>
-                <h4>Support</h4>
-                <ul class="list-unstyled">
-                    <li><a href="#" class="text-light">111 Bijoy sarani, Dhaka,  DH 1515, Bangladesh.</a></li>
-                    <li><a href="#" class="text-light">exclusive@gmail.com</a></li>
-                    <li><a href="#" class="text-light">+88015-88888-9999</a></li>
-                    {/* <li><a href="#" class="text-light">باقاتنا</a></li>
-                    <li><a href="#" class="text-light">تواصل معنا</a></li> */}
-                </ul>
+            <h4 >السياسات</h4>
+        <ul className="list-unstyled">
+          <li>
+            <Link className="dropdown-item" to="/policies/privacy">
+              سياسة الخصوصية
+            </Link>
+          </li>
+          <li>
+            <Link className="dropdown-item" to="/policies/refund">
+              سياسة الاسترجاع
+            </Link>
+          </li>
+          <li>
+            <Link className="dropdown-item" to="/policies/complaints">
+              الشكاوي والاقتراحات
+            </Link>
+          </li>
+          <li>
+            <Link className="dropdown-item" to="/policies/terms">
+              الشروط والأحكام
+            </Link>
+          </li>
+        </ul>
             </div>
 
 

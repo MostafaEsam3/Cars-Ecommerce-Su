@@ -1,151 +1,14 @@
-// import React from 'react'
-// import { Table } from 'antd'
+
 import "./cart.css";
-// import img from "./../../assets/g27cq4-500x500 1.png"
-// import { Link } from 'react-router-dom';
 
-// export default function Cart() {
-
-//     const dataSource = [
-//         {
-//             key: '1',
-//             Product: 'Mike',
-//             age: 32,
-//             address: '10 Downing Street',
-//         },
-//         {
-//             key: '2',
-//             Product: 'John',
-//             age: 42,
-//             address: '10 Downing Street',
-//         },
-//         {
-//             key: '2',
-//             Product: 'John',
-//             age: 42,
-//             address: '10 Downing Street',
-//         },
-//     ];
-
-//     const columns = [
-//         {
-//             title: 'Product',
-//             dataIndex: 'Product',
-//             key: 'Product',
-//             render: (Product) => (
-//                 <div style={{ display: 'flex', alignItems: 'center' }}>
-//                     <img
-//                         src={img}
-//                         alt="avatar"
-//                         style={{ width: 30, height: 30, borderRadius: '50%', marginRight: 10 }}
-//                     />
-//                     {Product}
-//                 </div>
-//             ),
-
-//         },
-//         {
-//             title: 'Price',
-//             dataIndex: 'age',
-//             key: 'age',
-//         },
-//         {
-//             title: 'Quantity',
-//             dataIndex: 'address',
-//             key: 'address',
-//         },
-//         {
-//             title: 'Subtotal',
-//             dataIndex: 'address',
-//             key: 'address',
-//         },
-//         {
-//             title: 'update',
-//             dataIndex: 'address',
-//             key: 'address',
-//             render: (address) => (
-//                 <div style={{ display: 'flex', alignItems: 'center' }}>
-//                     {/* <img
-//                         src={img}
-//                         alt="avatar"
-//                         style={{ width: 30, height: 30, borderRadius: '50%', marginRight: 10 }}
-//                     /> */}
-//                     <button className="btn btn-success">
-//                         <i className="fa fa-pencil"></i>
-//                     </button>
-//                     <Link to={`/sign/${address}`}>
-//                         <button className="btn btn-danger ms-2">
-//                             <i className="fa fa-trash"></i>
-//                         </button>
-//                     </Link>
-//                 </div>
-//             ),
-
-//         },
-
-//     ];
-//     const rowClassName = (record, index) => {
-//         // Alternate row background color
-//         return index % 2 === 0 ? 'black-row' : 'green-row';
-//     };
-//     return (
-//         <>
-//             <div className='mt-3 container'>
-//                 <Table dataSource={dataSource} columns={columns} rowClassName={rowClassName}
-//                     components={{
-//                         header: {
-//                             cell: (props) => <th {...props} style={{}} />,
-//                         },
-//                     }}
-
-//                 />
-//                 <div className='d-flex justify-content-between align-items-center'>
-//                     <button className='btn btn- border-black rounded-0'>Return</button>
-//                     <button className='btn btn- border-black rounded-0'>Update</button>
-//                 </div>
-//                 <div className='mt-5  '>
-//                     <div className='row p-0 m-0 g-0 justify-content-between'>
-//                         <div className='col-12 col-md-5 d-flex mb-2 mb-md-0'>
-//                             <div className='w-50'>
-//                                 <input type="text" name="" className='form-control  border-black rounded-0 ' id="" placeholder='Coupon Code' />
-//                             </div>
-//                             <div>
-//                                 <button className='btn btn- border-black rounded-0 ms-2'>Apply Cupon    </button>
-//                             </div>
-//                         </div>
-//                         <div className="col-12 col-md-6 p-3 border border-dark rounded-0">
-//                             <h5>Cart</h5>
-//                             {
-//                                 dataSource.map((item, index) => {
-//                                     return (
-//                                         <div key={index}> {/* Add a unique key for each item */}
-//                                             <div className="d-flex align-items-center justify-content-between">
-//                                                 {
-//                                                     index == 0 ? <span>Subtotal:</span> : index == 1 ? <span>shipping:</span> : <span>total:</span>
-//                                                 }
-//                                                 <span>1133$</span>
-//                                             </div>
-//                                             <div className="border-bottom border-2 border-dark rounded-0 my-2"></div> {/* Adds spacing between rows */}
-//                                         </div>
-//                                     );
-//                                 })
-//                             }
-//                             <div className='m-auto text-center'>
-//                                 <button className='btn btn-danger text-center'>Procees to checkout</button>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-
-//         </>
-//     )
-// }
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { ADD_TO_CART } from "../../redux/Types/types";
+import { v4 as uuidv4 } from 'uuid';
 
 const imagesGroup1 = [
   {
@@ -208,12 +71,12 @@ const Cart = () => {
   const handleSelectImageGroup1 = (image) => {
     setSelectedSmallImage(image);
     setSavedGroup1Data({
-      // حفظ بيانات المجموعة الأولى
       group1Image: image.src,
       group1Name: image.description,
     });
   };
-  // دالة لإضافة المنتج إلى السلة
+
+  const dispatch = useDispatch();
   const handleAddToCart = () => {
     const newItem = {
       // بيانات المجموعة الثانية
@@ -231,8 +94,11 @@ const Cart = () => {
       // بيانات السيارة
       carName: selectedCar || "",
       carImage: cars.find((car) => car.name === selectedCar)?.image.thumb || "", // صورة شعار السيارة
-    };
+      uniqueId: uuidv4(),
 
+    };
+    dispatch({ type: ADD_TO_CART, payload: newItem });
+    console.log("Adding to Cart:", newItem);
     // حفظ العناصر الحالية أو إضافة الجديد
     const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
     const updatedCart = [...existingCart, newItem];
@@ -240,6 +106,38 @@ const Cart = () => {
 
     // التوجيه إلى الصفحة المطلوبة
     navigate("/invoice");
+  };
+
+  const handleAddAnotherOrder = () => {
+    const newItem = {
+      // بيانات المجموعة الثانية
+      id: selectedLargeImage?.id || null,
+      name: selectedLargeImage?.description || "",
+      image: selectedLargeImage?.src || "",
+      price: selectedLargeImage?.price || 0,
+      quantity: quantity,
+      totalPrice: parseFloat(selectedLargeImage?.price || 0) * quantity,
+
+      // بيانات المجموعة الأولى (المحفوظة)
+      group1Image: savedGroup1Data?.group1Image || "",
+      group1Name: savedGroup1Data?.group1Name || "",
+
+      // بيانات السيارة
+      carName: selectedCar || "",
+      carImage: cars.find((car) => car.name === selectedCar)?.image.thumb || "", // صورة شعار السيارة
+      uniqueId: uuidv4(),
+    };
+
+    dispatch({ type: ADD_TO_CART, payload: newItem });
+    console.log("Adding another order to Cart:", newItem);
+
+    // حفظ العناصر الحالية أو إضافة الجديد
+    const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+    const updatedCart = [...existingCart, newItem];
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+
+    // إعادة تعيين الخيارات
+    removeSelection();
   };
 
   useEffect(() => {
@@ -616,9 +514,27 @@ const Cart = () => {
               </p>
 
               {/* زر إضافة إلى السلة */}
-              <button className="btn btn-success" onClick={handleAddToCart}>
-                أضف إلى السلة
-              </button>
+              <div className="text-center mt-4">
+                <button
+                  className="btn btn-success"
+                  onClick={handleAddToCart}
+                  disabled={
+                    !selectedSmallImage || !selectedLargeImage || !selectedCar
+                  }
+                >
+                  أضف إلى السلة
+                </button>
+
+                <button
+                  className="btn btn-secondary ms-3"
+                  onClick={handleAddAnotherOrder}
+                  disabled={
+                    !selectedSmallImage || !selectedLargeImage || !selectedCar
+                  }
+                >
+                  إضافة طلب آخر
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -123,14 +123,16 @@ const About = () => {
   const imageRef = useRef(null);
 
   useEffect(() => {
+    if (!boxRef.current || !textContainerRef.current) return;
+  
     const textWidth = textContainerRef.current.offsetWidth;
     const words = wordsRefs.current;
-
-    
+  
+    // ضبط التعتيم الأولي للنصوص
     words.forEach((word) => {
       gsap.set(word, { opacity: 0 });
     });
-
+  
     // تحريك المربع
     const tl = gsap.timeline();
     tl.to(boxRef.current, {
@@ -145,7 +147,8 @@ const About = () => {
       ease: "power1.inOut",
       onUpdate: () => {
         const boxX = gsap.getProperty(boxRef.current, "x");
-        words.forEach((word, index) => {
+        words.forEach((word) => {
+          if (!word) return; // تحقق من وجود الكلمة
           const wordPosition = word.offsetLeft;
           if (boxX > wordPosition - 10 && boxX < wordPosition + 50) {
             gsap.to(word, { opacity: 1, duration: 0.5 });
@@ -153,40 +156,47 @@ const About = () => {
         });
       },
     });
-
-    
+  
+    // تبديل الكلمات
     const wordInterval = setInterval(() => {
       setAlternateWord((prevWord) => (prevWord === "أمان" ? "نظافة" : "أمان"));
     }, 2000);
-    gsap.fromTo(
-        sectionRef.current,
-        { scale: 0.5, opacity: 0.3 },
-        {
-          scale: 1, 
-          opacity: 1, 
-          duration: 1,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top bottom", 
-            end: "top center", 
-            scrub: true, 
-          },
-        }
-      );
-
-    return () => clearInterval(wordInterval);
+  
+    // تحريك القسم
+    const scrollAnimation = gsap.fromTo(
+      sectionRef.current,
+      { scale: 0.5, opacity: 0.3 },
+      {
+        scale: 1,
+        opacity: 1,
+        duration: 1,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "top center",
+          scrub: true,
+        },
+      }
+    );
+  
+    // تنظيف عند الخروج
+    return () => {
+      clearInterval(wordInterval); // تنظيف الـ Interval
+      scrollAnimation.kill(); // إزالة التحريك
+    };
   }, []);
+  
   useEffect(() => {
     const counters = [
-      { id: "#counter-clients", endValue: 76259 }, // عدد العملاء
-      { id: "#counter-covers", endValue: 700 },   // عدد التلبيسات الأسبوعية
-      { id: "#counter-deliveries", endValue: 34539 }, // عدد التوصيلات
+      { id: "#counter-clients", endValue: 76259 },
+      { id: "#counter-covers", endValue: 700 },
+      { id: "#counter-deliveries", endValue: 34539 },
     ];
   
-    counters.forEach(({ id, endValue }) => {
+    const triggers = counters.map(({ id, endValue }) =>
       ScrollTrigger.create({
-        trigger: "#counter-section", // مراقبة القسم بالكامل
-        start: "top 75%",            // عندما يصل القسم إلى 75% من الشاشة
+        trigger: "#counter-section",
+        start: "top 75%",
         onEnter: () => {
           gsap.fromTo(
             id,
@@ -197,22 +207,27 @@ const About = () => {
               ease: "power1.inOut",
               snap: { innerText: 1 },
               onUpdate: function () {
-                document.querySelector(id).innerText = Math.ceil(
-                  this.targets()[0].innerText
-                );
+                const element = document.querySelector(id);
+                if (element) {
+                  element.innerText = Math.ceil(this.targets()[0].innerText);
+                }
               },
             }
           );
         },
         onLeaveBack: () => {
-          document.querySelector(id).innerText = "0"; // إعادة التعيين عند العودة للخلف
+          const element = document.querySelector(id);
+          if (element) {
+            element.innerText = "0";
+          }
         },
-      });
-    });
+      })
+    );
   
-    // تنظيف ScrollTrigger عند إلغاء تثبيت المكون
-    return () => ScrollTrigger.getAll().forEach((t) => t.kill());
+    // تنظيف التريجرات عند إلغاء المكون
+    return () => triggers.forEach((trigger) => trigger.kill());
   }, []);
+  
   
   
   

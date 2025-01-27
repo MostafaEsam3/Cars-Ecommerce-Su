@@ -1,0 +1,27 @@
+.container {
+    font-family: "Arial", sans-serif;
+  }
+  
+  .contact-info h4 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .contact-info ul {
+    padding: 0;
+  }
+  
+  .contact-info li {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .contact-info a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .contact-info a:hover {
+    text-decoration: underline;
+  }
+  

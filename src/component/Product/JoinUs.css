@@ -1,0 +1,31 @@
+.container {
+    font-family: "Arial", sans-serif;
+  }
+  
+  .form-container {
+    max-width: 500px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+  }
+  
+  .text-primary {
+    color: #0056b3;
+  }
+  
+  .ant-input,
+  .ant-input-password {
+    height: 45px;
+    font-size: 1rem;
+  }
+  
+  .ant-btn-primary {
+    background-color: #c29101;
+    border-color: #c29101;
+    font-size: 1rem;
+  }
+  
+  .ant-btn-primary:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+  }
+  
