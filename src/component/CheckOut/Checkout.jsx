@@ -199,3 +199,4 @@ const Checkout = () => {
 };
 
 export default Checkout;
+// sessionStorage.setItem(sessionnNameToStore, JSON.stringify(response.data.data));
