@@ -5,7 +5,6 @@ import * as Yup from 'yup';
 import imageSuccess from "./../../../assets/images.png"
 import imageFail from "./../../../assets/images (1).png"
 import DeleteModal from '../../../component/Modals/deleteModal';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';  // Add this to use Bootstrap's JS features
 import { Link } from 'react-router-dom';
 import { Table } from 'antd';
 import EditModal from '../../../component/Modals/EditModal';
@@ -13,25 +12,26 @@ import Filtr from '../../../component/Filtration/Filtration';
 import { Notify, NotifyError } from '../../../component/Modals/Alert';
 import { useFetchData } from '../../../hooks/useFetch';
 import Swal from 'sweetalert2';
+import EditColor from '../../../component/Modals/EditColor';
 
-export default function AddBrand() {
+export default function AddColor() {
     const imgInputRef = useRef(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState(""); // لتخزين الرسالة المعروضة في المودال
     const [modalType, setModalType] = useState(""); // لتحديد إذا كانت الرسالة فشل أم نجاح
     const [selectedBrandId, setSelectedBrandId] = useState(null);
     const [obj, setobj] = useState({});
-    // const [BrandData, setBrandData] = useState([])
- const { Data: BrandData, setData: setBrandData, fetchData } = useFetchData("http://127.0.0.1:8000/dashboard/brands","brandData");
+    // const [ColorData, setBrandData] = useState([])
+ const { Data: ColorData, setData: setColorData, fetchData } = useFetchData("http://127.0.0.1:8000/dashboard/colors","colorsData");
     useEffect(()=>{
        fetchData();
     },[])
 
     // function add category 
-    const addBrand = async (data) => {
+    const addColor = async (data) => {
         try {
             const response = await axios.post(
-                'http://127.0.0.1:8000/dashboard/brands',  // تأكد من المسار الصحيح
+                'http://127.0.0.1:8000/dashboard/colors',  // تأكد من المسار الصحيح
                 data,  // البيانات التي تريد إرسالها
                 {
                     headers: {
@@ -62,27 +62,26 @@ export default function AddBrand() {
     const formik = useFormik({
         initialValues: {
             name: "",
-            image: null // قيمة مبدئية null للصورة
+            hexa: "" ,
+            status:1
         },
         validationSchema: Yup.object({
             name: Yup.string()
-                .required("يرجي ادخال قسم"),
-            image: Yup.mixed()
-                .required("يرجي ادخال صورة")
-                .test('fileType', 'يرجى رفع ملف صحيح', (value) => value != null) // التأكد من وجود الملف
+                .required("يرجي ادخال اسم اللون"),
+                hexa: Yup.string()
+                .required("يرجي ادخال لون"),
+                status: Yup.string()
+                .required("يرجي ادخال حاله")          
         }),
         onSubmit: (values, { resetForm }) => {
             const formData = new FormData();
-            formData.append('name', values.name);  // إضافة النص (الاسم)
-            formData.append('image', values.image);  // إضافة الصورة أو الملف
-
-            addBrand(formData);  // إرسال FormData إلى الـ API
-
-            // إعادة تعيين النموذج بعد الإرسال
+            console.log(values);
+            formData.append('name', values.name);  
+            formData.append('hexa', values.hexa);  
+            formData.append('status', values.status);  
+            addColor(formData); 
             resetForm();
 
-            // إزالة الصورة من input بعد الـ submit
-            imgInputRef.current.value = '';  // إعادة تعيين حقل الصورة ليظهر فارغًا
         },
     });
 
@@ -90,17 +89,15 @@ export default function AddBrand() {
         setModalVisible(false);
     }
     const removeModaleAfterSubmit = () => {
-        document.getElementById("deletemodalbrand").classList.remove("show", "d-block");
+        document.getElementById("deleteColor").classList.remove("show", "d-block");
         document.querySelectorAll(".modal-backdrop")
             .forEach(el => el.classList.remove("modal-backdrop"));
     }
  
-    const deleteBrand = async (id) => {
-        console.log(selectedBrandId);
-        
+    const deleteColors = async (id) => {
         try {
             const response = await axios.delete(
-                `http://127.0.0.1:8000/dashboard/brands/${id}`,               {
+                `http://127.0.0.1:8000/dashboard/colors/${id}`,               {
                     headers: {
                        'Accept': 'application/json, text/plain, */*',
                     }
@@ -121,22 +118,7 @@ export default function AddBrand() {
     }
       
     const columns = [
-        {
-            title: 'image',
-            dataIndex: 'image',
-            key: 'image',
-            render: (image,{name}) => (
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img
-                        src={ `http://127.0.0.1:8000/storage/Images/Brands/${image}`}
-                        alt="avatar"
-                        style={{ width: 30, height: 30, borderRadius: '50%', marginRight: 10 }}
-                    />
-                    {name}
-                </div>
-            ),
-
-        },
+       
         {
             title: 'id',
             dataIndex: 'id',
@@ -147,16 +129,27 @@ export default function AddBrand() {
             dataIndex: 'name',
             key: 'name',
         },
+        {
+            title: 'hexa',
+            dataIndex: 'hexa',
+            key: 'hexa',
+            render: (id,{hexa}) => (
+                
+                        <div style={{width:"30px",height:"30px",backgroundColor:`${hexa}`,borderRadius:"10px"}}>
+                        </div>
+            )
+        },
         
         {
             title: 'update',
             dataIndex: 'id',
             key: 'id',
-            render: (id,{name,image}) => (
+            render: (id,{name,status,hexa}) => (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <button className="btn btn-success" data-bs-toggle="modal" data-bs-target="#editBrand" onClick={() => collectedDataToEdit(id,
+                    <button className="btn btn-success" data-bs-toggle="modal" data-bs-target="#editColor" onClick={() => collectedDataToEdit(id,
                     {"name":name,
-                    "image":image,
+                    "hexa":hexa,
+                    "status":status,
                      id:id
                 }
                         )
@@ -186,7 +179,7 @@ export default function AddBrand() {
               if (result.isConfirmed) {
                   setSelectedBrandId(id)
                 // إذا وافق المستخدم على الحذف
-                await deleteBrand(id);  // استدعاء دالة الحذف التي تريدها
+                await deleteColors(id);  // استدعاء دالة الحذف التي تريدها
                 Swal.fire('تم الحذف!', 'تم حذف العنصر بنجاح', 'success');  // عرض رسالة النجاح بعد الحذف
               } else {
                 // إذا تم إلغاء الحذف
@@ -201,12 +194,12 @@ export default function AddBrand() {
         <>
         {/* tost delete modala */}
         <DeleteModal/>
-            <h1 className='text-center'>اضافه البراندات</h1>
+            <h1 className='text-center'>اضافه الالوان</h1>
             <form onSubmit={formik.handleSubmit} className='mt-3'>
                 <div className="container-fluid dir-ar">
-                    <div className="col-xs-11 text-center row">
+                    <div className="col-xs-11 text-center row align-items-lg-center">
                         <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
-                            <label className='fw-bold'>اسم البراند</label>
+                            <label className='fw-bold'>اسم اللون</label>
                             <input
                                 name='name'
                                 type='text'
@@ -218,21 +211,43 @@ export default function AddBrand() {
                                 <div className='text-danger'>{formik.errors.name}</div>
                             ) : null}
                         </div>
-                        <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
-                            <label className='fw-bold'>اضافه صوره براند</label>
+                        <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-1 ">
+                            <label className='fw-bold'>اسم اللون</label>
                             <input
-                                type='file'
-                                className="form-control"
+                                name='hexa'
+                                type='color'
+                                className="form-control "
                                 required
-                                name='image'
-                                ref={imgInputRef}  
-                                onChange={(event) => {
-                                    formik.setFieldValue("image", event.target.files[0]);
-                                }}
+                                {...formik.getFieldProps('hexa')}
                             />
-                            {formik.touched.image && formik.errors.image ? (
-                                <div className='text-danger'>{formik.errors.image}</div>
+                            {formik.touched.hexa && formik.errors.hexa ? (
+                                <div className='text-danger'>{formik.errors.hexa}</div>
                             ) : null}
+                        </div>
+                        <div className=' col-xs-12 col-sm-2 col-md-2 col-lg-3 d-flex align-items-center mt-4 '>
+                            <label>
+                                <input
+                                    className='form-check-input'
+                                    type="radio"
+                                    name="status"
+                                    value="1"
+                                    checked={formik.values.status === 1}
+                                    onChange={() => formik.setFieldValue("status", 1)}
+                                />
+                                نشطة
+                            </label>
+
+                            <label className='mx-4'>
+                                <input
+                                    className='form-check-input'
+                                    type="radio"
+                                    name="status"
+                                    value="0"
+                                    checked={formik.values.status === 0} // Switch to غير نشطة
+                                    onChange={() => formik.setFieldValue("status", 0)}
+                                />
+                                غير نشطة
+                            </label>
                         </div>
                     </div>
                     <div className='text-text-center '>
@@ -255,14 +270,22 @@ export default function AddBrand() {
                 </div>
             )}
 {/* component of filtration  */}
- <Filtr data={BrandData} filtrated={setBrandData} orig={BrandData} nameOfSession={'brandData'}/>
+ <Filtr data={ColorData} filtrated={setColorData} orig={ColorData} nameOfSession={'colorsData'}/>
 <div className='mt-3'>
- <Table  pagination={BrandData.length > 5 ? { pageSize: 5 } :false} dataSource={BrandData} columns={columns} />
+ <Table  pagination={ColorData.length > 5 ? { pageSize: 5 } :false} dataSource={ColorData} columns={columns} />
 </div>
 
+
+
+
+
+
+
+
+
             {/* <button className='btn btn-light' >اضغط لمشاهده الفيديدو</button> */}
-            <DeleteModal idModal={"deletemodalbrand"} deleteFn={deleteBrand} />
-            <EditModal i={obj} typeOf={"brands"} idModal={"editBrand"} fetchBrand={fetchData} nameOfImage={"image"}/>
+            <DeleteModal idModal={"deleteColor"} deleteFn={deleteColors} />
+            <EditColor i={obj} typeOf={"colors"} idModal={"editColor"} fetchBrand={fetchData} nameOfImage={"image"}/>
         </>
     );
 }

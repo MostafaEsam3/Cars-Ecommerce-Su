@@ -2,3 +2,27 @@
 :where(.css-dev-only-do-not-override-1x0dypw).ant-layout.ant-layout-has-sider > .ant-layout-content {
     width: auto;
 }
+
+.ant-layout-sider {
+    background-color: #E9E9EE !important; /* Make the sidebar background red */
+  }
+  
+  .ant-menu-item {
+    color: #1E2458 !important; /* لون الخط للعناصر غير النشطة */
+    transition: background-color 0.3s ease; /* Smooth transition */
+  }
+  
+  .ant-menu-item:hover {
+    background-color: orange !important; /* Change hover color to orange */
+    
+  }
+  
+  .ant-menu-dark .ant-menu-item-selected {
+    background-color:#1E2458!important; /* Make selected menu item #E87524*/
+    color: white !important;
+  }
+  .ant-menu{
+    background-color: #E9E9EE !important; /* Make the sidebar background red */  
+}
+
+   

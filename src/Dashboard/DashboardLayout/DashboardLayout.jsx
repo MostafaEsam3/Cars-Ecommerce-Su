@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DesktopOutlined, FileOutlined, FilePptOutlined, PieChartOutlined } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
-import { Link, Route, Routes, useLocation } from 'react-router-dom'; // Import Link for navigation
+import { Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom'; // Import Link for navigation
 import About from '../../component/About/About';
 import AddProduct from './AddProduct/AddProduct';
 import ShowProducts from './ShowProducts/ShowProducts';
 import AddCategory from './AddCategory/AddCategory';
 import AddBrand from './AddBrand/AddBrand';
 import "./DashBoard.css"
+import AddModel from './AddModel/AddModel';
+import AddColor from './AddColor/AddColor';
 const { Header, Content, Footer, Sider } = Layout;
 
 function getItem(label, key, icon, to) {
@@ -21,18 +23,21 @@ function getItem(label, key, icon, to) {
 
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const location = useLocation();  // للحصول على المسار الحالي
+  const location = useLocation(); 
+  const navigate = useNavigate(); 
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-
+  useEffect(() => {
+    navigate('/admin-dashboard/products');
+  }, []);
   const items = [
     getItem('اضافه المنتجات', '1', <PieChartOutlined />, "/admin-dashboard/products"),
-    getItem('اضافه الاقسام', '2', <DesktopOutlined />, "/admin-dashboard/categories"),
-    getItem('تتبع الاوردرات', '3', <FileOutlined />, "/admin-dashboard/orders"),
-    getItem('عرض المنتجات', '4', <FileOutlined />, "/admin-dashboard/show-products"),
-    getItem('اضافه الاقسام ', '5', <FileOutlined />, "/admin-dashboard/add-category"),
-    getItem('اضافه البراندات ', '6', <FilePptOutlined />, "/admin-dashboard/add-brand"),
+    getItem('تتبع الاوردرات', '2', <FileOutlined />, "/admin-dashboard/orders"),
+    getItem('اضافه الاقسام ', '3', <FileOutlined />, "/admin-dashboard/add-category"),
+    getItem('اضافه البراندات ', '4', <FilePptOutlined />, "/admin-dashboard/add-brand"),
+    getItem('اضافه الموديلات ', '5', <FilePptOutlined />, "/admin-dashboard/add-model"),
+    getItem('اضافه الالوان ', '6', <DesktopOutlined />, "/admin-dashboard/add-color"),
 
   ];
   const selectedKey = items.find(item => location.pathname.includes(item.to))?.key || '1';
@@ -71,19 +76,15 @@ const Dashboard = () => {
           >
             {/* هنا الايليمت */}
             <Routes>
-              <Route path="products" element={<div>
-                <AddProduct/>
-              </div>
-            } />
-              <Route path="categories" element={<div>
-              ضافه الاقسام الخاصه بالمنتجات
-              <Link to={"/admin-dashboard/products"}>jjjjjjjj</Link>
-              </div>} />
+            <Route path="products" element={<div><AddProduct/></div>} />
               <Route path="orders" element={<div>تتبع الاوردرات</div>} />
-
-              <Route path="show-products" element={<div><ShowProducts/></div>} />
               <Route path="add-category" element={<div><AddCategory/></div>} />
               <Route path="add-brand" element={<div><AddBrand/></div>} />
+              <Route path="add-model" element={<div><AddModel/></div>} />
+              <Route path="add-color" element={<div><AddColor/></div>} />
+
+
+              
             </Routes>
           </div>
         </Content>
@@ -96,3 +97,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

@@ -10,24 +10,53 @@ import DeleteModal from '../../../component/Modals/deleteModal';
 import EditModal from '../../../component/Modals/EditModal';
 import { Notify, NotifyError } from '../../../component/Modals/Alert';
 import Filtr from '../../../component/Filtration/Filtration';
+import { useFetchData } from '../../../hooks/useFetch';
+import { deleteConfirmation } from '../../../hooks/deleteConfirmation';
+import Swal from 'sweetalert2';
 export default function AddCategory() {
-    const imgInputRef = useRef(null);
+    const imageInputRef = useRef(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState(""); // لتخزين الرسالة المعروضة في المودال
     const [modalType, setModalType] = useState(""); // لتحديد إذا كانت الرسالة فشل أم نجاح
-    const [CategoryData,setCategoryData]=useState([]);
     const [obj, setobj] = useState({});
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-    const fetchCategoryData=async()=>{
-        axios.get("http://127.0.0.1:8000/dashboard/categories").then((response)=>{
-            console.log(response);
-            setCategoryData(response.data.data)
-            sessionStorage.setItem('categoryData', JSON.stringify(response.data.data));
-        }).catch((err)=>{
-            console.log(err); 
-        })
+    // const [CategoryData,setCategoryData]=useState([]);
+    const { Data: CategoryData, setData: setCategoryData, fetchData } = useFetchData("http://127.0.0.1:8000/dashboard/categories","categoryData");
+
+
+
+    const [isOnline, setIsOnline] = useState(true);
+  useEffect(() => {
+    function handleOnline() {
+      setIsOnline(true);
     }
-    
+    function handleOffline() {
+      setIsOnline(false);
+    }
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+
+
+
+
+
+
+    // const fetchCategoryData=async()=>{
+    //     axios.get("http://127.0.0.1:8000/dashboard/categories").then((response)=>{
+    //         console.log(response);
+    //         setCategoryData(response.data.data)
+    //         sessionStorage.setItem('categoryData', JSON.stringify(response.data.data));
+    //     }).catch((err)=>{
+    //         console.log(err); 
+    //     })
+    // }
+
     // function add category 
     const addCategory = async (data) => {
         try {
@@ -44,7 +73,8 @@ export default function AddCategory() {
             setModalType("success");
             setModalMessage("تم إرسال البيانات بنجاح!");
             setModalVisible(true);
-            fetchCategoryData()
+            // fetchCategoryData()
+            fetchData();
         } catch (error) {
             console.log(error); 
             setModalType("failure");
@@ -56,24 +86,27 @@ export default function AddCategory() {
     const formik = useFormik({
         initialValues: {
             name: "",
-            img: null // قيمة مبدئية null للصورة
+            status: 1,
+            image: null // قيمة مبدئية null للصورة
         },
         validationSchema: Yup.object({
             name: Yup.string()
                 .required("يرجي ادخال قسم"),  
-            img: Yup.mixed()
+            image: Yup.mixed()
                 .required("يرجي ادخال صورة")
                 .test('fileType', 'يرجى رفع ملف صحيح', (value) => value != null) // التأكد من وجود الملف
         }),
         onSubmit: (values, { resetForm }) => {
             const formData = new FormData();
             formData.append('name', values.name);  // إضافة النص (الاسم)
-            formData.append('img', values.img);  // إضافة الصورة أو الملف
+            formData.append('image', values.image);  // إضافة الصورة أو الملف
+            formData.append('status', values.status);
+
             addCategory(formData);  // إرسال FormData إلى الـ API
             // إعادة تعيين النموذج بعد الإرسال
             resetForm();
             // إزالة الصورة من input بعد الـ submit
-            imgInputRef.current.value = '';  // إعادة تعيين حقل الصورة ليظهر فارغًا
+            imageInputRef.current.value = '';  // إعادة تعيين حقل الصورة ليظهر فارغًا
         },
     });
 
@@ -93,37 +126,36 @@ export default function AddCategory() {
                 .forEach(el => el.classList.remove("modal-backdrop"));
         }
      
-        const deleteCategory = async () => {
+        const deleteCategory = async (id) => {
             try {
                 const response = await axios.delete(
-                    `http://127.0.0.1:8000/dashboard/categories/${selectedCategoryId}`,               {
+                    `http://127.0.0.1:8000/dashboard/categories/${id}`,               {
                         headers: {
                            'Accept': 'application/json, text/plain, */*',
                         }
                     }
                 );
                 console.log(response, "تم ارسال البيانات بنجاح");
-                removeModaleAfterSubmit("deletemodalcategory")
-                fetchCategoryData()
-                Notify("تم المسح بنجاح")
+                fetchData()
+                Swal.fire("تم المسح بنجاح")
             } catch (error) {
                 console.error(error);
-                NotifyError(error.response.data.message)
+             Swal.fire('خطأ!', 'حدث خطأ أثناء الحذف. يرجى المحاولة مرة أخرى', 'error');
         };
         }
     useEffect(()=>{
-        fetchCategoryData()
+        // fetchCategoryData()
     },[])
 
        const columns = [
             {
-                title: 'img',
-                dataIndex: 'img',
-                key: 'img',
-                render: (img,{name}) => (
+                title: 'image',
+                dataIndex: 'image',
+                key: 'image',
+                render: (image,{name}) => (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <img
-                            src={ `http://127.0.0.1:8000/storage/Images/categories/${img}`}
+                        <image
+                            src={ `http://127.0.0.1:8000/storage/Images/categories/${image}`}
                             alt="avatar"
                             style={{ width: 30, height: 30, borderRadius: '50%', marginRight: 10 }}
                         />
@@ -147,11 +179,11 @@ export default function AddCategory() {
                 title: 'update',
                 dataIndex: 'id',
                 key: 'id',
-                render: (id,{name,img}) => (
+                render: (id,{name,image}) => (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <button className="btn btn-success" data-bs-toggle="modal" data-bs-target="#editcategory" onClick={() => collectedDataToEdit(id,
                         {"name":name,
-                        "image":img,
+                        "image":image,
                          id:id
                     }
                             )
@@ -159,7 +191,7 @@ export default function AddCategory() {
                             <i className="fa fa-pencil"></i>
                         </button>
     
-                            <button className="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#deletemodalcategory"  onClick={() => setSelectedCategoryId(id)}> 
+                            <button className="btn btn-danger ms-2"  onClick={() => deleteConfirmation(id,deleteCategory)}> 
                                 <i className="fa fa-trash"></i>
                             </button>
                     </div>
@@ -170,6 +202,8 @@ export default function AddCategory() {
         ];
     return (
         <>
+           <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>;
+
         <h1 className='text-center'>اضافه الاقسام</h1>
             <form onSubmit={formik.handleSubmit} className='mt-4'>
                 <div className="container-fluid dir-ar">
@@ -195,16 +229,43 @@ export default function AddCategory() {
                                 type='file' 
                                 className="form-control" 
                                 required 
-                                name='img' 
-                                ref={imgInputRef} 
+                                name='image' 
+                                ref={imageInputRef} 
                                 onChange={(event) => {
-                                    formik.setFieldValue("img", event.target.files[0]);
+                                    formik.setFieldValue("image", event.target.files[0]);
                                 }}
                             />
-                            {formik.touched.img && formik.errors.img ? (
-                                <div className='text-danger'>{formik.errors.img}</div>
+                            {formik.touched.image && formik.errors.image ? (
+                                <div className='text-danger'>{formik.errors.image}</div>
                             ) : null}
                         </div>
+                            {/* radio */}
+                            <div className=' col-xs-12 col-sm-2 col-md-2 col-lg-3 d-flex align-items-center mt-4 '>
+                            <label>
+                                <input
+                                    className='form-check-input'
+                                    type="radio"
+                                    name="status"
+                                    value="1"
+                                    checked={formik.values.status === 1}
+                                    onChange={() => formik.setFieldValue("status", 1)}
+                                />
+                                نشطة
+                            </label>
+
+                            <label className='mx-4'>
+                                <input
+                                    className='form-check-input'
+                                    type="radio"
+                                    name="status"
+                                    value="0"
+                                    checked={formik.values.status === 0} // Switch to غير نشطة
+                                    onChange={() => formik.setFieldValue("status", 0)}
+                                />
+                                غير نشطة
+                            </label>
+                        </div>
+                        {/* end radio */}
                     </div>
                     <div className='text-text-center '>
                     <button type='submit' className='btn btn-danger text-center mt-3'>ارسال</button>
@@ -225,14 +286,14 @@ export default function AddCategory() {
                 </div>
             )}
 
- <Filtr data={CategoryData} filtrated={setCategoryData} />
+ <Filtr data={CategoryData} filtrated={setCategoryData} nameOfSession={'categoryData'}/>
 
 <div className='mt-3'>
  <Table  pagination={CategoryData?.length > 5 ? { pageSize: 5 } :false} dataSource={CategoryData} columns={columns} />
 </div>
 
       <DeleteModal idModal={"deletemodalcategory"} deleteFn={deleteCategory} />
-            <EditModal i={obj} flag={"category"} typeOf={"categories"} idModal={"editcategory"} fetchBrand={fetchCategoryData}/>
+            <EditModal i={obj} flag={"category"} typeOf={"categories"} idModal={"editcategory"} fetchBrand={fetchData}/>
         </>
     );
 }

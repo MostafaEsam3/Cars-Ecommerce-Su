@@ -6,44 +6,21 @@ import imageSuccess from "./../../assets/images.png"
 import imageFail from "./../../assets/images (1).png"
 import ModalDelete, { Notify, NotifyError } from './Alert';
 
-export default function EditModal(props) {
+export default function EditColor(props) {
     const imgInputRef = useRef(null);
     const [mod, setmod] = useState(false);
     const [modalMessage, setModalMessage] = useState(""); // لتخزين الرسالة المعروضة في المودال
     const [modalType, setModalType] = useState(""); // لتحديد إذا كانت الرسالة فشل أم نجاح
-    const [inputUser,setInputUser]=useState({
-        image:""
-})
-
+    const [inputUser, setInputUser] = useState({
+        image: ""
+    })
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-          setInputUser({ ...inputUser, image: file });
+            setInputUser({ ...inputUser, image: file });
         }
-      }
-    const editBrand = async (data) => {
-        // try {
-        //     const response = await axios.post(
-        //         `http://127.0.0.1:8000/dashboard/brands/${props.i.id}`,
-        //         data,
-        //         {
-        //             headers: {
-        //                 'Accept': 'application/json, text/plain, */*',
-        //             },
-        //         }
-        //     );
-        //     console.log(response, "تم ارسال البيانات بنجاح");
-        //     setModalType("success");
-        //     setModalMessage("تم إرسال البيانات بنجاح!");
-        //     setmod(true);
-        //     props.fetchBrand()
-        // } catch (error) {
-        //     console.error(error);
-        //             setModalType("failure");
-        //     setModalMessage("حدث خطأ أثناء إرسال البيانات.");
-        //     setmod(true);
-        // }
-
+    }
+    const editColor = async (data) => {
         await axios.post(
             `http://127.0.0.1:8000/dashboard/${props.typeOf}/${props.i.id}`,
             data, // Payload for the POST request
@@ -65,25 +42,29 @@ export default function EditModal(props) {
     const formik = useFormik({
         initialValues: {
             name: "", // تهيئة الحقول بشكل افتراضي
-            image: null,
+            hexa: "",
+            status: ""
         },
         validationSchema: Yup.object({
             name: Yup.string()
-                .required("يرجي ادخال قسم"),
-            image: Yup.mixed()
-                .required("يرجي ادخال صورة")
-                .test('fileType', 'يرجى رفع ملف صحيح', (value) => value != null),
+                .required("يرجي ادخال اسم اللون"),
+            hexa: Yup.string()
+                .required("يرجي ادخال لون"),
+            status: Yup.string()
+                .required("يرجي ادخال حاله")
+
+
         }),
         onSubmit: (values, { resetForm }) => {
             const updatedValues = {
-                name:values.name,
-                _method: 'PUT', 
+                name: values.name,
+                hexa:values.hexa,
+                status:values.status,
+                _method: 'PUT',
             };
 
-            if (inputUser.image) {
-                updatedValues.image = inputUser.image; // Add new image
-            }    
-            editBrand(updatedValues)
+           
+            editColor(updatedValues)
         }
 
     });
@@ -92,19 +73,21 @@ export default function EditModal(props) {
         if (props.i) {
             formik.setValues({
                 name: props.i.name || "",
-                image: props.i.image || null,
+                hexa: props.i.hexa || null,
+                status: props.i.status || 1
+
             });
         }
     }, [props.i]);
     const closeModal = () => {
-      setmod(false);
+        setmod(false);
     }
 
     return (
         <>
-       < ModalDelete/>
+            < ModalDelete />
             <div className="modal fade" id={props.idModal} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered  " >
+                <div className="modal-dialog modal-dialog-centered  custom-modal" >
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="exampleModalLabel">هل تريد التعديل</h5>
@@ -116,7 +99,7 @@ export default function EditModal(props) {
                                 <div className="container-fluid dir-ar">
                                     <div className="col-xs-11 text-center row">
                                         <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-12">
-                                            <label className='fw-bold'>اسم البراند</label>
+                                            <label className='fw-bold'>اسم اللون</label>
                                             <input
                                                 name='name'
                                                 type='text'
@@ -127,26 +110,53 @@ export default function EditModal(props) {
                                                 <div className='text-danger'>{formik.errors.name}</div>
                                             ) : null}
                                         </div>
-                                        <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-12">
-                                            <label className='fw-bold'>اضافه صوره براند</label>
+
+                                        <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3 ">
+                                            <label className='fw-bold'> اللون</label>
                                             <input
-                                                type='file'
-                                                accept=".jpg, .jpeg, .png" 
-                                                className="form-control"
-                                                name="image"
-                                                ref={imgInputRef}
-                                              onChange={handleImageChange}  
+                                                name='hexa'
+                                                type='color'
+                                                className="form-control "
+                                                required
+                                                {...formik.getFieldProps('hexa')}
                                             />
-                                            {formik.touched.image && formik.errors.image ? (
-                                                <div className='text-danger'>{formik.errors.image}</div>
+                                            {formik.touched.hexa && formik.errors.hexa ? (
+                                                <div className='text-danger'>{formik.errors.hexa}</div>
                                             ) : null}
                                         </div>
+
+                                        <div className=' col-xs-12 col-sm-2 col-md-2 col-lg-3 d-flex align-items-center mt-4 '>
+                                            <label>
+                                                <input
+                                                    className='form-check-input'
+                                                    type="radio"
+                                                    name="status"
+                                                    value="1"
+                                                    checked={formik.values.status === 1}
+                                                    onChange={() => formik.setFieldValue("status", 1)}
+                                                />
+                                                نشطة
+                                            </label>
+
+                                            <label className='mx-4'>
+                                                <input
+                                                    className='form-check-input'
+                                                    type="radio"
+                                                    name="status"
+                                                    value="0"
+                                                    checked={formik.values.status === 0}
+                                                    onChange={() => formik.setFieldValue("status", 0)}
+                                                />
+                                                غير نشطة
+                                            </label>
+                                        </div>
+
                                     </div>
 
                                     <div className='text-center'>
                                         <button type='submit' className='btn btn-danger text-center mt-3' data-bs-dismiss="modal">ارسال</button>
                                     </div>
-                                </div>      
+                                </div>
                             </form>
                         </div>
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 
 
-export default function Filtr({  data, filtrated ,flagSession}) {
+export default function Filtr({  data, filtrated ,nameOfSession}) {
   const [brands, setBrands] = useState({
     name: "",
   });
@@ -48,14 +48,13 @@ export default function Filtr({  data, filtrated ,flagSession}) {
     setBrands({
       name: "",
     });
-    if(flagSession == "brand"){
 
-        setFilteredData( JSON.parse(sessionStorage.getItem('brandData')));
-        filtrated( JSON.parse(sessionStorage.getItem('brandData')));
-    }else{
-        setFilteredData( JSON.parse(sessionStorage.getItem('categoryData')));
-        filtrated( JSON.parse(sessionStorage.getItem('categoryData')));
-    }
+    
+        setFilteredData( JSON.parse(sessionStorage.getItem(nameOfSession)));
+        filtrated( JSON.parse(sessionStorage.getItem(nameOfSession)));
+   
+      
+  
   };
 
  

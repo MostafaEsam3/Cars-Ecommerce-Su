@@ -74,3 +74,15 @@
 .modal-container.failure .modal-content h2 {
     color: #f44336;  /* أحمر للفشل */
 }
+
+@media (min-width: 360px) and (max-width: 500px) {
+    .xpro-box-icon-wrapper-inner {
+      height: 119px !important ; 
+    }
+  }
+  .elementor-18398 .elementor-element.elementor-element-1ab8549{
+
+  }
+  .modal-xl {
+    --bs-modal-width: 1129px;
+}
