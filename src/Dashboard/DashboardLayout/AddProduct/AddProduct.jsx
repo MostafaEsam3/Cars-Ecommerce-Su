@@ -16,6 +16,8 @@ import { toHaveAccessibleDescription } from '@testing-library/jest-dom/matchers'
 import { genBaseStyle } from 'antd/es/alert/style';
 import { useAsyncError } from 'react-router-dom';
 import EditProduct from '../../../component/Modals/EditProduct';
+import Loading from '../../../Shared/Loading/Loading';
+
 export default function AddProduct() {
     const imageInputRef = useRef(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -23,7 +25,7 @@ export default function AddProduct() {
     const [modalType, setModalType] = useState(""); // لتحديد إذا كانت الرسالة فشل أم نجاح
     const [obj, setobj] = useState({});
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-    const { Data:ProductData, setData: setProductData, fetchData:fetchProduct } = useFetchData("http://127.0.0.1:8000/dashboard/panelings","panelingsData");
+    const { Data:ProductData, setData: setProductData, fetchData:fetchProduct,loading } = useFetchData("http://127.0.0.1:8000/dashboard/panelings","panelingsData");
     const { Data: CategoryData, setData: setCategoryData, fetchData :fetchCategory } = useFetchData("http://127.0.0.1:8000/dashboard/categories","categoryData");
 
 
@@ -149,8 +151,8 @@ export default function AddProduct() {
                 key: 'image',
                 render: (image,{name}) => (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <image
-                            src={ `http://127.0.0.1:8000/storage/Images/categories/${image}`}
+                        <img
+                            src={`http://127.0.0.1:8000/placeholder_images/default.svg`}
                             alt="avatar"
                             style={{ width: 30, height: 30, borderRadius: '50%', marginRight: 10 }}
                         />
@@ -196,7 +198,7 @@ export default function AddProduct() {
                             <i className="fa fa-pencil"></i>
                         </button>
     
-                            <button className="btn btn-danger ms-2"  onClick={() => deleteConfirmation(id,deleteProduct)}> 
+                            <button className="btn btn-danger mx-2"  onClick={() => deleteConfirmation(id,deleteProduct)}> 
                                 <i className="fa fa-trash"></i>
                             </button>
                     </div>
@@ -205,12 +207,13 @@ export default function AddProduct() {
             },
     
         ];
+        if (loading) return <Loading />; // Show Loading spinner
+
     return (
         <>
-        <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>
-        <h1 className='text-center'>اضافه المنتجات</h1>
+        <h1 className='text-center mainFont'>اضافه المنتجات</h1>
             <form onSubmit={formik.handleSubmit} className='mt-4'>
-                <div className="container-fluid dir-ar">
+                <div className="container-fluid dir-ar mainFont">
                     <div className="col-xs-11 text-center row">
                         <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
                             <label className='fw-bold'>اسم المنتج</label>
@@ -316,8 +319,8 @@ export default function AddProduct() {
                         </div>
                           
                     </div>
-                    <div className='text-text-center '>
-                    <button type='submit' className='btn btn-danger text-center mt-3'>ارسال</button>
+                    <div className='text-center '>
+                    <button type='submit' className='btn btn- text-center mt-3 col-1'style={{background:"orange"}}>ارسال</button>
                     </div>
                 </div>
             </form>

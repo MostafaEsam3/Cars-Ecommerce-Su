@@ -10,20 +10,22 @@ import Icon from '../IconsSection/Icon';
 import Footer from '../Footer/Footer';
 import CarouselComponent from '../SliderAnimation/Slider';
 import Slide from '../SliderAnimation/Slider';
+import TawkToScript from '../Chat/Chat';
 
 const Hero = () => {
     return (
         <>
-        <div className='container mt-4  pb-3'style={{height:"auto"}}>
-        <FirstHero/>
-        < Category/>
-        <SecondHero/>
-        <Cards/>
+        <div className='container mt-4  pb-3 mainFont' style={{height:"auto"}}>
         <Slide/>
+        {/* <FirstHero/> */}
+        {/* < Category/> */}
+        {/* <SecondHero/> */}
+        <Cards/>
        {/* <BestSelling/> */}
        {/* <BeutyImage/> */}
        {/* <NewArrival/>
        <Icon/> */}
+       <TawkToScript/>
         </div>
 
         </>

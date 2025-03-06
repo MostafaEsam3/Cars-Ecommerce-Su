@@ -43,7 +43,7 @@ function App() {
           <Route path="login" element={<Login />} />
           {/* <Route path="cart" element={<Cart />} /> */}
           <Route
-            path="cart"
+            path="cart  "
             element={
               <Suspense fallback={<div>Loading...</div>}>
                 <Cart />

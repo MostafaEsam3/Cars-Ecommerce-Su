@@ -73,7 +73,7 @@ export default function ShowProducts() {
                         <i className="fa fa-pencil"></i>
                     </button>
                     <Link to={`/sign/${address}`}>
-                        <button className="btn btn-danger ms-2">
+                        <button className="btn btn-danger mx-2">
                             <i className="fa fa-trash"></i>
                         </button>
                     </Link>

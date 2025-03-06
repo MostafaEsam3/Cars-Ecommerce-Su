@@ -156,7 +156,7 @@ export default function AddColor() {
                         } >
                         <i className="fa fa-pencil"></i>
                     </button>
-                        <button className="btn btn-danger ms-2"  onClick={() => deleteCategoryWithConfirmation(id)}> 
+                        <button className="btn btn-danger mx-2"  onClick={() => deleteCategoryWithConfirmation(id)}> 
                             <i className="fa fa-trash"></i>
                         </button>
                 </div>
