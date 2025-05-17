@@ -31,7 +31,7 @@ const ContactForm = () => {
         </div>
 
         {/* القسم الأيمن: نموذج التواصل */}
-        <div className="col-12 col-md-5">
+        <div className="col-12 col-md-5"style={{ direction: "rtl" }}>
           <Form
             name="contact"
             layout="vertical"
