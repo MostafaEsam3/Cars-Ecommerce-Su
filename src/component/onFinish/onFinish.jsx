@@ -74,7 +74,6 @@ const ContactForm = () => {
             referrerPolicy="no-referrer-when-downgrade"
           ></iframe>
         </div>
-
         <div className="col-12 col-md-5">
           <Form name="contact" layout="vertical" onFinish={onFinish} autoComplete="off">
             <Form.Item label="الاسم" name="name" rules={[{ required: true, message: "الرجاء إدخال اسمك" }]}>

@@ -3,7 +3,6 @@
 body {
   font-family: 'Cairo', sans-serif;
 }
-
 a{
   text-decoration: none;
 }
@@ -13,4 +12,30 @@ p{
 }
 .dir-ar{
   direction: rtl;
+}
+
+.mainFont{
+  font-family: 'Cairo' !important; 
+}
+
+@media (min-width: 992px) {
+  .modal-lg, .modal-xl {
+      --bs-modal-width: 80% !important;
+      /* height: 50vh !important; */
+      padding: 40px !important;
+
+  }
+}
+.modal-content{
+  --bs-modal-width: 80% !important;
+
+  /* height: 100vh !important; */
+  background-color: #ffffff !important;
+}
+
+.modal {
+  --bs-modal-width: 800px;
+}
+.ant-table-content{
+  font-family:'Cairo' !important ;
 }
