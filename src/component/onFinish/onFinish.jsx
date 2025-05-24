@@ -1,22 +1,67 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Select } from "antd";
+import { Form, Input, Button, Select, message } from "antd";
 import PhoneInput from "react-phone-input-2";
+import axios from "axios"; // ✅ استيراد axios
 import "react-phone-input-2/lib/style.css";
 import "flag-icons/css/flag-icons.min.css";
 
 const ContactForm = () => {
-  const [phone, setPhone] = useState(""); 
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
   const { Option } = Select;
 
-  const onFinish = (values) => {
-    console.log("Form Data:", { ...values, phone });
+  const onFinish = async (values) => {
+    setLoading(true);
+
+    const formData = {
+      name: values.name,
+      email: values.email,
+      phone: phone,
+      type: values.messageType,
+      address: values.messageTitle,
+      message: values.message,
+    };
+
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/Contact-Us", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        
+      });
+
+      console.log("🔹 Response Data:", response.data);
+
+      if (response.status === 200 || response.status === 201) {
+        message.success(response.data.message || "تم إرسال الرسالة بنجاح ✅");
+      } else {
+        message.error("حدث خطأ أثناء إرسال البيانات ❌");
+      }
+    } catch (error) {
+      console.error("❌ Error:", error);
+
+      if (error.response) {
+        // ✅ عرض تفاصيل الخطأ من السيرفر
+        console.log("🔹 Error Response Data:", error.response.data);
+        console.log("🔹 Status Code:", error.response.status);
+        console.log("🔹 Headers:", error.response.headers);
+        message.error(`خطأ: ${error.response.data.message || "حدث خطأ في الطلب"}`);
+      } else if (error.request) {
+        console.log("❌ No Response Received:", error.request);
+        message.error("❌ لم يتم تلقي استجابة من الخادم");
+      } else {
+        console.log("❌ Error Message:", error.message);
+        message.error("❌ خطأ غير متوقع: " + error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="container py-5">
       <h2 className="text-center mb-4">تواصل معنا</h2>
       <div className="row justify-content-between">
-       
         <div className="col-12 col-md-6">
           <iframe
             title="Google Map"
@@ -29,25 +74,12 @@ const ContactForm = () => {
             referrerPolicy="no-referrer-when-downgrade"
           ></iframe>
         </div>
-
-        {/* القسم الأيمن: نموذج التواصل */}
         <div className="col-12 col-md-5">
-          <Form
-            name="contact"
-            layout="vertical"
-            onFinish={onFinish}
-            autoComplete="off"
-          >
-           
-            <Form.Item
-              label="الاسم"
-              name="name"
-              rules={[{ required: true, message: "الرجاء إدخال اسمك" }]}
-            >
+          <Form name="contact" layout="vertical" onFinish={onFinish} autoComplete="off">
+            <Form.Item label="الاسم" name="name" rules={[{ required: true, message: "الرجاء إدخال اسمك" }]}>
               <Input placeholder="ادخل اسمك" />
             </Form.Item>
 
-           
             <Form.Item
               label="البريد الإلكتروني"
               name="email"
@@ -59,39 +91,22 @@ const ContactForm = () => {
               <Input placeholder="example@email.com" />
             </Form.Item>
 
-           
             <Form.Item
-  label="رقم الجوال"
-  name="phone"
-  rules={[
-    { required: true, message: "الرجاء إدخال رقم هاتفك" },
-    {
-      validator: (_, value) =>
-        phone
-          ? Promise.resolve()
-          : Promise.reject("الرجاء إدخال رقم هاتف صالح"),
-    },
-  ]}
->
-  {phone !== null && (
-    <PhoneInput
-      country={"sa"}
-      enableSearch={true}
-      placeholder="أدخل رقم الهاتف"
-      inputStyle={{ width: "100%" }}
-      value={phone}
-      onChange={(value) => setPhone(value)}
-    />
-  )}
-</Form.Item>
-
-
-            
-            <Form.Item
-              label="نوع المراسلة"
-              name="messageType"
-              rules={[{ required: true, message: "الرجاء اختيار نوع المراسلة" }]}
+              label="رقم الجوال"
+              name="phone"
+              rules={[{ required: true, message: "الرجاء إدخال رقم هاتفك" }]}
             >
+              <PhoneInput
+                country={"sa"}
+                enableSearch={true}
+                placeholder="أدخل رقم الهاتف"
+                inputStyle={{ width: "100%" }}
+                value={phone}
+                onChange={(value) => setPhone(value)}
+              />
+            </Form.Item>
+
+            <Form.Item label="نوع المراسلة" name="messageType" rules={[{ required: true, message: "الرجاء اختيار نوع المراسلة" }]}>
               <Select placeholder="اختر نوع المراسلة">
                 <Option value="complaint">شكوى</Option>
                 <Option value="suggestion">اقتراح</Option>
@@ -99,28 +114,17 @@ const ContactForm = () => {
               </Select>
             </Form.Item>
 
-           
-            <Form.Item
-              label="عنوان الرسالة"
-              name="messageTitle"
-              rules={[{ required: true, message: "الرجاء إدخال عنوان الرسالة" }]}
-            >
+            <Form.Item label="عنوان الرسالة" name="messageTitle" rules={[{ required: true, message: "الرجاء إدخال عنوان الرسالة" }]}>
               <Input placeholder="عنوان الرسالة" />
             </Form.Item>
 
-           
-            <Form.Item
-              label="نص الرسالة"
-              name="message"
-              rules={[{ required: true, message: "الرجاء إدخال نص الرسالة" }]}
-            >
+            <Form.Item label="نص الرسالة" name="message" rules={[{ required: true, message: "الرجاء إدخال نص الرسالة" }]}>
               <Input.TextArea rows={4} placeholder="اكتب رسالتك هنا..." />
             </Form.Item>
 
-            
             <Form.Item>
-              <Button type="primary" htmlType="submit" block>
-                إرسال
+              <Button type="primary" htmlType="submit" block loading={loading}>
+                {loading ? "جاري الإرسال..." : "إرسال"}
               </Button>
             </Form.Item>
           </Form>

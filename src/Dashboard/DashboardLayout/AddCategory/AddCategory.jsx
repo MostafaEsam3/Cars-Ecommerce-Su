@@ -13,6 +13,7 @@ import Filtr from '../../../component/Filtration/Filtration';
 import { useFetchData } from '../../../hooks/useFetch';
 import { deleteConfirmation } from '../../../hooks/deleteConfirmation';
 import Swal from 'sweetalert2';
+import Loading from '../../../Shared/Loading/Loading';
 export default function AddCategory() {
     const imageInputRef = useRef(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -21,31 +22,14 @@ export default function AddCategory() {
     const [obj, setobj] = useState({});
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     // const [CategoryData,setCategoryData]=useState([]);
-    const { Data: CategoryData, setData: setCategoryData, fetchData } = useFetchData("http://127.0.0.1:8000/dashboard/categories","categoryData");
+    const { Data: CategoryData, setData: setCategoryData, fetchData,loading } = useFetchData("http://127.0.0.1:8000/dashboard/categories","categoryData");
 
 
 
     const [isOnline, setIsOnline] = useState(true);
   useEffect(() => {
-    function handleOnline() {
-      setIsOnline(true);
-    }
-    function handleOffline() {
-      setIsOnline(false);
-    }
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
+    fetchData()
   }, []);
-
-
-
-
-
-
 
     // const fetchCategoryData=async()=>{
     //     axios.get("http://127.0.0.1:8000/dashboard/categories").then((response)=>{
@@ -154,8 +138,8 @@ export default function AddCategory() {
                 key: 'image',
                 render: (image,{name}) => (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <image
-                            src={ `http://127.0.0.1:8000/storage/Images/categories/${image}`}
+                        <img
+                            src={ `${image}`}
                             alt="avatar"
                             style={{ width: 30, height: 30, borderRadius: '50%', marginRight: 10 }}
                         />
@@ -191,7 +175,7 @@ export default function AddCategory() {
                             <i className="fa fa-pencil"></i>
                         </button>
     
-                            <button className="btn btn-danger ms-2"  onClick={() => deleteConfirmation(id,deleteCategory)}> 
+                            <button className="btn btn-danger mx-2"  onClick={() => deleteConfirmation(id,deleteCategory)}> 
                                 <i className="fa fa-trash"></i>
                             </button>
                     </div>
@@ -200,13 +184,13 @@ export default function AddCategory() {
             },
     
         ];
+        if (loading) return <Loading />; // Show Loading spinner
+
     return (
         <>
-           <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>;
-
-        <h1 className='text-center'>اضافه الاقسام</h1>
+        <h1 className='text-center mainFont'>اضافه الاقسام</h1>
             <form onSubmit={formik.handleSubmit} className='mt-4'>
-                <div className="container-fluid dir-ar">
+                <div className="container-fluid dir-ar mainFont">
                     <div className="col-xs-11 text-center row">
                         <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
                             <label className='fw-bold'>اسم القسم</label>
@@ -267,8 +251,8 @@ export default function AddCategory() {
                         </div>
                         {/* end radio */}
                     </div>
-                    <div className='text-text-center '>
-                    <button type='submit' className='btn btn-danger text-center mt-3'>ارسال</button>
+                    <div className='text-center '>
+                    <button type='submit' className='btn btn- text-center mt-3 col-1'style={{background:"orange"}}>ارسال</button>
                     </div>
                 </div>
             </form>

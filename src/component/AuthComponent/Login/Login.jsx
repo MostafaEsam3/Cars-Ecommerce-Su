@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import sideImage from "./../../../assets/Side Image.svg";
@@ -6,11 +6,13 @@ import google from "./../../../assets/Icon-Google.svg";
 import { Link } from 'react-router-dom';
 
 export default function Login() {
-    // Formik setup
+    const [message, setMessage] = useState(null);
+    const [error, setError] = useState(null);
+
     const formik = useFormik({
         initialValues: {
-            email: 'modtfaaaa',
-            password: 'ahmeddd',
+            email: '',
+            password: '',
         },
         validationSchema: Yup.object({
             email: Yup.string()
@@ -20,17 +22,35 @@ export default function Login() {
                 .min(6, 'Password must be at least 6 characters')
                 .required('Password is required'),
         }),
-        onSubmit: (values) => {
-            console.log('Form Data', values);
+        onSubmit: async (values) => {
+            setMessage(null);
+            setError(null);
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/api/auth/customer/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(values)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    setMessage("تم تسجيل الدخول بنجاح! 🎉");
+                } else {
+                    setError(data.message || "حدث خطأ أثناء تسجيل الدخول.");
+                }
+            } catch (err) {
+                setError("حدث خطأ أثناء الاتصال بالخادم.");
+            }
         },
     });
 
     return (
         <>
-        <div className=''>
-
-     
-            <div className='pt-4 '>
+            <div className='pt-4'>
                 <div className='row p-0 m-0'>
                     {/* Left Section with Image */}
                     <div className='col-12 col-md-6 p-0'>
@@ -47,20 +67,17 @@ export default function Login() {
                     </div>
 
                     {/* Right Section for Login Form */}
-                    <div className='col-12 col-md-6 d-flex align-items-center justify-content-center m-0 gx-0 p-0 text-center text-md-start bg-light-subtle border-1 rounded-2  '>
-                        <form
-                            onSubmit={formik.handleSubmit}
-                            style={{ width: "70%" }}
-                        >
+                    <div className='col-12 col-md-6 d-flex align-items-center justify-content-center m-0 gx-0 p-0 text-center text-md-start bg-light-subtle border-1 rounded-2'>
+                        <form onSubmit={formik.handleSubmit} style={{ width: "70%" }}>
                             <h2>تسجيل الدخول</h2>
                             <p>املا البيانات التاليه</p>
-                            
+
                             {/* Email Field */}
                             <div className='mb-3'>
                                 <input
                                     type='email'
                                     id='email'
-                                    name="email" // Ensure this matches the property name in initialValues
+                                    name="email"
                                     className='form-control'
                                     placeholder='Email'
                                     style={{ border: "none", width: "100%" }}
@@ -78,7 +95,7 @@ export default function Login() {
                                 <input
                                     type='password'
                                     id='password'
-                                    name="password" // Ensure this matches the property name in initialValues
+                                    name="password"
                                     className='form-control'
                                     placeholder='Password'
                                     style={{ border: "none", width: "100%" }}
@@ -105,10 +122,13 @@ export default function Login() {
                                 </button>
                                 <Link style={{ color: "#DB4444" }}>Forget Password?</Link>
                             </div>
+
+                            {/* Success or Error Message */}
+                            {message && <div className="alert alert-success mt-3">{message}</div>}
+                            {error && <div className="alert alert-danger mt-3">{error}</div>}
                         </form>
                     </div>
                 </div>
-            </div>
             </div>
         </>
     );

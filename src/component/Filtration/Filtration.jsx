@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 
 
-export default function Filtr({  data, filtrated ,nameOfSession}) {
+export default function Filtr({ data, filtrated, nameOfSession }) {
   const [brands, setBrands] = useState({
     name: "",
   });
@@ -13,7 +13,7 @@ export default function Filtr({  data, filtrated ,nameOfSession}) {
 
   const handleChange = (e) => {
     const { name, value, id } = e.target;
-     setBrands({ ...brands, [name]: value });
+    setBrands({ ...brands, [name]: value });
   };
 
   // mostafa edit to filter 
@@ -43,58 +43,61 @@ export default function Filtr({  data, filtrated ,nameOfSession}) {
     setFilteredData(filtered);
     filtrated(filtered);
   };
-  
+
   const handleClear = () => {
     setBrands({
       name: "",
     });
 
-    
-        setFilteredData( JSON.parse(sessionStorage.getItem(nameOfSession)));
-        filtrated( JSON.parse(sessionStorage.getItem(nameOfSession)));
-   
-      
-  
+
+    setFilteredData(JSON.parse(sessionStorage.getItem(nameOfSession)));
+    filtrated(JSON.parse(sessionStorage.getItem(nameOfSession)));
+
+
+
   };
 
- 
+
 
   return (
-  <>
+    <>
 
-<div className="col col-12 col-sm-6 col-md-6 col-lg-3 mb-3 ">
-            <label htmlFor="name" className="mb-2">
-              name
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              name="name"
-              id="name"
-              value={brands.name}
-              onChange={(e) => handleChange(e)}
-            />
-          </div>
- <div className="d-flex">
-    <div className="col-2">
-
-  
-           <button
+      <div className="mt-3 mainFont">
+        <div>     
+        <div className="col col-12 col-sm-6 col-md-6 col-lg-3 mb-3 dir-ar">
+          <strong htmlFor="name" className="mb-2">
+            بحث بالاسم
+          </strong>
+          <input
+            type="text"
+            className="form-control"
+            name="name"
+            id="name"
+            value={brands.name}
+            onChange={(e) => handleChange(e)}
+          />
+        </div>
+        <div className="d-flex">
+          <div className="col-2">
+            <button
+            style={{background:"orange",}}
               type="search"
-              className="btn btn-success"
+              className="btn btn-"
               onClick={handleSearch}
             > بحث</button>
-              </div>
-<div className="col-2">
- <button
+          </div>
+          <div className="col-2">
+            <button
               type="clear"
               className="btn btn-secondary"
               onClick={handleClear}
             >
-              <span className="ps-2">clear</span>
+              <span className="ps-2">مسح</span>
             </button>
-            </div>
-            </div>
-  </>
+          </div>
+        </div>
+        </div>
+      </div>
+    </>
   );
 }

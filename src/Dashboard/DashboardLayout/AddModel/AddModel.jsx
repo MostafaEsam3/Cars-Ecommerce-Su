@@ -13,6 +13,8 @@ import { useFetchData } from '../../../hooks/useFetch';
 import Swal from 'sweetalert2';
 import EditModels from '../../../component/Modals/EditModels';
 import { deleteConfirmation } from '../../../hooks/deleteConfirmation';
+import "./add.css"
+import Loading from '../../../Shared/Loading/Loading';
 export default function AddModel() {
     const imageInputRef = useRef(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -20,15 +22,24 @@ export default function AddModel() {
     const [modalType, setModalType] = useState(""); // لتحديد إذا كانت الرسالة فشل أم نجاح
     const [obj, setobj] = useState({});
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
     // const [CategoryData,setCategoryData]=useState([]);
-    const { Data: ModelData, setData: setModelData, fetchData: fetchModels } = useFetchData("http://127.0.0.1:8000/dashboard/models", "modelData");
+    const { Data: ModelData, setData: setModelData, fetchData: fetchModels ,loading} = useFetchData("http://127.0.0.1:8000/dashboard/models", "modelData");
 
     const { Data: BrandData, setData: setBrandData, fetchData : fetchbrand } = useFetchData("http://127.0.0.1:8000/dashboard/brands", "brandData");
 
     const [isOnline, setIsOnline] = useState(true);
     useEffect(() => {
-        fetchModels()
-        function handleOnline() {
+        fetchbrand()
+
+        const fetchData = async () => {
+            setIsLoading(true);
+            await fetchModels();
+            setIsLoading(false);
+        };
+        fetchData();     
+           function handleOnline() {
             setIsOnline(true);
         }
         function handleOffline() {
@@ -213,7 +224,7 @@ export default function AddModel() {
                         <i className="fa fa-pencil"></i>
                     </button>
 
-                    <button className="btn btn-danger ms-2"  onClick={() => deleteConfirmation(id,deleteModel)}>
+                    <button className="btn btn-danger mx-2"  onClick={() => deleteConfirmation(id,deleteModel)}>
                         <i className="fa fa-trash"></i>
                     </button>
                 </div>
@@ -222,14 +233,21 @@ export default function AddModel() {
         },
 
     ];
+    if (loading) return <Loading />; // Show Loading spinner
 
     return (
         <>
+         {/* Loading Layer */}
+         {isLoading && (
+                <div className="loading-overlay">
+                    <div className="spinner"></div>
+                    <p>جارِ تحميل البيانات...</p>
+                </div>
+            )}
             <DeleteModal />
-            <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>;
-            <h1 className='text-center'>اضافه الموديلات</h1>
+            <h1 className='text-center mainFont'>اضافه الموديلات</h1>
             <form onSubmit={formik.handleSubmit} className='mt-4'>
-                <div className="container-fluid dir-ar">
+                <div className="container-fluid dir-ar mainFont">
                     <div className="col-xs-11 text-center row">
                         <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
                             <label className='fw-bold'>اسم القسم</label>
@@ -357,8 +375,8 @@ export default function AddModel() {
                             ) : null}
                         </div>
                     </div>
-                    <div className='text-text-center '>
-                        <button type='submit' className='btn btn-danger text-center mt-3'>ارسال</button>
+                    <div className='text-center '>
+                        <button type='submit' className='btn btn- text-center mt-3 col-1'style={{background:"orange"}}>ارسال</button>
                     </div>
                 </div>
             </form>

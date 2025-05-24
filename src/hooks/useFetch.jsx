@@ -1,23 +1,29 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const useFetchData = (url,sessionnNameToStore) => {
     const [Data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const fetchData = async () => {
+
+    const fetchData =  useCallback(async () => {
         try {
             const response = await axios.get(url);
-            // console.log(response);
-            setData(response.data.data);
+            console.log(response);
+            setData(response.data.data || []);
             sessionStorage.setItem(sessionnNameToStore, JSON.stringify(response.data.data));
+            setLoading(false);
+            
         } catch (err) {
             console.log(err);
-        }
-    };
+            setLoading(false);
 
-    useEffect(() => {
-        fetchData();
+        }
     }, [url]);
 
-    return { Data, setData, fetchData };  
+    // useEffect(() => {
+    //     fetchData();
+    // }, [url]);
+
+    return { Data, setData, fetchData ,loading};  
 }

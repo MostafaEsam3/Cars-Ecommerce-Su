@@ -13,6 +13,7 @@ import Filtr from '../../../component/Filtration/Filtration';
 import { Notify, NotifyError } from '../../../component/Modals/Alert';
 import { useFetchData } from '../../../hooks/useFetch';
 import Swal from 'sweetalert2';
+import Loading from '../../../Shared/Loading/Loading';
 
 export default function AddBrand() {
     const imgInputRef = useRef(null);
@@ -22,7 +23,7 @@ export default function AddBrand() {
     const [selectedBrandId, setSelectedBrandId] = useState(null);
     const [obj, setobj] = useState({});
     // const [BrandData, setBrandData] = useState([])
- const { Data: BrandData, setData: setBrandData, fetchData } = useFetchData("http://127.0.0.1:8000/dashboard/brands","brandData");
+ const { Data: BrandData, setData: setBrandData, fetchData,loading } = useFetchData("http://127.0.0.1:8000/dashboard/brands","brandData");
     useEffect(()=>{
        fetchData();
     },[])
@@ -154,7 +155,7 @@ export default function AddBrand() {
             key: 'id',
             render: (id,{name,image}) => (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <button className="btn btn-success" data-bs-toggle="modal" data-bs-target="#editBrand" onClick={() => collectedDataToEdit(id,
+                    <button  className="btn btn-success" data-bs-toggle="modal" data-bs-target="#editBrand" onClick={() => collectedDataToEdit(id,
                     {"name":name,
                     "image":image,
                      id:id
@@ -163,7 +164,7 @@ export default function AddBrand() {
                         } >
                         <i className="fa fa-pencil"></i>
                     </button>
-                        <button className="btn btn-danger ms-2"  onClick={() => deleteCategoryWithConfirmation(id)}> 
+                        <button className="btn btn-danger mx-2"  onClick={() => deleteCategoryWithConfirmation(id)}> 
                             <i className="fa fa-trash"></i>
                         </button>
                 </div>
@@ -197,13 +198,15 @@ export default function AddBrand() {
               Swal.fire('خطأ!', 'حدث خطأ أثناء الحذف. يرجى المحاولة مرة أخرى', 'error');
             }
           };
+          if (loading) return <Loading />; // Show Loading spinner
+
     return (
         <>
         {/* tost delete modala */}
         <DeleteModal/>
-            <h1 className='text-center'>اضافه البراندات</h1>
-            <form onSubmit={formik.handleSubmit} className='mt-3'>
-                <div className="container-fluid dir-ar">
+            <h1 className='text-center mainFont'>اضافه البراندات</h1>
+            <form onSubmit={formik.handleSubmit} className='mt-3 mainFont'>
+                <div className="container-fluid dir-ar mainFont">
                     <div className="col-xs-11 text-center row">
                         <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
                             <label className='fw-bold'>اسم البراند</label>
@@ -235,8 +238,8 @@ export default function AddBrand() {
                             ) : null}
                         </div>
                     </div>
-                    <div className='text-text-center '>
-                        <button type='submit' className='btn btn-danger text-center mt-3'>ارسال</button>
+                    <div className='text-center '>
+                        <button type='submit' className='btn btn- text-center mt-3 col-1'style={{background:"orange"}}>ارسال</button>
                     </div>
                 </div>
             </form>
@@ -257,7 +260,7 @@ export default function AddBrand() {
 {/* component of filtration  */}
  <Filtr data={BrandData} filtrated={setBrandData} orig={BrandData} nameOfSession={'brandData'}/>
 <div className='mt-3'>
- <Table  pagination={BrandData.length > 5 ? { pageSize: 5 } :false} dataSource={BrandData} columns={columns} />
+ <Table  pagination={BrandData?.length > 5 ? { pageSize: 5 } :false} dataSource={BrandData} columns={columns} />
 </div>
 
             {/* <button className='btn btn-light' >اضغط لمشاهده الفيديدو</button> */}
