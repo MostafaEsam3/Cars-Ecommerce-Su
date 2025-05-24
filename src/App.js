@@ -26,6 +26,8 @@ import JoinUs from './component/Product/JoinUs.jsx';
 import LuxuryCover from './component/Product/Cover/LuxuryCover.jsx';
 import { FaGlassMartini } from 'react-icons/fa';
 import { setNestedObjectValues } from 'formik';
+import AdminLogin from './component/AuthComponent-Dachboord/AdminLogin.jsx';
+import ProtectedRoute from './component/AuthComponent-Dachboord/ProtectedRoute.jsx';
 const DashboardLayout = React.lazy(() => import('./Dashboard/DashboardLayout/DashboardLayout'));
 const Cart = React.lazy(() => import('./component/Cart/Cart'));
 
@@ -34,6 +36,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+      <Route path="/admin-login" element={<AdminLogin />} />
+
         {/* Main Layout with Nested Routes */}
         <Route path="/" element={<Layout />}>
            {/* Main Layout with Nested Routes */}
@@ -42,14 +46,22 @@ function App() {
           <Route path="contactForm" element={<ContactForm />} />
           <Route path="login" element={<Login />} />
           {/* <Route path="cart" element={<Cart />} /> */}
-          <Route
+          {/* <Route
             path="cart  "
             element={
               <Suspense fallback={<div>Loading...</div>}>
                 <Cart />
               </Suspense>
             }
-          />
+          /> */}
+          <Route
+  path="cart"
+  element={
+    <Suspense fallback={<div>Loading...</div>}>
+      <Cart />
+    </Suspense>
+  }
+/>
           <Route path="checkout" element={<Checkout />} />
           <Route path="checkout1" element={<Checkout1 />} />
           <Route path="about" element={<About />} />
@@ -64,14 +76,17 @@ function App() {
 
         
        
-       <Route 
-          path="/admin-dashboard/*" 
-          element={
-            <Suspense fallback={<div>Loading...</div>}>
-              <DashboardLayout />
-            </Suspense>
-          } 
-        />       </Routes>
+        <Route 
+  path="/admin-dashboard/*" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<div>Loading...</div>}>
+        <DashboardLayout />
+      </Suspense>
+    </ProtectedRoute>
+  }
+/>
+    </Routes>
     </BrowserRouter>
   );
 }
