@@ -22,7 +22,7 @@ function AdminLogin() {
         className="card p-4 shadow"
         style={{ maxWidth: "400px", width: "100%" }}
       >
-        <h3 className="text-center mb-4">تسجيل الدخول للوحة التحكم</h3>
+        <h3 className="text-center mb-4 login_header">تسجيل الدخول للوحة التحكم</h3>
         {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">

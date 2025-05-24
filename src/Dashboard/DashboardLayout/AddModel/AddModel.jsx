@@ -66,15 +66,22 @@ export default function AddModel() {
                 }
             );
             console.log(response, "تم ارسال البيانات بنجاح");
-            setModalType("success");
-            setModalMessage("تم إرسال البيانات بنجاح!");
-            setModalVisible(true);
+            // setModalType("success");
+            // setModalMessage("تم إرسال البيانات بنجاح!");
+            // setModalVisible(true);
+            Swal.fire("تم ارسال البيانات بنجاح")
+
             // fetchCategoryData()
             fetchModels();
         } catch (error) {
             console.log(error);
-            setModalType("failure");
-            setModalVisible(true);
+            // setModalType("failure");
+            // setModalVisible(true);
+            Swal.fire({
+                icon: 'error',
+                title: 'خطأ',
+                text: 'خطأ في إرسال البيانات',
+            });
         }
     };
     // fn validation input 
@@ -397,7 +404,9 @@ export default function AddModel() {
             <Filtr data={ModelData} filtrated={setModelData} nameOfSession={'modelData'} />
 
             <div className='mt-3'>
-                <Table pagination={ModelData?.length > 5 ? { pageSize: 5 } : false} dataSource={ModelData} columns={columns} />
+                {Array.isArray(ModelData) && (
+                    <Table pagination={ModelData?.length > 5 ? { pageSize: 5 } : false} dataSource={ModelData} columns={columns} />
+                )}
             </div>
             {/* modal to delete and edit  */}
             <DeleteModal idModal={"deletModel"} deleteFn={deleteModel} />

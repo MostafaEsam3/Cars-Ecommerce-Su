@@ -60,14 +60,20 @@ export default function AddProduct() {
                 }
             );
             console.log(response, "تم ارسال البيانات بنجاح");
-            setModalType("success");
-            setModalMessage("تم إرسال البيانات بنجاح!");
-            setModalVisible(true);
+            // setModalType("success");
+            // setModalMessage("تم إرسال البيانات بنجاح!");
+            // setModalVisible(true);
+            Swal.fire("تم ارسال البيانات بنجاح")
            fetchProduct()
         } catch (error) {
             console.log(error); 
-            setModalType("failure");
-            setModalVisible(true);
+            // setModalType("failure");
+            // setModalVisible(true
+            Swal.fire({
+                icon: 'error',
+                title: 'خطأ',
+                text: error?.response?.data?.message ||  'خطأ في إرسال البيانات' ,
+              });
         }
     };
 
@@ -340,10 +346,15 @@ export default function AddProduct() {
 
  <Filtr data={ProductData} filtrated={setProductData} nameOfSession={'panelingsData'}/>
 
-<div className='mt-3'>
- <Table  pagination={ProductData?.length > 5 ? { pageSize: 5 } :false} dataSource={ProductData} columns={columns} />
-</div>
-
+            <div className="mt-3">
+                {Array.isArray(ProductData) && (
+                    <Table
+                        pagination={ProductData.length > 5 ? { pageSize: 5 } : false}
+                        dataSource={ProductData}
+                        columns={columns}
+                    />
+                )}
+            </div>
         <EditProduct i={obj}  typeOf={"panelings"} idModal={"editPanelings"} fetchBrand={fetchProduct}/>
         </>
     );

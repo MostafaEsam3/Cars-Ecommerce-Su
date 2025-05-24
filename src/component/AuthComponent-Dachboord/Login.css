@@ -1,13 +1,13 @@
-body {
+/* body {
     background: linear-gradient(to right, #6a11cb, #2575fc);
     font-family: 'Cairo', sans-serif;
   }
-  
+   */
   .card {
     border-radius: 15px;
   }
   
-  h3 {
+  .login_header {
     color: #333;
   }
   

@@ -54,7 +54,9 @@ const ContactUsDashboard = () => {
         <>
             <h1 className='text-center mainFont'>بيانات الاشخاص المتصله معنا </h1>
             <div className='mt-3' style={{ direction: "rtl" }}>
-                <Table pagination={ContuctUsData?.length > 5 ? { pageSize: 5 } : false} dataSource={ContuctUsData} columns={columns} />
+                {Array.isArray(ContuctUsData) && (
+                    <Table pagination={ContuctUsData?.length > 5 ? { pageSize: 5 } : false} dataSource={ContuctUsData} columns={columns} />
+                )}
             </div>
 
 

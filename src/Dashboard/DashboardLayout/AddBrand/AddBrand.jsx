@@ -23,10 +23,10 @@ export default function AddBrand() {
     const [selectedBrandId, setSelectedBrandId] = useState(null);
     const [obj, setobj] = useState({});
     // const [BrandData, setBrandData] = useState([])
- const { Data: BrandData, setData: setBrandData, fetchData,loading } = useFetchData("http://127.0.0.1:8000/dashboard/brands","brandData");
-    useEffect(()=>{
-       fetchData();
-    },[])
+    const { Data: BrandData, setData: setBrandData, fetchData, loading } = useFetchData("http://127.0.0.1:8000/dashboard/brands", "brandData");
+    useEffect(() => {
+        fetchData();
+    }, [])
 
     // function add category 
     const addBrand = async (data) => {
@@ -47,13 +47,13 @@ export default function AddBrand() {
             // setModalMessage("تم إرسال البيانات بنجاح!");
             // عرض المودال بعد الإرسال الناجح
             // setModalVisible(true);
-           fetchData()
+            fetchData()
 
         } catch (error) {
             console.error(error);
             // إذا حصل خطأ، نعرض رسالة الفشل
             setModalType("failure");
-            setModalMessage( error.response.data.message);
+            setModalMessage(error.response.data.message);
             // عرض المودال بعد الخطأ
             setModalVisible(true);
         }
@@ -95,41 +95,41 @@ export default function AddBrand() {
         document.querySelectorAll(".modal-backdrop")
             .forEach(el => el.classList.remove("modal-backdrop"));
     }
- 
+
     const deleteBrand = async (id) => {
         console.log(selectedBrandId);
-        
+
         try {
             const response = await axios.delete(
-                `http://127.0.0.1:8000/dashboard/brands/${id}`,               {
-                    headers: {
-                       'Accept': 'application/json, text/plain, */*',
-                    }
+                `http://127.0.0.1:8000/dashboard/brands/${id}`, {
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
                 }
+            }
             );
             console.log(response, "تم ارسال البيانات بنجاح");
             removeModaleAfterSubmit()
-           fetchData()
+            fetchData()
             Notify("تم المسح بنجاح")
         } catch (error) {
             console.error(error);
             NotifyError(error.response.data.message)
-    };
+        };
     }
-    const collectedDataToEdit=(id,obj)=>{
-    setSelectedBrandId(id)
-       setobj(obj)
+    const collectedDataToEdit = (id, obj) => {
+        setSelectedBrandId(id)
+        setobj(obj)
     }
-      
+
     const columns = [
         {
             title: 'image',
             dataIndex: 'image',
             key: 'image',
-            render: (image,{name}) => (
+            render: (image, { name }) => (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <img
-                        src={ `http://127.0.0.1:8000/storage/Images/Brands/${image}`}
+                        src={`http://127.0.0.1:8000/storage/Images/Brands/${image}`}
                         alt="avatar"
                         style={{ width: 30, height: 30, borderRadius: '50%', marginRight: 10 }}
                     />
@@ -148,34 +148,35 @@ export default function AddBrand() {
             dataIndex: 'name',
             key: 'name',
         },
-        
+
         {
             title: 'update',
             dataIndex: 'id',
             key: 'id',
-            render: (id,{name,image}) => (
+            render: (id, { name, image }) => (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <button  className="btn btn-success" data-bs-toggle="modal" data-bs-target="#editBrand" onClick={() => collectedDataToEdit(id,
-                    {"name":name,
-                    "image":image,
-                     id:id
-                }
-                        )
-                        } >
+                    <button className="btn btn-success" data-bs-toggle="modal" data-bs-target="#editBrand" onClick={() => collectedDataToEdit(id,
+                        {
+                            "name": name,
+                            "image": image,
+                            id: id
+                        }
+                    )
+                    } >
                         <i className="fa fa-pencil"></i>
                     </button>
-                        <button className="btn btn-danger mx-2"  onClick={() => deleteCategoryWithConfirmation(id)}> 
-                            <i className="fa fa-trash"></i>
-                        </button>
+                    <button className="btn btn-danger mx-2" onClick={() => deleteCategoryWithConfirmation(id)}>
+                        <i className="fa fa-trash"></i>
+                    </button>
                 </div>
             ),
 
         },
 
     ];
-      const deleteCategoryWithConfirmation = async (id) => {
-            try {
-              const result = await Swal.fire({
+    const deleteCategoryWithConfirmation = async (id) => {
+        try {
+            const result = await Swal.fire({
                 title: 'هل أنت متأكد؟',
                 text: "لن تتمكن من استرجاع هذا العنصر!",
                 icon: 'warning',
@@ -183,27 +184,27 @@ export default function AddBrand() {
                 confirmButtonText: 'نعم، احذف',
                 cancelButtonText: 'لا، إلغاء',
                 reverseButtons: true  // تغيير ترتيب الأزرار ليكون الـ "نعم" بعد "لا"
-              });
-              if (result.isConfirmed) {
-                  setSelectedBrandId(id)
+            });
+            if (result.isConfirmed) {
+                setSelectedBrandId(id)
                 // إذا وافق المستخدم على الحذف
                 await deleteBrand(id);  // استدعاء دالة الحذف التي تريدها
                 Swal.fire('تم الحذف!', 'تم حذف العنصر بنجاح', 'success');  // عرض رسالة النجاح بعد الحذف
-              } else {
+            } else {
                 // إذا تم إلغاء الحذف
                 Swal.fire('تم الإلغاء', 'لم يتم حذف العنصر', 'info');
-              }
-            } catch (error) {
-              // في حال حدوث خطأ أثناء الحذف
-              Swal.fire('خطأ!', 'حدث خطأ أثناء الحذف. يرجى المحاولة مرة أخرى', 'error');
             }
-          };
-          if (loading) return <Loading />; // Show Loading spinner
+        } catch (error) {
+            // في حال حدوث خطأ أثناء الحذف
+            Swal.fire('خطأ!', 'حدث خطأ أثناء الحذف. يرجى المحاولة مرة أخرى', 'error');
+        }
+    };
+    if (loading) return <Loading />; // Show Loading spinner
 
     return (
         <>
-        {/* tost delete modala */}
-        <DeleteModal/>
+            {/* tost delete modala */}
+            <DeleteModal />
             <h1 className='text-center mainFont'>اضافه البراندات</h1>
             <form onSubmit={formik.handleSubmit} className='mt-3 mainFont'>
                 <div className="container-fluid dir-ar mainFont">
@@ -228,7 +229,7 @@ export default function AddBrand() {
                                 className="form-control"
                                 required
                                 name='image'
-                                ref={imgInputRef}  
+                                ref={imgInputRef}
                                 onChange={(event) => {
                                     formik.setFieldValue("image", event.target.files[0]);
                                 }}
@@ -239,7 +240,7 @@ export default function AddBrand() {
                         </div>
                     </div>
                     <div className='text-center '>
-                        <button type='submit' className='btn btn- text-center mt-3 col-1'style={{background:"orange"}}>ارسال</button>
+                        <button type='submit' className='btn btn- text-center mt-3 col-1' style={{ background: "orange" }}>ارسال</button>
                     </div>
                 </div>
             </form>
@@ -257,15 +258,17 @@ export default function AddBrand() {
                     </div>
                 </div>
             )}
-{/* component of filtration  */}
- <Filtr data={BrandData} filtrated={setBrandData} orig={BrandData} nameOfSession={'brandData'}/>
-<div className='mt-3'>
- <Table  pagination={BrandData?.length > 5 ? { pageSize: 5 } :false} dataSource={BrandData} columns={columns} />
-</div>
+            {/* component of filtration  */}
+            <Filtr data={BrandData} filtrated={setBrandData} orig={BrandData} nameOfSession={'brandData'} />
+            <div className='mt-3'>
+                {Array.isArray(BrandData) && (
+                    <Table pagination={BrandData?.length > 5 ? { pageSize: 5 } : false} dataSource={BrandData} columns={columns} />
+                )}
+            </div>
 
             {/* <button className='btn btn-light' >اضغط لمشاهده الفيديدو</button> */}
             <DeleteModal idModal={"deletemodalbrand"} deleteFn={deleteBrand} />
-            <EditModal i={obj} typeOf={"brands"} idModal={"editBrand"} fetchBrand={fetchData} nameOfImage={"image"}/>
+            <EditModal i={obj} typeOf={"brands"} idModal={"editBrand"} fetchBrand={fetchData} nameOfImage={"image"} />
         </>
     );
 }
