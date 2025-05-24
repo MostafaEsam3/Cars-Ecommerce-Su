@@ -81,7 +81,9 @@ const Order = () => {
         <>
             <h1 className='text-center mainFont'>تتبع الاوردرات</h1>
             <div className='mt-3' style={{ direction: "rtl" }}>
-                <Table pagination={OrderData?.length > 5 ? { pageSize: 5 } : false} dataSource={OrderData} columns={columns} />
+                {Array.isArray(OrderData) && (
+                    <Table pagination={OrderData?.length > 5 ? { pageSize: 5 } : false} dataSource={OrderData} columns={columns} />
+                )}
             </div>
 
 

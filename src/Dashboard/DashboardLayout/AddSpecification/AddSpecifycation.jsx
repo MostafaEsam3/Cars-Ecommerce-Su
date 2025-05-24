@@ -56,9 +56,14 @@ export default function AddSpecification() {
 
         } catch (error) {
             console.error(error);
-            setModalType("failure");
-            setModalMessage(error.response.data.message);
-            setModalVisible(true);
+            // setModalType("failure");
+            // setModalMessage(error.response.data.message);
+            // setModalVisible(true);
+            Swal.fire({
+                icon: 'error',
+                title: 'خطأ',
+                text: 'خطأ في إرسال البيانات',
+            });
         }
     };
 
@@ -366,7 +371,9 @@ export default function AddSpecification() {
             {/* component of filtration  */}
             <Filtr data={SpecifyData} filtrated={setSpecifyData} orig={SpecifyData} nameOfSession={'specificationsData'} />
             <div className='mt-3' style={{ direction: "rtl" }}>
-                <Table pagination={memoizedDataSource?.length > 5 ? { pageSize: 5 } : false} dataSource={memoizedDataSource} columns={memoizedColumns} />
+                {Array.isArray(memoizedDataSource) && (
+                    <Table pagination={memoizedDataSource?.length > 5 ? { pageSize: 5 } : false} dataSource={memoizedDataSource} columns={memoizedColumns} />
+                )}
             </div>
 
 
