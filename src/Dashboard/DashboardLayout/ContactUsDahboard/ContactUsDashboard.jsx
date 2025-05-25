@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import Loading from '../../../Shared/Loading/Loading';
 
 const ContactUsDashboard = () => {
-    const { Data: ContuctUsData, setData: setContuctUsData, fetchData } = useFetchData("http://127.0.0.1:8000/dashboard/contact-us", "ContactUs");
+    const { Data: ContuctUsData, setData: setContuctUsData, fetchData } = useFetchData("dashboard/contact-us", "ContactUs");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

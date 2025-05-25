@@ -23,7 +23,7 @@ export default function AddBrand() {
     const [selectedBrandId, setSelectedBrandId] = useState(null);
     const [obj, setobj] = useState({});
     // const [BrandData, setBrandData] = useState([])
-    const { Data: BrandData, setData: setBrandData, fetchData, loading } = useFetchData("http://127.0.0.1:8000/dashboard/brands", "brandData");
+    const { Data: BrandData, setData: setBrandData, fetchData, loading } = useFetchData("dashboard/brands", "brandData");
     useEffect(() => {
         fetchData();
     }, [])

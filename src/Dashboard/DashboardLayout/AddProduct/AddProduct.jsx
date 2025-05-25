@@ -17,6 +17,7 @@ import { genBaseStyle } from 'antd/es/alert/style';
 import { useAsyncError } from 'react-router-dom';
 import EditProduct from '../../../component/Modals/EditProduct';
 import Loading from '../../../Shared/Loading/Loading';
+import axiosInstance from '../../../util/interceptor';
 
 export default function AddProduct() {
     const imageInputRef = useRef(null);
@@ -25,8 +26,8 @@ export default function AddProduct() {
     const [modalType, setModalType] = useState(""); // لتحديد إذا كانت الرسالة فشل أم نجاح
     const [obj, setobj] = useState({});
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-    const { Data:ProductData, setData: setProductData, fetchData:fetchProduct,loading } = useFetchData("http://127.0.0.1:8000/dashboard/panelings","panelingsData");
-    const { Data: CategoryData, setData: setCategoryData, fetchData :fetchCategory } = useFetchData("http://127.0.0.1:8000/dashboard/categories","categoryData");
+    const { Data:ProductData, setData: setProductData, fetchData:fetchProduct,loading } = useFetchData("dashboard/panelings","panelingsData");
+    const { Data: CategoryData, setData: setCategoryData, fetchData :fetchCategory } = useFetchData("dashboard/categories","categoryData");
 
 
 
@@ -50,8 +51,8 @@ export default function AddProduct() {
     // function add category 
     const addProduct = async (data) => {
         try {
-            const response = await axios.post(
-                'http://127.0.0.1:8000/dashboard/panelings',  // تأكد من المسار الصحيح
+            const response = await axiosInstance.post(
+                '/dashboard/panelings',  // تأكد من المسار الصحيح
                 data,  // البيانات التي تريد إرسالها
                 {
                     headers: {
@@ -134,8 +135,8 @@ export default function AddProduct() {
      
         const deleteProduct = async (id) => {
             try {
-                const response = await axios.delete(
-                    `http://127.0.0.1:8000/dashboard/panelings/${id}`,               {
+                const response = await axiosInstance.delete(
+                    `dashboard/panelings/${id}`,               {
                         headers: {
                            'Accept': 'application/json, text/plain, */*',
                         }
