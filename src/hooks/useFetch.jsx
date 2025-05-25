@@ -1,29 +1,53 @@
-import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+// import axios from "axios";
+// import { useCallback, useEffect, useState } from "react";
 
-export const useFetchData = (url,sessionnNameToStore) => {
+// export const useFetchData = (url,sessionnNameToStore) => {
+//     const [Data, setData] = useState([]);
+//     const [loading, setLoading] = useState(true);
+
+
+//     const fetchData =  useCallback(async () => {
+//         try {
+//             const response = await axios.get(url);
+//             console.log(response);
+//             setData(response.data.data || []);
+//             sessionStorage.setItem(sessionnNameToStore, JSON.stringify(response.data.data));
+//             setLoading(false);
+            
+//         } catch (err) {
+//             console.log(err);
+//             setLoading(false);
+
+//         }
+//     }, [url]);
+
+//     // useEffect(() => {
+//     //     fetchData();
+//     // }, [url]);
+
+//     return { Data, setData, fetchData ,loading};  
+// }
+
+// useFetchData.js
+import { useCallback, useState } from "react";
+import axiosInstance from "../util/interceptor";
+
+export const useFetchData = (url, sessionnNameToStore) => {
     const [Data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
 
-
-    const fetchData =  useCallback(async () => {
+    const fetchData = useCallback(async () => {
         try {
-            const response = await axios.get(url);
+            const response = await axiosInstance.get(url); // ✅ Use interceptor-based axios
             console.log(response);
             setData(response.data.data || []);
             sessionStorage.setItem(sessionnNameToStore, JSON.stringify(response.data.data));
             setLoading(false);
-            
         } catch (err) {
             console.log(err);
             setLoading(false);
-
         }
     }, [url]);
 
-    // useEffect(() => {
-    //     fetchData();
-    // }, [url]);
-
-    return { Data, setData, fetchData ,loading};  
-}
+    return { Data, setData, fetchData, loading };
+};

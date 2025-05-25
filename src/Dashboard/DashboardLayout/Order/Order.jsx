@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import Loading from '../../../Shared/Loading/Loading';
 
 const Order = () => {
-    const { Data: OrderData, setData: setOrderData, fetchData } = useFetchData("http://127.0.0.1:8000/dashboard/orders", "OrderData");
+    const { Data: OrderData, setData: setOrderData, fetchData } = useFetchData("dashboard/orders", "OrderData");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

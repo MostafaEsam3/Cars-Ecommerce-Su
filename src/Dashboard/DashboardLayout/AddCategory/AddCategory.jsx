@@ -14,6 +14,7 @@ import { useFetchData } from '../../../hooks/useFetch';
 import { deleteConfirmation } from '../../../hooks/deleteConfirmation';
 import Swal from 'sweetalert2';
 import Loading from '../../../Shared/Loading/Loading';
+import axiosInstance from '../../../util/interceptor';
 export default function AddCategory() {
     const imageInputRef = useRef(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -22,7 +23,7 @@ export default function AddCategory() {
     const [obj, setobj] = useState({});
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     // const [CategoryData,setCategoryData]=useState([]);
-    const { Data: CategoryData, setData: setCategoryData, fetchData, loading } = useFetchData("http://127.0.0.1:8000/dashboard/categories", "categoryData");
+    const { Data: CategoryData, setData: setCategoryData, fetchData, loading } = useFetchData("dashboard/categories", "categoryData");
 
 
 
@@ -32,7 +33,7 @@ export default function AddCategory() {
     }, []);
 
     // const fetchCategoryData=async()=>{
-    //     axios.get("http://127.0.0.1:8000/dashboard/categories").then((response)=>{
+    //     axios.get("dashboard/categories").then((response)=>{
     //         console.log(response);
     //         setCategoryData(response.data.data)
     //         sessionStorage.setItem('categoryData', JSON.stringify(response.data.data));
@@ -44,8 +45,8 @@ export default function AddCategory() {
     // function add category 
     const addCategory = async (data) => {
         try {
-            const response = await axios.post(
-                'http://127.0.0.1:8000/dashboard/categories',  // تأكد من المسار الصحيح
+            const response = await axiosInstance.post(
+                'dashboard/categories',  // تأكد من المسار الصحيح
                 data,  // البيانات التي تريد إرسالها
                 {
                     headers: {
@@ -88,10 +89,13 @@ export default function AddCategory() {
                 .test('fileType', 'يرجى رفع ملف صحيح', (value) => value != null) // التأكد من وجود الملف
         }),
         onSubmit: (values, { resetForm }) => {
+            
             const formData = new FormData();
             formData.append('name', values.name);  // إضافة النص (الاسم)
             formData.append('image', values.image);  // إضافة الصورة أو الملف
             formData.append('status', values.status);
+            console.log(formData.get('image'), "formData.get('image')");
+            
 
             addCategory(formData);  // إرسال FormData إلى الـ API
             // إعادة تعيين النموذج بعد الإرسال
@@ -119,8 +123,8 @@ export default function AddCategory() {
 
     const deleteCategory = async (id) => {
         try {
-            const response = await axios.delete(
-                `http://127.0.0.1:8000/dashboard/categories/${id}`, {
+            const response = await axiosInstance.delete(
+                `dashboard/categories/${id}`, {
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
                 }

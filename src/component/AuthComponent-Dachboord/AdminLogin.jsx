@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Login.css";
+import axios from "axios";
+import axiosInstance from "../../util/interceptor";
 
 function AdminLogin() {
   const navigate = useNavigate();
@@ -9,9 +11,43 @@ function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const login = async () => {
+    try {
+      const response = await axiosInstance.post(
+        "dashboard/login",
+        {
+          mobile: "01066056969",
+          password: "delivery1234"
+        },
+        {
+          headers: {
+            "Accept": "application/json"
+          }
+        }
+      );
+
+      console.log("Login Response:", response);
+
+      const token = response.data?.token;
+      console.log("Received Token:", token);
+      
+
+      if (token) {
+        localStorage.setItem("authToken", token); // 🔐 Store token for interceptor use
+        console.log("Token saved to localStorage");
+      } else {
+        console.warn("No token received from response");
+      }
+
+    } catch (error) {
+      console.error("Login Error:", error);
+    }
+  };
+
+
   const handleSubmit = (e) => {
+    login();
     e.preventDefault();
-    // إلغاء الشرط مؤقتًا
     localStorage.setItem("isAuthenticated", "true");
     navigate("/admin-dashboard");
   };
@@ -22,6 +58,7 @@ function AdminLogin() {
         className="card p-4 shadow"
         style={{ maxWidth: "400px", width: "100%" }}
       >
+        
         <h3 className="text-center mb-4 login_header">تسجيل الدخول للوحة التحكم</h3>
         {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleSubmit}>

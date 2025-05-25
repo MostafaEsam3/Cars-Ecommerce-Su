@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useFormik } from 'formik';
 import React, { useState, useRef } from 'react';
 import * as Yup from 'yup';
@@ -15,6 +14,7 @@ import EditModels from '../../../component/Modals/EditModels';
 import { deleteConfirmation } from '../../../hooks/deleteConfirmation';
 import "./add.css"
 import Loading from '../../../Shared/Loading/Loading';
+import axiosInstance from '../../../util/interceptor';
 export default function AddModel() {
     const imageInputRef = useRef(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -25,9 +25,9 @@ export default function AddModel() {
     const [isLoading, setIsLoading] = useState(true);
 
     // const [CategoryData,setCategoryData]=useState([]);
-    const { Data: ModelData, setData: setModelData, fetchData: fetchModels ,loading} = useFetchData("http://127.0.0.1:8000/dashboard/models", "modelData");
+    const { Data: ModelData, setData: setModelData, fetchData: fetchModels ,loading} = useFetchData("dashboard/models", "modelData");
 
-    const { Data: BrandData, setData: setBrandData, fetchData : fetchbrand } = useFetchData("http://127.0.0.1:8000/dashboard/brands", "brandData");
+    const { Data: BrandData, setData: setBrandData, fetchData : fetchbrand } = useFetchData("dashboard/brands", "brandData");
 
     const [isOnline, setIsOnline] = useState(true);
     useEffect(() => {
@@ -56,8 +56,8 @@ export default function AddModel() {
     // function add category 
     const addModel = async (data) => {
         try {
-            const response = await axios.post(
-                'http://127.0.0.1:8000/dashboard/models',  // تأكد من المسار الصحيح
+            const response = await axiosInstance.post(
+                'dashboard/models',  // تأكد من المسار الصحيح
                 data,  // البيانات التي تريد إرسالها
                 {
                     headers: {
@@ -143,8 +143,8 @@ export default function AddModel() {
 
     const deleteModel = async (id) => {
         try {
-            const response = await axios.delete(
-                `http://127.0.0.1:8000/dashboard/models/${id}`, {
+            const response = await axiosInstance.delete(
+                `dashboard/models/${id}`, {
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
                 }
@@ -169,7 +169,7 @@ export default function AddModel() {
             render: (image_start_year, { name }) => (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <image
-                        src={`http://127.0.0.1:8000/storage/Images/Models/${image_start_year}`}
+                        src={`storage/Images/Models/${image_start_year}`}
                         alt="avatar"
                         style={{ width: 30, height: 30, borderRadius: '50%', marginRight: 10 }}
                     />

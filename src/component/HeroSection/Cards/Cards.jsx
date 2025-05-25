@@ -9,6 +9,7 @@ import { useFetchData } from "../../../hooks/useFetch";
 import Category from "../CategorySection/Category";
 import SecondHero from "../SecondHero/SecondHero";
 import axios from "axios";
+import axiosInstance from "../../../util/interceptor";
 
 const Cards = ({ Scroll, changeScroll }) => {
   const {
@@ -16,7 +17,7 @@ const Cards = ({ Scroll, changeScroll }) => {
     setData: setCategoryData,
     fetchData: fetchCategory,
   } = useFetchData(
-    "http://127.0.0.1:8000/dashboard/categories",
+    "dashboard/categories",
     "categoryData"
   );
   const {
@@ -24,14 +25,14 @@ const Cards = ({ Scroll, changeScroll }) => {
     setData: setProductData,
     fetchData: fetchProduct,
   } = useFetchData(
-    "http://127.0.0.1:8000/dashboard/panelings",
+    "dashboard/panelings",
     "panelingsData"
   );
 
   const handleFilterAccCategory = async (id) => {
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/products-by-category-id/${id}`
+      const response = await axiosInstance.get(
+        `api/products-by-category-id/${id}`
       );
       console.log(response);
       setProductData(response?.data?.data || []);

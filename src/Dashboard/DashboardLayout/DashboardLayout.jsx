@@ -26,6 +26,7 @@ import AddSpecification from "./AddSpecification/AddSpecifycation";
 import Order from "./Order/Order";
 import ContactUsDashboard from "./ContactUsDahboard/ContactUsDashboard";
 import "./DashBoard.css";
+import axiosInstance from "../../util/interceptor";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -45,15 +46,21 @@ const Dashboard = () => {
     navigate("/admin-dashboard/products");
   }, []);
 
+
   const handleLogout = () => {
     Modal.confirm({
       title: "تأكيد تسجيل الخروج",
       content: "هل أنت متأكد أنك تريد تسجيل الخروج؟",
       okText: "نعم",
       cancelText: "إلغاء",
-      onOk: () => {
-        localStorage.removeItem("isAuthenticated");
-        navigate("/admin-login");
+      onOk: async () => {
+        try {
+          await axiosInstance.post("dashboard/logout"); 
+          localStorage.removeItem("isAuthenticated");
+          navigate("/admin-login");
+        } catch (error) {
+          console.error("Logout Error:", error);
+        }
       },
     });
   };
