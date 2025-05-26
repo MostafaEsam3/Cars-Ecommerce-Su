@@ -79,7 +79,7 @@ const Cart = () => {
   const [apiData, setApiData] = useState(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/products/order/12")
+    fetch("https://api.admin.kapitiano.com/api/products/order/12")
       .then((response) => response.json())
       .then((data) => {
         console.log("API Response:", data); // طباعة البيانات في الكونسول
