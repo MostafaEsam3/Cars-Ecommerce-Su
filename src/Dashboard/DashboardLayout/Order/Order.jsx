@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import Loading from '../../../Shared/Loading/Loading';
 
 const Order = () => {
-    const { Data: OrderData, setData: setOrderData, fetchData } = useFetchData("http://127.0.0.1:8000/dashboard/orders", "OrderData");
+    const { Data: OrderData, setData: setOrderData, fetchData } = useFetchData("dashboard/orders", "OrderData");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -81,7 +81,9 @@ const Order = () => {
         <>
             <h1 className='text-center mainFont'>تتبع الاوردرات</h1>
             <div className='mt-3' style={{ direction: "rtl" }}>
-                <Table pagination={OrderData?.length > 5 ? { pageSize: 5 } : false} dataSource={OrderData} columns={columns} />
+                {Array.isArray(OrderData) && (
+                    <Table pagination={OrderData?.length > 5 ? { pageSize: 5 } : false} dataSource={OrderData} columns={columns} />
+                )}
             </div>
 
 

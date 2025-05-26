@@ -14,6 +14,7 @@ import { useFetchData } from '../../../hooks/useFetch';
 import Swal from 'sweetalert2';
 import EditColor from '../../../component/Modals/EditColor';
 import EditSpecification from '../../../component/Modals/EditSpecification';
+import axiosInstance from '../../../util/interceptor';
 
 export default function AddSpecification() {
     const imgInputRef = useRef(null);
@@ -23,10 +24,10 @@ export default function AddSpecification() {
     const [selectedBrandId, setSelectedBrandId] = useState(null);
     const [obj, setobj] = useState({});
     // const [SpecifyData, setBrandData] = useState([])
-    const { Data: SpecifyData, setData: setSpecifyData, fetchData: fetchSpecify } = useFetchData("http://127.0.0.1:8000/dashboard/specifications", "specificationsData");
-    const { Data: ModelData, setData: setModelData, fetchData: fetchModels } = useFetchData("http://127.0.0.1:8000/dashboard/models", "modelData");
-    const { Data: ProductData, setData: setProductData, fetchData: fetchProduct } = useFetchData("http://127.0.0.1:8000/dashboard/panelings", "panelingsData");
-    const { Data: BrandData, setData: setBrandData, fetchData: fetchBrand } = useFetchData("http://127.0.0.1:8000/dashboard/brands", "brandData");
+    const { Data: SpecifyData, setData: setSpecifyData, fetchData: fetchSpecify } = useFetchData("dashboard/specifications", "specificationsData");
+    const { Data: ModelData, setData: setModelData, fetchData: fetchModels } = useFetchData("dashboard/models", "modelData");
+    const { Data: ProductData, setData: setProductData, fetchData: fetchProduct } = useFetchData("dashboard/panelings", "panelingsData");
+    const { Data: BrandData, setData: setBrandData, fetchData: fetchBrand } = useFetchData("dashboard/brands", "brandData");
 
     const chairsNumber = [{ name: "كرسيين", id: 2 }, { name: "تلاث كراسي", id: 3 }, { name: "خمس كراسي", id: 5 }]
     const isConnect = [{ name: "متصل", id: 1 }, { name: " منفصل", id: 0 }]
@@ -41,8 +42,8 @@ export default function AddSpecification() {
     // function add category 
     const AddSpecify = async (data) => {
         try {
-            const response = await axios.post(
-                'http://127.0.0.1:8000/dashboard/specifications',  // تأكد من المسار الصحيح
+            const response = await axiosInstance.post(
+                'dashboard/specifications',  // تأكد من المسار الصحيح
                 data,  // البيانات التي تريد إرسالها
                 {
                     headers: {
@@ -56,9 +57,14 @@ export default function AddSpecification() {
 
         } catch (error) {
             console.error(error);
-            setModalType("failure");
-            setModalMessage(error.response.data.message);
-            setModalVisible(true);
+            // setModalType("failure");
+            // setModalMessage(error.response.data.message);
+            // setModalVisible(true);
+            Swal.fire({
+                icon: 'error',
+                title: 'خطأ',
+                text: 'خطأ في إرسال البيانات',
+            });
         }
     };
 
@@ -112,8 +118,8 @@ export default function AddSpecification() {
 
     const deleteColors = async (id) => {
         try {
-            const response = await axios.delete(
-                `http://127.0.0.1:8000/dashboard/specifications/${id}`, {
+            const response = await axiosInstance.delete(
+                `dashboard/specifications/${id}`, {
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
                 }
@@ -366,7 +372,9 @@ export default function AddSpecification() {
             {/* component of filtration  */}
             <Filtr data={SpecifyData} filtrated={setSpecifyData} orig={SpecifyData} nameOfSession={'specificationsData'} />
             <div className='mt-3' style={{ direction: "rtl" }}>
-                <Table pagination={memoizedDataSource?.length > 5 ? { pageSize: 5 } : false} dataSource={memoizedDataSource} columns={memoizedColumns} />
+                {Array.isArray(memoizedDataSource) && (
+                    <Table pagination={memoizedDataSource?.length > 5 ? { pageSize: 5 } : false} dataSource={memoizedDataSource} columns={memoizedColumns} />
+                )}
             </div>
 
 

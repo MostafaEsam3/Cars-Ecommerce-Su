@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import Loading from '../../../Shared/Loading/Loading';
 
 const ContactUsDashboard = () => {
-    const { Data: ContuctUsData, setData: setContuctUsData, fetchData } = useFetchData("http://127.0.0.1:8000/dashboard/contact-us", "ContactUs");
+    const { Data: ContuctUsData, setData: setContuctUsData, fetchData } = useFetchData("dashboard/contact-us", "ContactUs");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -54,7 +54,9 @@ const ContactUsDashboard = () => {
         <>
             <h1 className='text-center mainFont'>بيانات الاشخاص المتصله معنا </h1>
             <div className='mt-3' style={{ direction: "rtl" }}>
-                <Table pagination={ContuctUsData?.length > 5 ? { pageSize: 5 } : false} dataSource={ContuctUsData} columns={columns} />
+                {Array.isArray(ContuctUsData) && (
+                    <Table pagination={ContuctUsData?.length > 5 ? { pageSize: 5 } : false} dataSource={ContuctUsData} columns={columns} />
+                )}
             </div>
 
 

@@ -17,6 +17,7 @@ import { genBaseStyle } from 'antd/es/alert/style';
 import { useAsyncError } from 'react-router-dom';
 import EditProduct from '../../../component/Modals/EditProduct';
 import Loading from '../../../Shared/Loading/Loading';
+import axiosInstance from '../../../util/interceptor';
 
 export default function AddProduct() {
     const imageInputRef = useRef(null);
@@ -25,8 +26,8 @@ export default function AddProduct() {
     const [modalType, setModalType] = useState(""); // لتحديد إذا كانت الرسالة فشل أم نجاح
     const [obj, setobj] = useState({});
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-    const { Data:ProductData, setData: setProductData, fetchData:fetchProduct,loading } = useFetchData("http://127.0.0.1:8000/dashboard/panelings","panelingsData");
-    const { Data: CategoryData, setData: setCategoryData, fetchData :fetchCategory } = useFetchData("http://127.0.0.1:8000/dashboard/categories","categoryData");
+    const { Data:ProductData, setData: setProductData, fetchData:fetchProduct,loading } = useFetchData("dashboard/panelings","panelingsData");
+    const { Data: CategoryData, setData: setCategoryData, fetchData :fetchCategory } = useFetchData("dashboard/categories","categoryData");
 
 
 
@@ -50,8 +51,8 @@ export default function AddProduct() {
     // function add category 
     const addProduct = async (data) => {
         try {
-            const response = await axios.post(
-                'http://127.0.0.1:8000/dashboard/panelings',  // تأكد من المسار الصحيح
+            const response = await axiosInstance.post(
+                '/dashboard/panelings',  // تأكد من المسار الصحيح
                 data,  // البيانات التي تريد إرسالها
                 {
                     headers: {
@@ -60,14 +61,20 @@ export default function AddProduct() {
                 }
             );
             console.log(response, "تم ارسال البيانات بنجاح");
-            setModalType("success");
-            setModalMessage("تم إرسال البيانات بنجاح!");
-            setModalVisible(true);
+            // setModalType("success");
+            // setModalMessage("تم إرسال البيانات بنجاح!");
+            // setModalVisible(true);
+            Swal.fire("تم ارسال البيانات بنجاح")
            fetchProduct()
         } catch (error) {
             console.log(error); 
-            setModalType("failure");
-            setModalVisible(true);
+            // setModalType("failure");
+            // setModalVisible(true
+            Swal.fire({
+                icon: 'error',
+                title: 'خطأ',
+                text: error?.response?.data?.message ||  'خطأ في إرسال البيانات' ,
+              });
         }
     };
 
@@ -128,8 +135,8 @@ export default function AddProduct() {
      
         const deleteProduct = async (id) => {
             try {
-                const response = await axios.delete(
-                    `http://127.0.0.1:8000/dashboard/panelings/${id}`,               {
+                const response = await axiosInstance.delete(
+                    `dashboard/panelings/${id}`,               {
                         headers: {
                            'Accept': 'application/json, text/plain, */*',
                         }
@@ -340,10 +347,15 @@ export default function AddProduct() {
 
  <Filtr data={ProductData} filtrated={setProductData} nameOfSession={'panelingsData'}/>
 
-<div className='mt-3'>
- <Table  pagination={ProductData?.length > 5 ? { pageSize: 5 } :false} dataSource={ProductData} columns={columns} />
-</div>
-
+            <div className="mt-3">
+                {Array.isArray(ProductData) && (
+                    <Table
+                        pagination={ProductData.length > 5 ? { pageSize: 5 } : false}
+                        dataSource={ProductData}
+                        columns={columns}
+                    />
+                )}
+            </div>
         <EditProduct i={obj}  typeOf={"panelings"} idModal={"editPanelings"} fetchBrand={fetchProduct}/>
         </>
     );
