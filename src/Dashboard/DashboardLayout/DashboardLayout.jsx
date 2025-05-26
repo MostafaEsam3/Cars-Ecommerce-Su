@@ -1,3 +1,4 @@
+// Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import {
   AppstoreAddOutlined,
@@ -8,6 +9,7 @@ import {
   SettingOutlined,
   ShoppingCartOutlined,
   TrademarkCircleOutlined,
+  RocketOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu, Modal, theme } from "antd";
 import {
@@ -25,6 +27,8 @@ import AddColor from "./AddColor/AddColor";
 import AddSpecification from "./AddSpecification/AddSpecifycation";
 import Order from "./Order/Order";
 import ContactUsDashboard from "./ContactUsDahboard/ContactUsDashboard";
+import DeliveryPage from "./DeliveryPage/DeliveryPage"; // ✅ NEW
+import "bootstrap/dist/css/bootstrap.min.css"; // ✅ Bootstrap import
 import "./DashBoard.css";
 import axiosInstance from "../../util/interceptor";
 
@@ -103,6 +107,12 @@ const Dashboard = () => {
       "/admin-dashboard/add-specify"
     ),
     getItem(
+      "إدارة التوصيل", // ✅ NEW
+      "10",
+      <RocketOutlined style={{ fontSize: "25px" }} />,
+      "/admin-dashboard/delivery"
+    ),
+    getItem(
       "الزائرين",
       "8",
       <PhoneOutlined style={{ fontSize: "25px" }} />,
@@ -171,6 +181,8 @@ const Dashboard = () => {
                 path="contactUsDashboard"
                 element={<ContactUsDashboard />}
               />
+              <Route path="delivery" element={<DeliveryPage />} />{" "}
+              {/* ✅ NEW */}
             </Routes>
           </div>
         </Content>
