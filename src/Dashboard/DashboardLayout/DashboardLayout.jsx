@@ -1,5 +1,7 @@
 // Dashboard.jsx
 import React, { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+
 import {
   AppstoreAddOutlined,
   CarOutlined,
@@ -31,6 +33,7 @@ import DeliveryPage from "./DeliveryPage/DeliveryPage"; // ✅ NEW
 import "bootstrap/dist/css/bootstrap.min.css"; // ✅ Bootstrap import
 import "./DashBoard.css";
 import axiosInstance from "../../util/interceptor";
+import ProtectedRoute from "../../util/ProtectedRoute";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -46,9 +49,7 @@ const Dashboard = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  useEffect(() => {
-    navigate("/admin-dashboard/products");
-  }, []);
+
 
   const handleLogout = () => {
     Modal.confirm({
@@ -169,19 +170,16 @@ const Dashboard = () => {
             }}
           >
             <Routes>
-              <Route path="products" element={<AddProduct />} />
-              <Route path="orders" element={<Order />} />
-              <Route path="add-category" element={<AddCategory />} />
-              <Route path="add-brand" element={<AddBrand />} />
-              <Route path="add-model" element={<AddModel />} />
-              <Route path="add-color" element={<AddColor />} />
-              <Route path="add-specify" element={<AddSpecification />} />
-              <Route
-                path="contactUsDashboard"
-                element={<ContactUsDashboard />}
-              />
-              <Route path="delivery" element={<DeliveryPage />} />{" "}
-              {/* ✅ NEW */}
+              <Route path="/" element={<Navigate to="products" replace />} /> {/* ✅ Add this */}
+              <Route path="products" element={<ProtectedRoute> <AddProduct /> </ProtectedRoute>} />
+              <Route path="orders" element={<ProtectedRoute>  <Order />  </ProtectedRoute>} />
+              <Route path="add-category" element={<ProtectedRoute> <AddCategory /> </ProtectedRoute>} />
+              <Route path="add-brand" element={<ProtectedRoute>   <AddBrand /> </ProtectedRoute>} />
+              <Route path="add-model" element={<ProtectedRoute>  <AddModel /> </ProtectedRoute>} />
+              <Route path="add-color" element={<ProtectedRoute> <AddColor />  </ProtectedRoute>} />
+              <Route path="add-specify" element={<ProtectedRoute> <AddSpecification />  </ProtectedRoute>} />
+              <Route path="contactUsDashboard" element={<ProtectedRoute> <ContactUsDashboard /></ProtectedRoute>} />
+              <Route path="delivery" element={<ProtectedRoute>  <DeliveryPage />  </ProtectedRoute>} />
             </Routes>
           </div>
         </Content>
