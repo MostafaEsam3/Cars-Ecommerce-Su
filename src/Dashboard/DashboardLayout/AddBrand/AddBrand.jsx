@@ -113,6 +113,7 @@ export default function AddBrand() {
         {
           headers: {
             Accept: "application/json, text/plain, */*",
+            Authorization: `Bearer ${token}`,
           },
         }
       );

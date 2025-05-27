@@ -1,37 +1,39 @@
-// axiosInstance.js
 import axios from "axios";
 
 const axiosInstance = axios.create({
-    baseURL: "https://api.admin.kapitiano.com/",
+  baseURL: "https://api.admin.kapitiano.com/",
 });
 
-// ✅ Request Interceptor with token and headers
+// ✅ Request Interceptor with token and conditional headers
 axiosInstance.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem("authToken"); // Or sessionStorage, depending on where you store it
+  (config) => {
+    const token = localStorage.getItem("authToken");
 
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
-        config.headers["Content-Type"] = "application/json"; // Set default content type
+    // Only set application/json if NOT sending FormData
+    if (!(config.data instanceof FormData)) {
+      config.headers["Content-Type"] = "application/json";
+    }
 
-        console.log("Request Interceptor:", config);
-        return config;
-    },
-    (error) => Promise.reject(error)
+    console.log("Request Interceptor:", config);
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
 // ✅ Response Interceptor
 axiosInstance.interceptors.response.use(
-    (response) => {
-        console.log("Response Interceptor:", response);
-        return response;
-    },
-    (error) => {
-        console.log("Interceptor Error:", error);
-        return Promise.reject(error);
-    }
+  (response) => {
+    console.log("Response Interceptor:", response);
+    return response;
+  },
+  (error) => {
+    console.log("Interceptor Error:", error);
+    return Promise.reject(error);
+  }
 );
 
 export default axiosInstance;
