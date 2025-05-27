@@ -50,7 +50,6 @@ const Dashboard = () => {
     navigate("/admin-dashboard/products");
   }, []);
 
-
   const handleLogout = () => {
     Modal.confirm({
       title: "تأكيد تسجيل الخروج",
@@ -59,7 +58,7 @@ const Dashboard = () => {
       cancelText: "إلغاء",
       onOk: async () => {
         try {
-          await axiosInstance.post("dashboard/logout"); 
+          await axiosInstance.post("dashboard/logout");
           localStorage.removeItem("isAuthenticated");
           navigate("/admin-login");
         } catch (error) {
