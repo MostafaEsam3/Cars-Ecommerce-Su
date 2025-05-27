@@ -147,7 +147,7 @@ export default function AddCategory() {
 
   const columns = [
     {
-      title: "image",
+      title: "صورة القسم",
       dataIndex: "image",
       key: "image",
       render: (image, { name }) => (
@@ -167,18 +167,18 @@ export default function AddCategory() {
       ),
     },
     {
-      title: "id",
+      title: "الكود",
       dataIndex: "id",
       key: "id",
     },
     {
-      title: "name",
+      title: "اسم القسم",
       dataIndex: "name",
       key: "name",
     },
 
     {
-      title: "update",
+      title: "تعديل / حذف",
       dataIndex: "id",
       key: "id",
       render: (id, { name, image }) => (

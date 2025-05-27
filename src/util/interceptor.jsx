@@ -24,7 +24,6 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ✅ Response Interceptor
 axiosInstance.interceptors.response.use(
   (response) => {
     console.log("Response Interceptor:", response);
@@ -32,6 +31,13 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     console.log("Interceptor Error:", error);
+
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("isAuthenticated");
+      // window.location.href = "/admin-dashboard/login"; 
+
+    }
     return Promise.reject(error);
   }
 );

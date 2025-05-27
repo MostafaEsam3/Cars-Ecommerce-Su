@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // import "./Login.css";
 import axios from "axios";
 import axiosInstance from "../../util/interceptor";
+import Swal from "sweetalert2";
 
 function AdminLogin() {
   const navigate = useNavigate();
@@ -16,8 +17,8 @@ function AdminLogin() {
       const response = await axiosInstance.post(
         "dashboard/login",
         {
-          mobile: "01066056969",
-          password: "delivery1234",
+          mobile: phone,
+          password:password,
         },
         {
           headers: {
@@ -25,28 +26,32 @@ function AdminLogin() {
           },
         }
       );
-
-      console.log("Login Response:", response);
-
       const token = response.data?.token;
-      console.log("Received Token:", token);
-
       if (token) {
         localStorage.setItem("authToken", token); // 🔐 Store token for interceptor use
-        console.log("Token saved to localStorage");
       } else {
         console.warn("No token received from response");
       }
+      Swal.fire({
+        title: "تم تسجيل الدخول بنجاح",
+        icon: "success",
+        confirmButtonText: "موافق",
+      });
+      localStorage.setItem("isAuthenticated", "true");
+  setTimeout(() => {
+    navigate("/admin-dashboard");
+  }, 900);
+
     } catch (error) {
       console.error("Login Error:", error);
+        Swal.fire("خطأ!", "حدث خطأ . يرجى المحاولة مرة أخرى", "error");
+      
     }
   };
 
   const handleSubmit = (e) => {
-    login();
     e.preventDefault();
-    localStorage.setItem("isAuthenticated", "true");
-    navigate("/admin-dashboard");
+    login();
   };
 
   return (
@@ -82,7 +87,7 @@ function AdminLogin() {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100">
+          <button  className="btn btn-primary w-100">
             دخول
           </button>
         </form>

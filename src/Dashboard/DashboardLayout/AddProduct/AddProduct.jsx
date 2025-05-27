@@ -40,20 +40,12 @@ export default function AddProduct() {
 
   const [isOnline, setIsOnline] = useState(true);
   useEffect(() => {
+      setTimeout(() => {
     fetchProduct();
     fetchCategory();
-    function handleOnline() {
-      setIsOnline(true);
-    }
-    function handleOffline() {
-      setIsOnline(false);
-    }
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
+  }, 900);
+    
+   
   }, []);
   // function add category
   const addProduct = async (data) => {
@@ -154,7 +146,7 @@ export default function AddProduct() {
 
   const columns = [
     {
-      title: "image",
+      title: "الصورة",
       dataIndex: "image",
       key: "image",
       render: (image, { name }) => (
@@ -178,22 +170,22 @@ export default function AddProduct() {
       ),
     },
     {
-      title: "id",
+      title: "الكود",
       dataIndex: "id",
       key: "id",
     },
     {
-      title: "name",
+      title: "الاسم",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "description",
+      title: "المواصفات",
       dataIndex: "description",
       key: "description",
     },
     {
-      title: "update",
+      title: "تعديل /مسح",
       dataIndex: "id",
       key: "id",
       render: (id, { name, image, description, status, link, category_id }) => (

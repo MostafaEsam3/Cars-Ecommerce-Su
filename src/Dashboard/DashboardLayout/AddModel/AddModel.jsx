@@ -167,7 +167,7 @@ export default function AddModel() {
 
   const columns = [
     {
-      title: "image_start_year",
+      title: "صوره بدايه السنه",
       dataIndex: "image_start_year",
       key: "image_start_year",
       render: (image_start_year, { name }) => (
@@ -187,32 +187,32 @@ export default function AddModel() {
       ),
     },
     {
-      title: "id",
+      title: "الكود",
       dataIndex: "id",
       key: "id",
     },
     {
-      title: "name",
+      title: "الاسم",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "startYear",
+      title: "بدايه السنه",
       dataIndex: "startYear",
       key: "startYear",
     },
     {
-      title: "endYear",
+      title: "نهايه السنه",
       dataIndex: "endYear",
       key: "endYear",
     },
     {
-      title: "status",
+      title: "الحاله",
       dataIndex: "status",
       key: "status",
     },
     {
-      title: "update",
+      title: "تعديل / حذف",
       dataIndex: "id",
       key: "id",
       render: (

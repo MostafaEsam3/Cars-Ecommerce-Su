@@ -112,6 +112,7 @@ export default function EditModels(props) {
       editModels(formData);
     },
   });
+  
 
   useEffect(() => {
     fetchData(); // <-- جلب البراندات عند تحميل المكون
@@ -122,9 +123,9 @@ export default function EditModels(props) {
         image_start_year: props.i.image_start_year || null,
         image_end_year: props.i.image_end_year || null,
         status: props.i.status,
-        brand_id: props.i.brand_id,
-        startYear: props.i.startYear,
+        brand_id: props.i.brand_id || "", 
         endYear: props.i.endYear,
+        startYear: props.i.startYear,
       });
     }
   }, [props.i]);
@@ -153,11 +154,11 @@ export default function EditModels(props) {
               ></button>
             </div>
             <div className="modal-body">
-              <h1 className="text-center">اضافه البراندات</h1>
+              <h1 className="text-center">اضافه الموديلات</h1>
               <form onSubmit={formik.handleSubmit} className="mt-3">
                 <div className="container-fluid dir-ar">
-                  <div className="col-xs-11 text-center row">
-                    <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
+                  <div className="col-xs-11 text-center flex-column justify-content-center align-items-center">
+                    <div className="form-group col-12 mb-3">
                       <label className="fw-bold">اسم القسم</label>
                       {/* {formik.values.name == "" ? 
                             (<span>kdjhgjhked</span>) : null} */}
@@ -172,7 +173,7 @@ export default function EditModels(props) {
                         <div className="text-danger">{formik.errors.name}</div>
                       ) : null}
                     </div>
-                    <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
+                    <div className="form-group col-12 mb-3">
                       <label className="fw-bold">اضافه صوره بدايه السنه </label>
                       <input
                         type="file"
@@ -187,7 +188,7 @@ export default function EditModels(props) {
                         </div>
                       ) : null}
                     </div>
-                    <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
+                    <div className="form-group col-12 mb-3">
                       <label className="fw-bold">اضافه صوره نهايه السنه </label>
                       <input
                         type="file"
@@ -203,34 +204,8 @@ export default function EditModels(props) {
                         </div>
                       ) : null}
                     </div>
-                    {/* radio */}
-                    <div className=" col-xs-12 col-sm-2 col-md-2 col-lg-3 d-flex align-items-center mt-4 ">
-                      <label>
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="status"
-                          value="1"
-                          checked={formik.values.status === 1}
-                          onChange={() => formik.setFieldValue("status", 1)}
-                        />
-                        نشطة
-                      </label>
-
-                      <label className="mx-4">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="status"
-                          value="0"
-                          checked={formik.values.status === 0} // Switch to غير نشطة
-                          onChange={() => formik.setFieldValue("status", 0)}
-                        />
-                        غير نشطة
-                      </label>
-                    </div>
-                    {/* end radio */}
-                    <div className="col-xs-12 col-sm-2 col-md-2 col-lg-3 mt-2">
+                  
+                    <div className="col-12 mb-3"> 
                       <label htmlFor="" className="fw-bold">
                         {" "}
                         بدايه الاصدار{" "}
@@ -259,7 +234,7 @@ export default function EditModels(props) {
                         </div>
                       ) : null}
                     </div>
-                    <div className="col-xs-12 col-sm-2 col-md-2 col-lg-3 mt-2 ">
+                    <div className="col-12 mb-3"> 
                       <label className="fw-bold"> نهايه الاصدار</label>
                       <select
                         id="endYearSelect"
@@ -285,14 +260,16 @@ export default function EditModels(props) {
                         </div>
                       ) : null}
                     </div>
-                    <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3 mt-2">
+                    <div className="mt-2 col-12 mb-3">
                       <label className="fw-bold">اختر البراند</label>
                       <select
                         id="dataSelect"
                         className="form-select"
                         name="brand_id"
                         required
-                        {...formik.getFieldProps("brand_id")}
+                        // {...formik.getFieldProps("brand_id")}
+                       value={formik.values.brand_id}
+                        onChange={formik.handleChange}
                       >
                         <option value="" disabled selected>
                           اختر البراند
@@ -309,6 +286,33 @@ export default function EditModels(props) {
                         </div>
                       ) : null}
                     </div>
+                      {/* radio */}
+                    <div className=" col-12 mb-3"> 
+                      <label>
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="status"
+                          value="1"
+                          checked={formik.values.status === 1}
+                          onChange={() => formik.setFieldValue("status", 1)}
+                        />
+                        نشطة
+                      </label>
+
+                      <label className="mx-4">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="status"
+                          value="0"
+                          checked={formik.values.status === 0} // Switch to غير نشطة
+                          onChange={() => formik.setFieldValue("status", 0)}
+                        />
+                        غير نشطة
+                      </label>
+                    </div>
+                    {/* end radio */}
                   </div>
                   <div className="text-text-center ">
                     <button

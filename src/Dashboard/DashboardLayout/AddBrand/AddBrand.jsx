@@ -133,7 +133,7 @@ export default function AddBrand() {
 
   const columns = [
     {
-      title: "image",
+      title: "الصوره",
       dataIndex: "image",
       key: "image",
       render: (image, { name }) => (
@@ -157,18 +157,18 @@ export default function AddBrand() {
       ),
     },
     {
-      title: "id",
+      title: "الكود",
       dataIndex: "id",
       key: "id",
     },
     {
-      title: "name",
+      title: "الاسم",
       dataIndex: "name",
       key: "name",
     },
 
     {
-      title: "update",
+      title: "تعديل / حذف",
       dataIndex: "id",
       key: "id",
       render: (id, { name, image }) => (
@@ -231,7 +231,7 @@ export default function AddBrand() {
       <h1 className="text-center mainFont">اضافه البراندات</h1>
       <form onSubmit={formik.handleSubmit} className="mt-3 mainFont">
         <div className="container-fluid dir-ar mainFont">
-          <div className="col-xs-11 text-center row">
+          <div className="col-xs-11 text-center flex-column justify-content-center align-items-center">
             <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
               <label className="fw-bold">اسم البراند</label>
               <input
@@ -255,6 +255,7 @@ export default function AddBrand() {
                 ref={imgInputRef}
                 onChange={(event) => {
                   formik.setFieldValue("image", event.target.files[0]);
+                  
                 }}
               />
               {formik.touched.image && formik.errors.image ? (
