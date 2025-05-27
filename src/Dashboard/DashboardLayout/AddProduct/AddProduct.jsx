@@ -40,12 +40,10 @@ export default function AddProduct() {
 
   const [isOnline, setIsOnline] = useState(true);
   useEffect(() => {
-      setTimeout(() => {
-    fetchProduct();
-    fetchCategory();
-  }, 900);
-    
-   
+    setTimeout(() => {
+      fetchProduct();
+      fetchCategory();
+    }, 900);
   }, []);
   // function add category
   const addProduct = async (data) => {
@@ -104,6 +102,11 @@ export default function AddProduct() {
       formData.append("category_id", values.category_id);
       formData.append("link", values.link);
       formData.append("description", values.description);
+
+      // 🟡 ضع هذا هنا مباشرة قبل الإرسال
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
 
       addProduct(formData);
       resetForm();
