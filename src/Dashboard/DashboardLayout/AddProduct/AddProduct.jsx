@@ -16,10 +16,11 @@ import { toHaveAccessibleDescription } from "@testing-library/jest-dom/matchers"
 import { genBaseStyle } from "antd/es/alert/style";
 import { useAsyncError } from "react-router-dom";
 import EditProduct from "../../../component/Modals/EditProduct";
-import Loading from "../../../Shared/Loading/Loading";
+import BeutyLoading from "../../../Shared/Loading/BeutyLoading";
 import axiosInstance from "../../../util/interceptor";
 
 export default function AddProduct() {
+  const [isLoading, setIsLoading] = useState(false);
   const imageInputRef = useRef(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState(""); // لتخزين الرسالة المعروضة في المودال
@@ -47,6 +48,7 @@ export default function AddProduct() {
   }, []);
   // function add category
   const addProduct = async (data) => {
+    setIsLoading(true);
     try {
       const response = await axiosInstance.post(
         "/dashboard/panelings",
@@ -59,6 +61,8 @@ export default function AddProduct() {
         }
       );
       console.log(response, "تم ارسال البيانات بنجاح");
+      setIsLoading(false);
+
       Swal.fire("تم ارسال البيانات بنجاح");
       fetchProduct();
     } catch (error) {
@@ -70,6 +74,8 @@ export default function AddProduct() {
         title: "خطأ",
         text: error?.response?.data?.message || "خطأ في إرسال البيانات",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -222,16 +228,19 @@ export default function AddProduct() {
       ),
     },
   ];
-  if (loading) return <Loading />; // Show Loading spinner
+  if (isLoading || loading) return <BeutyLoading />;
 
   return (
     <>
       <h1 className="text-center mainFont">اضافه المنتجات</h1>
-      <form onSubmit={formik.handleSubmit} className="mt-4">
-        <div className="container-fluid dir-ar mainFont">
-          <div className="col-xs-11 text-center row">
-            <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
-              <label className="fw-bold">اسم المنتج</label>
+      {isLoading ? (
+        <BeutyLoading />
+      ) : (
+        <form onSubmit={formik.handleSubmit} className="mt-4">
+          <div className="container-fluid dir-ar mainFont">
+            <div className="col-xs-11 text-center row">
+              <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
+                <label className="fw-bold">اسم المنتج</label>
               <input
                 name="name"
                 type="text"
@@ -346,6 +355,7 @@ export default function AddProduct() {
           </div>
         </div>
       </form>
+      )}
 
       {/* مودال عند نجاح أو فشل الإرسال */}
       {modalVisible && (
