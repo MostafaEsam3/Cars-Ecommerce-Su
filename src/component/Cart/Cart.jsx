@@ -79,7 +79,7 @@ const Cart = () => {
   const [apiData, setApiData] = useState(null);
 
   useEffect(() => {
-    fetch("https://api.admin.kapitiano.com/api/products/order/16")
+    fetch("https://api.admin.kapitiano.com/api/products/order/1")
       .then((response) => response.json())
       .then((data) => {
         console.log("API Response:", data); // طباعة البيانات في الكونسول
@@ -99,7 +99,7 @@ const Cart = () => {
 
   const [availableSeats, setAvailableSeats] = useState([]);
   useEffect(() => {
-    fetch("https://api.admin.kapitiano.com/api/products/order/16") // API لجلب البيانات
+    fetch("https://api.admin.kapitiano.com/api/products/order/1") // API لجلب البيانات
       .then((response) => response.json())
       .then((data) => {
         console.log("API Response:", data);
