@@ -109,14 +109,15 @@ export default function AddSpecification() {
       is_connect: Yup.string().required("يرجي ادخال هل منفصل ولا متصل "),
     }),
     onSubmit: (values, { resetForm }) => {
-      const formData = new FormData();
-      formData.append("paneling_id", values.paneling_id);
-      formData.append("brand_id", values.brand_id);
-      formData.append("car_chairs", values.car_chairs);
-      formData.append("is_connect", values.is_connect);
-      formData.append("model_id", values.model_id);
-      formData.append("price", values.price);
-      AddSpecify(formData);
+      const payload = {
+        paneling_id: values.paneling_id,
+        brand_id: values.brand_id,
+        car_chairs: values.car_chairs,
+        is_connect: values.is_connect,
+        model_id: values.model_id,
+        price: values.price,
+      };
+      AddSpecify(payload);
       resetForm();
     },
   });

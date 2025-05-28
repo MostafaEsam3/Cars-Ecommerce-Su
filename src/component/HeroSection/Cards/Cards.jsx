@@ -16,18 +16,12 @@ const Cards = ({ Scroll, changeScroll }) => {
     Data: CategoryData,
     setData: setCategoryData,
     fetchData: fetchCategory,
-  } = useFetchData(
-    "dashboard/categories",
-    "categoryData"
-  );
+  } = useFetchData("api/all-categories", "categoryData");
   const {
     Data: ProductData,
     setData: setProductData,
     fetchData: fetchProduct,
-  } = useFetchData(
-    "dashboard/panelings",
-    "panelingsData"
-  );
+  } = useFetchData("api/all-panelings", "panelingsData");
 
   const handleFilterAccCategory = async (id) => {
     try {
@@ -67,12 +61,17 @@ const Cards = ({ Scroll, changeScroll }) => {
             : " row justify-content-between flex-wrap mainFont"
         }
       >
-        {/* {
-    ProductData?.map((ele,index)=>{
-        return  <CardTemplate name={ele?.name} description={ele?.description} image={ele.image} id={ele.id}/>
-    })
- } */}
-        <CardTemplate
+        {ProductData?.map((ele, index) => {
+          return (
+            <CardTemplate
+              name={ele?.name}
+              description={ele?.description}
+              image={ele.image}
+              id={ele.id}
+            />
+          );
+        })}
+        {/* <CardTemplate
           name={"ele?.name"}
           description={"ele?.description"}
           image={productImage}
@@ -131,7 +130,7 @@ const Cards = ({ Scroll, changeScroll }) => {
           description={"ele?.description"}
           image={productImage}
           id={"ele.id"}
-        />
+        /> */}
       </div>
 
       <div className="m-auto mt-4">

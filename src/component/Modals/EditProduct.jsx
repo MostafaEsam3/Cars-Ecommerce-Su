@@ -31,6 +31,10 @@ export default function EditProduct(props) {
       setInputUser({ ...inputUser, image: file });
     }
   };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const token = localStorage.getItem("authToken");
 
   const editProduct = async (data) => {
@@ -222,7 +226,7 @@ export default function EditProduct(props) {
                         name="category_id"
                         {...formik.getFieldProps("category_id")}
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           اختر القسم
                         </option>
                         {CategoryData.map((item, index) => (
@@ -231,6 +235,7 @@ export default function EditProduct(props) {
                           </option>
                         ))}
                       </select>
+
                       {formik.touched.category_id &&
                       formik.errors.category_id ? (
                         <div className="text-danger">
