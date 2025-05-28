@@ -21,7 +21,7 @@ const Cards = ({ Scroll, changeScroll }) => {
     Data: ProductData,
     setData: setProductData,
     fetchData: fetchProduct,
-  } = useFetchData("dashboard/panelings", "panelingsData");
+  } = useFetchData("api/all-panelings", "panelingsData");
 
   const handleFilterAccCategory = async (id) => {
     try {

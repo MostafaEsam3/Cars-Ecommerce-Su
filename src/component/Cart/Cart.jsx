@@ -79,7 +79,7 @@ const Cart = () => {
   const [apiData, setApiData] = useState(null);
 
   useEffect(() => {
-    fetch("https://api.admin.kapitiano.com/api/products/order/12")
+    fetch("https://api.admin.kapitiano.com/api/products/order/16")
       .then((response) => response.json())
       .then((data) => {
         console.log("API Response:", data); // طباعة البيانات في الكونسول
@@ -99,7 +99,7 @@ const Cart = () => {
 
   const [availableSeats, setAvailableSeats] = useState([]);
   useEffect(() => {
-    fetch("https://api.admin.kapitiano.com/api/products/order/12") // API لجلب البيانات
+    fetch("https://api.admin.kapitiano.com/api/products/order/16") // API لجلب البيانات
       .then((response) => response.json())
       .then((data) => {
         console.log("API Response:", data);
@@ -259,6 +259,11 @@ const Cart = () => {
     setQuantity(1);
   };
   console.log(selectedSmallImage, selectedLargeImage);
+  const typeMapping = {
+    2: "3مقاعد",
+    3: "خمس مقاعد",
+    5: "سبع مقاعد",
+  };
   return (
     <div className="container py-5">
       <h2 className="text-center mb-5">سلتي</h2>
@@ -341,48 +346,51 @@ const Cart = () => {
               <p>الخيارات الموجودة حسب المواصفات السعودية فقط</p>
             </div>
             <div className="row row-cols-3 g-4">
-              {apiData &&
-                Object.values(apiData).map((item) =>
-                  (item.car_type || []).map((carType) => {
-                    // البحث عن الصورة المطابقة لنوع المقاعد
-                    const matchedImage = imagesGroup2.find((image) =>
-                      image.description.includes(`${carType.type}`)
-                    );
-
-                    return (
-                      matchedImage && ( // التأكد من وجود تطابق وعرض العنصر فقط إذا وُجد
-                        <div key={`${item.id}-${carType.id}`} className="col">
-                          <div className="position-relative image-container">
-                            <motion.img
-                              src={matchedImage.src} // الصورة من البيانات الثابتة
-                              alt={matchedImage.description}
-                              className="img-fluid rounded border image-hover"
-                              style={{
-                                cursor: "pointer",
-                                maxHeight: "200px",
-                                width: "100%",
-                              }}
-                              onClick={() =>
-                                setSelectedLargeImage({
-                                  id: carType.id,
-                                  description: matchedImage.description,
-                                  src: matchedImage.src,
-                                  price: carType.price, // السعر القادم من API
-                                })
-                              }
-                              whileHover={{ scale: 1.1 }}
-                              transition={{ duration: 0.3 }}
-                            />
-                          </div>
-                          <p className="text-center mt-2">
-                            {matchedImage.description} -
-                            <strong>{` السعر: ${carType.price} ر.س`}</strong>
-                          </p>
+              {selectedSmallImage &&
+                (
+                  Object.values(apiData).find(
+                    (item) => item.id === selectedSmallImage.id
+                  )?.car_type || []
+                ).map((carType) => {
+                  const matchedImage = imagesGroup2.find((image) =>
+                    image.description.includes(typeMapping[carType.type])
+                  );
+                  return (
+                    matchedImage && (
+                      <div
+                        key={`${selectedSmallImage.id}-${carType.id}`}
+                        className="col"
+                      >
+                        <div className="position-relative image-container">
+                          <motion.img
+                            src={matchedImage.src}
+                            alt={matchedImage.description}
+                            className="img-fluid rounded border image-hover"
+                            style={{
+                              cursor: "pointer",
+                              maxHeight: "200px",
+                              width: "100%",
+                            }}
+                            onClick={() =>
+                              setSelectedLargeImage({
+                                id: carType.id,
+                                description: matchedImage.description,
+                                src: matchedImage.src,
+                                price: carType.price,
+                              })
+                            }
+                            whileHover={{ scale: 1.1 }}
+                            transition={{ duration: 0.3 }}
+                          />
                         </div>
-                      )
-                    );
-                  })
-                )}
+                        <p className="text-center mt-2">
+                          {matchedImage.description} -
+                          <strong>{` السعر: ${carType.price} ر.س`}</strong>
+                        </p>
+                      </div>
+                    )
+                  );
+                })}
             </div>
           </div>
 
