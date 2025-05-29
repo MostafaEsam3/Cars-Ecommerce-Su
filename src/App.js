@@ -28,6 +28,7 @@ import { FaGlassMartini } from 'react-icons/fa';
 import { setNestedObjectValues } from 'formik';
 import AdminLogin from './component/AuthComponent-Dachboord/AdminLogin.jsx';
 import ProtectedRoute from './component/AuthComponent-Dachboord/ProtectedRoute.jsx';
+import NotFound from './component/NotFound/NotFound.jsx';
 const DashboardLayout = React.lazy(() => import('./Dashboard/DashboardLayout/DashboardLayout'));
 const Cart = React.lazy(() => import('./component/Cart/Cart'));
 
@@ -62,6 +63,7 @@ function App() {
     </Suspense>
   }
 />
+<Route path="*" element={<NotFound />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="checkout1" element={<Checkout1 />} />
           <Route path="about" element={<About />} />

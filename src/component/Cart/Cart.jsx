@@ -60,6 +60,7 @@ const imagesGroup2 = [
 
 const Cart = () => {
   const { id } = useParams();
+  const [selectedCarYear, setSelectedCarYear] = useState("");
 
   const [selectedSmallImage, setSelectedSmallImage] = useState(null);
   const [selectedLargeImage, setSelectedLargeImage] = useState(null);
@@ -302,49 +303,56 @@ const Cart = () => {
               </p>
               <p>الخيارات الموجودة حسب المواصفات السعودية فقط</p>
             </div>
-            <div className="row row-cols-3 g-4">
-              {selectedSmallImage &&
-                (apiData?.car_specifications || []).map((spec) => {
-                  const matchedImage = imagesGroup2.find((image) =>
-                    image.description.includes(typeMapping[spec.type])
-                  );
-                  return (
-                    matchedImage && (
-                      <div
-                        key={`${selectedSmallImage.id}-${spec.id}`}
-                        className="col"
-                      >
-                        <div className="position-relative image-container">
-                          <motion.img
-                            src={matchedImage.src}
-                            alt={matchedImage.description}
-                            className="img-fluid rounded border image-hover"
-                            style={{
-                              cursor: "pointer",
-                              maxHeight: "200px",
-                              width: "100%",
-                            }}
-                            onClick={() =>
-                              setSelectedLargeImage({
-                                id: spec.id,
-                                description: matchedImage.description,
-                                src: matchedImage.src,
-                                price: spec.price,
-                              })
-                            }
-                            whileHover={{ scale: 1.1 }}
-                            transition={{ duration: 0.3 }}
-                          />
+
+            {selectedSmallImage && apiData?.car_specifications?.length === 0 ? (
+              <div className="alert alert-warning text-center">
+                ❗ هذا المنتج لا يحتوي على خصائص بعد...
+              </div>
+            ) : (
+              <div className="row row-cols-3 g-4">
+                {selectedSmallImage &&
+                  (apiData?.car_specifications || []).map((spec) => {
+                    const matchedImage = imagesGroup2.find((image) =>
+                      image.description.includes(typeMapping[spec.type])
+                    );
+                    return (
+                      matchedImage && (
+                        <div
+                          key={`${selectedSmallImage.id}-${spec.id}`}
+                          className="col"
+                        >
+                          <div className="position-relative image-container">
+                            <motion.img
+                              src={matchedImage.src}
+                              alt={matchedImage.description}
+                              className="img-fluid rounded border image-hover"
+                              style={{
+                                cursor: "pointer",
+                                maxHeight: "200px",
+                                width: "100%",
+                              }}
+                              onClick={() =>
+                                setSelectedLargeImage({
+                                  id: spec.id,
+                                  description: matchedImage.description,
+                                  src: matchedImage.src,
+                                  price: spec.price,
+                                })
+                              }
+                              whileHover={{ scale: 1.1 }}
+                              transition={{ duration: 0.3 }}
+                            />
+                          </div>
+                          <p className="text-center mt-2">
+                            {matchedImage.description} -
+                            <strong>{` السعر: ${spec.price} ر.س`}</strong>
+                          </p>
                         </div>
-                        <p className="text-center mt-2">
-                          {matchedImage.description} -
-                          <strong>{` السعر: ${spec.price} ر.س`}</strong>
-                        </p>
-                      </div>
-                    )
-                  );
-                })}
-            </div>
+                      )
+                    );
+                  })}
+              </div>
+            )}
           </div>
 
           <div className="text-center mt-4">
@@ -464,30 +472,28 @@ const Cart = () => {
 
               {/* اختيار سنة التصنيع */}
               {/* اختيار سنة التصنيع */}
-              {/* اختيار سنة التصنيع */}
               {selectedCarModel && (
                 <div className="mt-4">
                   <label htmlFor="carYear">اختر سنة التصنيع</label>
                   <select
                     id="carYear"
                     className="form-select"
-                    onChange={(e) => setSelectedCarModel(e.target.value)}
+                    value={selectedCarYear}
+                    onChange={(e) => setSelectedCarYear(e.target.value)}
                   >
+                    <option value="">اختر السنة</option>
                     {carModels
                       .filter(
                         (model) => model.id === parseInt(selectedCarModel)
                       )
                       .map((model) => {
                         const years = [];
-
-                        // إضافة السنة الأولى
                         years.push({
                           label: `${model.start_year} ❗`,
                           value: model.start_year,
                           type: "start",
                         });
 
-                        // إضافة السنوات المتوسطة بشكل فترات
                         for (
                           let year = model.start_year;
                           year < model.end_year;
@@ -502,7 +508,6 @@ const Cart = () => {
                           }
                         }
 
-                        // إضافة السنة الأخيرة
                         years.push({
                           label: `${model.end_year} ❗`,
                           value: model.end_year,
@@ -524,53 +529,59 @@ const Cart = () => {
               )}
 
               {/* عرض الصور عند الضغط على علامة التعجب */}
-              {selectedCarModel && (
+              {selectedCarYear && (
                 <div className="mt-3 text-center">
-                  {carModels.map((model) =>
-                    model.start_year.toString() === selectedCarModel ? (
-                      <button
-                        key="startImage"
-                        className="btn btn-light"
-                        onClick={() => {
-                          setVideoSrc(model.image_start_year);
-                          setIsModalVisible(true);
-                        }}
-                      >
-                        <img
-                          src={model.image_start_year}
-                          alt="صورة الموديل البداية"
-                          className="img-fluid rounded"
-                          style={{
-                            width: "150px",
-                            height: "100px",
-                            borderRadius: "8px",
-                            cursor: "pointer",
-                          }}
-                        />
-                      </button>
-                    ) : model.end_year.toString() === selectedCarModel ? (
-                      <button
-                        key="endImage"
-                        className="btn btn-light"
-                        onClick={() => {
-                          setVideoSrc(model.image_end_year);
-                          setIsModalVisible(true);
-                        }}
-                      >
-                        <img
-                          src={model.image_end_year}
-                          alt="صورة الموديل النهاية"
-                          className="img-fluid rounded"
-                          style={{
-                            width: "150px",
-                            height: "100px",
-                            borderRadius: "8px",
-                            cursor: "pointer",
-                          }}
-                        />
-                      </button>
-                    ) : null
-                  )}
+                  {carModels.map((model) => {
+                    const yearString = selectedCarYear.toString();
+
+                    return (
+                      <>
+                        {model.start_year.toString() === yearString ? (
+                          <button
+                            key={`startImage-${model.id}`}
+                            className="btn btn-light"
+                            onClick={() => {
+                              setVideoSrc(model.image_start_year);
+                              setIsModalVisible(true);
+                            }}
+                          >
+                            <img
+                              src={model.image_start_year}
+                              alt="صورة الموديل البداية"
+                              className="img-fluid rounded"
+                              style={{
+                                width: "150px",
+                                height: "100px",
+                                borderRadius: "8px",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </button>
+                        ) : model.end_year.toString() === yearString ? (
+                          <button
+                            key={`endImage-${model.id}`}
+                            className="btn btn-light"
+                            onClick={() => {
+                              setVideoSrc(model.image_end_year);
+                              setIsModalVisible(true);
+                            }}
+                          >
+                            <img
+                              src={model.image_end_year}
+                              alt="صورة الموديل النهاية"
+                              className="img-fluid rounded"
+                              style={{
+                                width: "150px",
+                                height: "100px",
+                                borderRadius: "8px",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </button>
+                        ) : null}
+                      </>
+                    );
+                  })}
                 </div>
               )}
 
