@@ -71,66 +71,6 @@ const Cards = ({ Scroll, changeScroll }) => {
             />
           );
         })}
-        {/* <CardTemplate
-          name={"ele?.name"}
-          description={"ele?.description"}
-          image={productImage}
-          id={"ele.id"}
-        />
-        <CardTemplate
-          name={"ele?.name"}
-          description={"ele?.description"}
-          image={productImage}
-          id={"ele.id"}
-        />
-        <CardTemplate
-          name={"ele?.name"}
-          description={"ele?.description"}
-          image={productImage}
-          id={"ele.id"}
-        />
-        <CardTemplate
-          name={"ele?.name"}
-          description={"ele?.description"}
-          image={productImage}
-          id={"ele.id"}
-        />
-        <CardTemplate
-          name={"ele?.name"}
-          description={"ele?.description"}
-          image={productImage}
-          id={"ele.id"}
-        />
-        <CardTemplate
-          name={"ele?.name"}
-          description={"ele?.description"}
-          image={productImage}
-          id={"ele.id"}
-        />
-        <CardTemplate
-          name={"ele?.name"}
-          description={"ele?.description"}
-          image={productImage}
-          id={"ele.id"}
-        />
-        <CardTemplate
-          name={"ele?.name"}
-          description={"ele?.description"}
-          image={productImage}
-          id={"ele.id"}
-        />
-        <CardTemplate
-          name={"ele?.name"}
-          description={"ele?.description"}
-          image={productImage}
-          id={"ele.id"}
-        />
-        <CardTemplate
-          name={"ele?.name"}
-          description={"ele?.description"}
-          image={productImage}
-          id={"ele.id"}
-        /> */}
       </div>
 
       <div className="m-auto mt-4">
