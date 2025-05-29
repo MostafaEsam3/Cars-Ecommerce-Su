@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { ADD_TO_CART } from "../../redux/Types/types";
 import { v4 as uuidv4 } from "uuid";
+import { useParams } from "react-router-dom";
 
 const imagesGroup1 = [
   {
@@ -58,6 +59,8 @@ const imagesGroup2 = [
 ];
 
 const Cart = () => {
+  const { id } = useParams();
+
   const [selectedSmallImage, setSelectedSmallImage] = useState(null);
   const [selectedLargeImage, setSelectedLargeImage] = useState(null);
   const [savedGroup1Data, setSavedGroup1Data] = useState(null);
@@ -79,73 +82,62 @@ const Cart = () => {
   const [apiData, setApiData] = useState(null);
 
   useEffect(() => {
-    fetch("https://api.admin.kapitiano.com/api/products/order/1")
+    fetch(`https://api.admin.kapitiano.com/api/product-info/${id}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log("API Response:", data); // طباعة البيانات في الكونسول
-        setApiData(data.data); // تخزين البيانات في state
-
-        // استخراج أنواع المقاعد المتاحة من API
-        const seatTypes = new Set();
-        Object.values(data.data).forEach((item) => {
-          if (item.car_type) {
-            item.car_type.forEach((type) => seatTypes.add(type.type));
-          }
-        });
-        setAvailableSeats([...seatTypes]); // حفظ أنواع المقاعد المتاحة
+        console.log("New API Response:", data);
+        setApiData(data.data[0]);
+        setCars(
+          data.data[0].car_specifications.map((spec) => ({
+            id: spec.brand,
+            name: spec.brand_data.name,
+            image: spec.brand_data.image,
+          }))
+        );
       })
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+      .catch((error) => console.error("Error fetching new API data:", error));
+  }, [id]); // ✅ ضع id هنا ليُعاد استدعاء الـ useEffect عند تغيّره
 
   const [availableSeats, setAvailableSeats] = useState([]);
-  useEffect(() => {
-    fetch("https://api.admin.kapitiano.com/api/products/order/1") // API لجلب البيانات
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("API Response:", data);
-        setApiData(data.data); // حفظ البيانات
+  // useEffect(() => {
+  //   fetch("https://api.admin.kapitiano.com/api/products/order/1") // API لجلب البيانات
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log("API Response:", data);
+  //       setApiData(data.data); // حفظ البيانات
 
-        // استخراج أنواع السيارات المتاحة
-        const carBrands = new Set();
-        Object.values(data.data).forEach((item) => {
-          if (item.brand) {
-            carBrands.add({ name: item.brand, image: item.brand_image });
-          }
-        });
-        setCars([...carBrands]); // تحديث السيارات
-      })
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+  //       // استخراج أنواع السيارات المتاحة
+  //       const carBrands = new Set();
+  //       Object.values(data.data).forEach((item) => {
+  //         if (item.brand) {
+  //           carBrands.add({ name: item.brand, image: item.brand_image });
+  //         }
+  //       });
+  //       setCars([...carBrands]); // تحديث السيارات
+  //     })
+  //     .catch((error) => console.error("Error fetching data:", error));
+  // }, []);
 
   const [carModels, setCarModels] = useState([]);
   const [selectedCarModel, setSelectedCarModel] = useState(null);
 
   useEffect(() => {
     if (selectedCarId) {
-      fetch(
-        `https://api.admin.kapitiano.com/api/products/order/models/${selectedCarId}`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Car Models API Response:", data); // ✅ طباعة الاستجابة كاملة
-          setCarModels(data.data); // حفظ بيانات الموديلات
-
-          // ✅ التحقق مما إذا كانت الصور موجودة لكل موديل
-          data.data.forEach((model) => {
-            console.log(`Model ID: ${model.id}, Name: ${model.name}`);
-            console.log(
-              "Start Year Image:",
-              model.image_start_year || "🚨 لا يوجد صورة!"
-            );
-            console.log(
-              "End Year Image:",
-              model.image_end_year || "🚨 لا يوجد صورة!"
-            );
-          });
-        })
-        .catch((error) => console.error("Error fetching models:", error));
+      const models = apiData.car_specifications
+        .filter((spec) => spec.brand === selectedCarId)
+        .map((spec) => ({
+          id: spec.model,
+          name: spec.model_data.name,
+          start_year: spec.model_data.start_year,
+          end_year: spec.model_data.end_year,
+          image_start_year: spec.model_data.image_start_year,
+          image_end_year: spec.model_data.image_end_year,
+          price: spec.price,
+          type: spec.type,
+        }));
+      setCarModels(models);
     }
-  }, [selectedCarId]); // استدعاء عند تغيير ID السيارة المختارة
+  }, [selectedCarId, apiData]);
 
   const dispatch = useDispatch();
   const handleAddToCart = () => {
@@ -164,7 +156,8 @@ const Cart = () => {
 
       // بيانات السيارة
       carName: selectedCar || "",
-      carImage: cars.find((car) => car.name === selectedCar)?.image.thumb || "", // صورة شعار السيارة
+      carImage: cars.find((car) => car.name === selectedCar)?.image || "",
+      // صورة شعار السيارة
       uniqueId: uuidv4(),
     };
     dispatch({ type: ADD_TO_CART, payload: newItem });
@@ -210,13 +203,13 @@ const Cart = () => {
     removeSelection();
   };
 
-  useEffect(() => {
-    fetch("/data.json")
-      .then((response) => response.json())
-      .then((data) => setCars(data))
-      .catch((error) => console.error("Error loading data:", error));
-  }, []);
-  console.log(cars);
+  // useEffect(() => {
+  //   fetch("/data.json")
+  //     .then((response) => response.json())
+  //     .then((data) => setCars(data))
+  //     .catch((error) => console.error("Error loading data:", error));
+  // }, []);
+  // console.log(cars);
 
   const openModal = (image) => {
     setSelectedLargeImage(image);
@@ -272,70 +265,34 @@ const Cart = () => {
         <div className="col-12 col-md-6">
           <h4>تلبيسة الليزر</h4>
           <p>اختر لون التلبيسة*</p>
-          <div className="row row-cols-3 g-4">
-            {apiData &&
-              Object.values(apiData).map((item) => (
-                <div key={item.id} className="col">
-                  <div className="position-relative image-container">
-                    {/* تحويل الصورة إلى motion.div */}
-                    <motion.img
-                      src={item.image} // الصورة القادمة من API
-                      alt={item.description}
-                      className={`img-fluid rounded border image-hover ${getBorderClass(
-                        item,
-                        1
-                      )}`}
-                      style={{
-                        cursor: "pointer",
-                        height: "200px", // جعل الارتفاع ثابتًا
-                        width: "100%", // جعل العرض متجاوبًا مع الحاوية
-                        objectFit: "cover", // التأكد من أن الصورة مغطية بالكامل دون تشويه
-                      }}
-                      onClick={() => handleSelectImageGroup1(item)}
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.3 }}
-                    />
-
-                    <motion.div
-                      className="position-absolute hover-image"
-                      initial={{ opacity: 0, scale: 0.9, visibility: "hidden" }}
-                      animate={{ opacity: 1, scale: 1, visibility: "visible" }}
-                      whileHover={{ opacity: 1, scale: 1.1 }}
-                      transition={{ duration: 0.4, ease: "easeOut" }}
-                    >
-                      <img
-                        src={item.image}
-                        alt={item.description}
-                        className="img-fluid rounded shadow"
-                        style={{ maxHeight: "150px", width: "100%" }}
-                      />
-                      <button
-                        className="btn position-absolute bottom-0 start-0 w-100 video-button video-button-green"
-                        onClick={() => openVideoModal(item.videoSrc)}
-                      >
-                        اضغط هنا لمشاهدة الفيديو
-                      </button>
-                    </motion.div>
-
-                    {/* تعديل موقع الأيقونة */}
-                    <FaSearch
-                      onClick={() => openModal(item)}
-                      className="position-absolute bg-black text-white rounded-circle p-2"
-                      style={{
-                        cursor: "pointer",
-                        bottom: "10px",
-                        right: "10px",
-                        fontSize: "30px",
-                        color: "white",
-                      }}
-                    />
-                  </div>
-
-                  {/* النص تحت كل صورة */}
-                  <p className="text-center mt-2">{item.description}</p>
-                </div>
-              ))}
-          </div>
+          {apiData && (
+            <div
+              className="mx-auto mx-lg-0 ms-lg-6"
+              style={{ maxWidth: "300px" }}
+            >
+              <div className="position-relative image-container">
+                <motion.img
+                  src={apiData.image}
+                  alt={apiData.description}
+                  className={`img-fluid rounded border image-hover ${getBorderClass(
+                    apiData,
+                    1
+                  )}`}
+                  style={{
+                    cursor: "pointer",
+                    height: "200px",
+                    width: "100%",
+                    objectFit: "contain",
+                    backgroundColor: "#f8f9fa",
+                  }}
+                  onClick={() => handleSelectImageGroup1(apiData)}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
+              <p className="text-center mt-2">{apiData.description}</p>
+            </div>
+          )}
 
           {/* عرض المجموعة الثانية من الصور */}
           <div className="mt-5">
@@ -347,18 +304,14 @@ const Cart = () => {
             </div>
             <div className="row row-cols-3 g-4">
               {selectedSmallImage &&
-                (
-                  Object.values(apiData).find(
-                    (item) => item.id === selectedSmallImage.id
-                  )?.car_type || []
-                ).map((carType) => {
+                (apiData?.car_specifications || []).map((spec) => {
                   const matchedImage = imagesGroup2.find((image) =>
-                    image.description.includes(typeMapping[carType.type])
+                    image.description.includes(typeMapping[spec.type])
                   );
                   return (
                     matchedImage && (
                       <div
-                        key={`${selectedSmallImage.id}-${carType.id}`}
+                        key={`${selectedSmallImage.id}-${spec.id}`}
                         className="col"
                       >
                         <div className="position-relative image-container">
@@ -373,10 +326,10 @@ const Cart = () => {
                             }}
                             onClick={() =>
                               setSelectedLargeImage({
-                                id: carType.id,
+                                id: spec.id,
                                 description: matchedImage.description,
                                 src: matchedImage.src,
-                                price: carType.price,
+                                price: spec.price,
                               })
                             }
                             whileHover={{ scale: 1.1 }}
@@ -385,7 +338,7 @@ const Cart = () => {
                         </div>
                         <p className="text-center mt-2">
                           {matchedImage.description} -
-                          <strong>{` السعر: ${carType.price} ر.س`}</strong>
+                          <strong>{` السعر: ${spec.price} ر.س`}</strong>
                         </p>
                       </div>
                     )
@@ -452,8 +405,8 @@ const Cart = () => {
                   </li>
 
                   {/* عرض البراندات من الـ API */}
-                  {apiData && apiData.brands && apiData.brands.length > 0 ? (
-                    apiData.brands.map((brand) => (
+                  {cars && cars.length > 0 ? (
+                    cars.map((brand) => (
                       <li key={brand.id}>
                         <a
                           className="dropdown-item"
@@ -477,10 +430,7 @@ const Cart = () => {
                   <h5>السيارة المختارة: {selectedCar}</h5>
                   <img
                     src={
-                      apiData &&
-                      Object.values(apiData).find(
-                        (item) => item.brand === selectedCar
-                      )?.brand_image
+                      cars.find((car) => car.name === selectedCar)?.image || ""
                     }
                     alt={selectedCar}
                     style={{
