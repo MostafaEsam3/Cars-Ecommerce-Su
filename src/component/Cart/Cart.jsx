@@ -203,13 +203,13 @@ const Cart = () => {
     removeSelection();
   };
 
-  useEffect(() => {
-    fetch("/data.json")
-      .then((response) => response.json())
-      .then((data) => setCars(data))
-      .catch((error) => console.error("Error loading data:", error));
-  }, []);
-  console.log(cars);
+  // useEffect(() => {
+  //   fetch("/data.json")
+  //     .then((response) => response.json())
+  //     .then((data) => setCars(data))
+  //     .catch((error) => console.error("Error loading data:", error));
+  // }, []);
+  // console.log(cars);
 
   const openModal = (image) => {
     setSelectedLargeImage(image);
