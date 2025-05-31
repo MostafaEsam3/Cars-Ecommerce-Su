@@ -49,8 +49,6 @@ const Dashboard = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-
-
   const handleLogout = () => {
     Modal.confirm({
       title: "تأكيد تسجيل الخروج",
@@ -71,7 +69,7 @@ const Dashboard = () => {
 
   const items = [
     getItem(
-      "إضافة المنتجات",
+      "نوع الجلد",
       "1",
       <ShoppingCartOutlined style={{ fontSize: "25px" }} />,
       "/admin-dashboard/products"
@@ -89,13 +87,13 @@ const Dashboard = () => {
       "/admin-dashboard/add-category"
     ),
     getItem(
-      "إضافة البراندات",
+      "شعار السياره",
       "4",
       <TrademarkCircleOutlined style={{ fontSize: "25px" }} />,
       "/admin-dashboard/add-brand"
     ),
     getItem(
-      "إضافة الموديلات",
+      "نوع السياره",
       "5",
       <CarOutlined style={{ fontSize: "25px" }} />,
       "/admin-dashboard/add-model"
@@ -170,16 +168,89 @@ const Dashboard = () => {
             }}
           >
             <Routes>
-              <Route path="/" element={<Navigate to="products" replace />} /> {/* ✅ Add this */}
-              <Route path="products" element={<ProtectedRoute> <AddProduct /> </ProtectedRoute>} />
-              <Route path="orders" element={<ProtectedRoute>  <Order />  </ProtectedRoute>} />
-              <Route path="add-category" element={<ProtectedRoute> <AddCategory /> </ProtectedRoute>} />
-              <Route path="add-brand" element={<ProtectedRoute>   <AddBrand /> </ProtectedRoute>} />
-              <Route path="add-model" element={<ProtectedRoute>  <AddModel /> </ProtectedRoute>} />
-              <Route path="add-color" element={<ProtectedRoute> <AddColor />  </ProtectedRoute>} />
-              <Route path="add-specify" element={<ProtectedRoute> <AddSpecification />  </ProtectedRoute>} />
-              <Route path="contactUsDashboard" element={<ProtectedRoute> <ContactUsDashboard /></ProtectedRoute>} />
-              <Route path="delivery" element={<ProtectedRoute>  <DeliveryPage />  </ProtectedRoute>} />
+              <Route path="/" element={<Navigate to="products" replace />} />{" "}
+              {/* ✅ Add this */}
+              <Route
+                path="products"
+                element={
+                  <ProtectedRoute>
+                    {" "}
+                    <AddProduct />{" "}
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="orders"
+                element={
+                  <ProtectedRoute>
+                    {" "}
+                    <Order />{" "}
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="add-category"
+                element={
+                  <ProtectedRoute>
+                    {" "}
+                    <AddCategory />{" "}
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="add-brand"
+                element={
+                  <ProtectedRoute>
+                    {" "}
+                    <AddBrand />{" "}
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="add-model"
+                element={
+                  <ProtectedRoute>
+                    {" "}
+                    <AddModel />{" "}
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="add-color"
+                element={
+                  <ProtectedRoute>
+                    {" "}
+                    <AddColor />{" "}
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="add-specify"
+                element={
+                  <ProtectedRoute>
+                    {" "}
+                    <AddSpecification />{" "}
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="contactUsDashboard"
+                element={
+                  <ProtectedRoute>
+                    {" "}
+                    <ContactUsDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="delivery"
+                element={
+                  <ProtectedRoute>
+                    {" "}
+                    <DeliveryPage />{" "}
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
           </div>
         </Content>

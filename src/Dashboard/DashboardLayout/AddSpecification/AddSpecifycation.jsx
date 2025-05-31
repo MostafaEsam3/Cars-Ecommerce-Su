@@ -378,6 +378,15 @@ export default function AddSpecification() {
                 <span className="text-danger">{formik.errors.price}</span>
               ) : null}
             </div>
+            <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
+              <label className="fw-bold">سعر الشنطة </label>
+              <input
+                name="bag_price"
+                type="text"
+                className="form-control"
+                {...formik.getFieldProps("bag_price")}
+              />
+            </div>
           </div>
           <div className="text-center ">
             <button
