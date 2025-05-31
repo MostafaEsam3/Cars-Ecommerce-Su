@@ -188,7 +188,7 @@ export default function AddSpecification() {
       key: "id",
     },
     {
-      title: "اسم شعار السياره",
+      title: " شعار السياره",
       dataIndex: "brand_name",
       key: "brand_name",
 
@@ -198,7 +198,24 @@ export default function AddSpecification() {
       dataIndex: "paneling_name",
       key: "paneling_name",
     },
-
+    {
+      title: " نوع السياره",
+      dataIndex: "model_name",
+      key: "model_name",
+    },
+    {
+      title: "  عدد الكراسي",
+      dataIndex: "car_chairs",
+      key: "car_chairs",
+      render: (car_chairs) => {
+        return (
+          <span>
+            {car_chairs == "2" ? "2 كرسي" : car_chairs == "3" ? "تلاث كراسي" : "خمس كراسي"}
+          </span>
+        );
+      }
+    },
+    
     {
       title: "تحديث",
       dataIndex: "id",

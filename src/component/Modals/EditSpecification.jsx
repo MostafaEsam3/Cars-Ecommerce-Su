@@ -242,7 +242,7 @@ export default function EditSpecification(props) {
 
                     {/* models  */}
                     <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-12 mt-2">
-                      <label className="fw-bold">اختر الموديل</label>
+                      <label className="fw-bold">اختر نوع السياره</label>
                       <select
                         id="dataSelect"
                         className="form-select"
@@ -334,7 +334,7 @@ export default function EditSpecification(props) {
                     </div>
 
                     <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-12">
-                      <label className="fw-bold">السعر </label>
+                      <label className="fw-bold">سعر الشنطه </label>
                       <input
                         name="bag_price"
                         type="text"
