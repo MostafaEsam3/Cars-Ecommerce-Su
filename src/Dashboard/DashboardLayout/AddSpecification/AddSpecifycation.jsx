@@ -126,7 +126,6 @@ export default function AddSpecification() {
         model_id: values.model_id,
         price: values.price,
         bag_price: values.bag_price,
-
       };
       // Log the is_connect value to debug
       console.log("is_connect value:", values.is_connect);
@@ -190,18 +189,9 @@ export default function AddSpecification() {
     },
     {
       title: "اسم شعار السياره",
-      dataIndex: "brands",
-      key: "brands",
-      render: (brands) => (
-        <span>
-          {brands?.map((brand, index) => (
-            <span key={index}>
-              {brand.name}
-              {index < brands.length - 1 ? ", " : ""}
-            </span>
-          ))}
-        </span>
-      ),
+      dataIndex: "brand_name",
+      key: "brand_name",
+
     },
     {
       title: "اسم المنتج",
@@ -215,7 +205,7 @@ export default function AddSpecification() {
       key: "id",
       render: (
         id,
-        { paneling_id, is_connect, brands, model_id, price, car_chairs, bag_price }
+        { paneling_id, is_connect, brands, model_id, price, car_chairs, bag_price, brand_id }
       ) => (
         <div style={{ display: "flex", alignItems: "center" }}>
           <button
@@ -225,7 +215,7 @@ export default function AddSpecification() {
             onClick={() =>
               collectedDataToEdit(id, {
                 paneling_id: paneling_id,
-                brands: brands,
+                brand_id:brand_id, // Assuming you want to use the first brand ID
                 id: id,
                 model_id: model_id,
                 price: price,
