@@ -228,12 +228,12 @@ export default function AddBrand() {
     <>
       {/* tost delete modala */}
       <DeleteModal />
-      <h1 className="text-center mainFont">اضافه البراندات</h1>
+      <h1 className="text-center mainFont">اضافه شعار السياره</h1>
       <form onSubmit={formik.handleSubmit} className="mt-3 mainFont">
         <div className="container-fluid dir-ar mainFont">
           <div className="col-xs-11 text-center flex-column justify-content-center align-items-center">
             <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
-              <label className="fw-bold">اسم البراند</label>
+              <label className="fw-bold">اسم شعار السياره</label>
               <input
                 name="name"
                 type="text"
@@ -246,7 +246,7 @@ export default function AddBrand() {
               ) : null}
             </div>
             <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
-              <label className="fw-bold">اضافه صوره براند</label>
+              <label className="fw-bold">اضافه صوره الشعار</label>
               <input
                 type="file"
                 className="form-control"

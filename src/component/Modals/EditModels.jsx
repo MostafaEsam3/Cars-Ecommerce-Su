@@ -154,7 +154,7 @@ export default function EditModels(props) {
               ></button>
             </div>
             <div className="modal-body">
-              <h1 className="text-center">اضافه الموديلات</h1>
+              <h1 className="text-center">تعديل نوع السياره</h1>
               <form onSubmit={formik.handleSubmit} className="mt-3">
                 <div className="container-fluid dir-ar">
                   <div className="col-xs-11 text-center flex-column justify-content-center align-items-center">
@@ -261,7 +261,7 @@ export default function EditModels(props) {
                       ) : null}
                     </div>
                     <div className="mt-2 col-12 mb-3">
-                      <label className="fw-bold">اختر البراند</label>
+                      <label className="fw-bold">اختر شعار السياره</label>
                       <select
                         id="dataSelect"
                         className="form-select"
@@ -272,7 +272,7 @@ export default function EditModels(props) {
                         onChange={formik.handleChange}
                       >
                         <option value="" disabled selected>
-                          اختر البراند
+                          اختر شعار السياره
                         </option>
                         {BrandData.map((item, index) => (
                           <option key={index} value={item.id}>
