@@ -61,6 +61,7 @@ export default function AddSpecification() {
   const isConnect = [
     { name: "متصل", id: 1 },
     { name: " منفصل", id: 0 },
+    { name: "لا شئ ", id: 2 },
   ];
 
   useEffect(() => {
@@ -115,18 +116,33 @@ export default function AddSpecification() {
       brands: Yup.array().required("يرجي ادخال براند"),
       car_chairs: Yup.string().required("يرجي ادخال عدد المقاعد"),
       price: Yup.string().required("يرجي ادخال السعر"),
-      is_connect: Yup.string().required("يرجي ادخال هل منفصل ولا متصل "),
+      // is_connect: Yup.string().required("يرجي ادخال هل منفصل ولا متصل "),
     }),
     onSubmit: (values, { resetForm }) => {
       const payload = {
         paneling_id: values.paneling_id,
         brands: values.brands.map(brandId => ({ id: brandId })),
         car_chairs: values.car_chairs,
-        is_connect: values.is_connect,
         model_id: values.model_id,
         price: values.price,
         bag_price: values.bag_price,
+
       };
+      // Log the is_connect value to debug
+      console.log("is_connect value:", values.is_connect);
+      console.log("is_connect type:", typeof values.is_connect);
+      if (values.is_connect === "") {
+        console.log("Case 1: is_connect is empty, not adding to payload");
+      }
+      // Case 2: Do not add is_connect if it is "2" (لا شئ)
+      else if (values.is_connect == "2") {
+        console.log("Case 2: is_connect is 'لا شئ', not adding to payload");
+      }
+      // Only add is_connect for other valid values (e.g., "0" or "1")
+      else {
+        console.log("Adding is_connect to payload with value:", values.is_connect);
+        payload.is_connect = values.is_connect;
+      }
       AddSpecify(payload);
       resetForm();
     },
@@ -435,7 +451,7 @@ export default function AddSpecification() {
             </div>
             {/*  */}
 
-            <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3 mt-2">
+            <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3">
               <label className="fw-bold">اختر عدد الكراسي </label>
               <select
                 id="dataSelect"
@@ -464,11 +480,11 @@ export default function AddSpecification() {
                 id="dataSelect"
                 className="form-select"
                 name="is_connect"
-                required
+                
                 {...formik.getFieldProps("is_connect")}
               >
                 <option value="" disabled selected>
-                  متصل او منفصل{" "}
+                  متصل او منفصل
                 </option>
                 {isConnect?.map((item, index) => (
                   <option key={index} value={item.id}>

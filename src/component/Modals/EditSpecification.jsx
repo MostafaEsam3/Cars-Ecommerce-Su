@@ -61,6 +61,7 @@ export default function EditSpecification(props) {
   const isConnect = [
     { name: "متصل", id: 1 },
     { name: " منفصل", id: 0 },
+    { name: "لا شئ", id: 2 },
   ];
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -117,7 +118,7 @@ export default function EditSpecification(props) {
       // Convert brands array to a string of comma-separated values
       formData.append("brands", JSON.stringify(values.brands.map(brandId => ({ id: brandId }))));
       formData.append("car_chairs", values.car_chairs);
-      formData.append("is_connect", values.is_connect);
+      
       formData.append("model_id", values.model_id);
       formData.append("price", values.price);
       formData.append("_method", "PUT");
