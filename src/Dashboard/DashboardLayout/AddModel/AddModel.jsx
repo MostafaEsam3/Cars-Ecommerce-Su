@@ -270,12 +270,12 @@ export default function AddModel() {
         </div>
       )}
       <DeleteModal />
-      <h1 className="text-center mainFont">اضافه الموديلات</h1>
+      <h1 className="text-center mainFont">اضافه نوع السياره</h1>
       <form onSubmit={formik.handleSubmit} className="mt-4">
         <div className="container-fluid dir-ar mainFont">
           <div className="col-xs-11 text-center row">
             <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
-              <label className="fw-bold">اسم القسم</label>
+              <label className="fw-bold">اسم نوع السياره</label>
               {/* {formik.values.name == "" ? 
                             (<span>kdjhgjhked</span>) : null} */}
               <input
@@ -405,7 +405,7 @@ export default function AddModel() {
               ) : null}
             </div>
             <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3 mt-2">
-              <label className="fw-bold">اختر البراند</label>
+              <label className="fw-bold">اختر شعار السياره</label>
               <select
                 id="dataSelect"
                 className="form-select"
@@ -414,7 +414,7 @@ export default function AddModel() {
                 {...formik.getFieldProps("brand_id")}
               >
                 <option value="" disabled selected>
-                  اختر البراند
+                  اختر شعار السياره
                 </option>
                 {BrandData.map((item, index) => (
                   <option key={index} value={item.id}>

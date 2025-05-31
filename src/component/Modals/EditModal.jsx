@@ -131,7 +131,7 @@ export default function EditModal(props) {
                 <div className="container-fluid dir-ar">
                   <div className="col-xs-11 text-center row">
                     <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-12">
-                      <label className="fw-bold">اسم البراند</label>
+                      <label className="fw-bold">اسم شعار السياره</label>
                       <input
                         name="name"
                         type="text"
@@ -143,7 +143,7 @@ export default function EditModal(props) {
                       ) : null}
                     </div>
                     <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-12">
-                      <label className="fw-bold">اضافه صوره براند</label>
+                      <label className="fw-bold">اضافه صوره الشعار</label>
                       <input
                         type="file"
                         accept=".jpg, .jpeg, .png"

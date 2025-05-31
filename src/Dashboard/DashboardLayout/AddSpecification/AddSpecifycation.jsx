@@ -15,6 +15,14 @@ import Swal from "sweetalert2";
 import EditColor from "../../../component/Modals/EditColor";
 import EditSpecification from "../../../component/Modals/EditSpecification";
 import axiosInstance from "../../../util/interceptor";
+import {
+  Checkbox,
+  ListItemText,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 
 export default function AddSpecification() {
   const imgInputRef = useRef(null);
@@ -53,6 +61,7 @@ export default function AddSpecification() {
   const isConnect = [
     { name: "متصل", id: 1 },
     { name: " منفصل", id: 0 },
+    { name: "لا شئ ", id: 2 },
   ];
 
   useEffect(() => {
@@ -95,28 +104,45 @@ export default function AddSpecification() {
     initialValues: {
       paneling_id: "",
       model_id: "",
-      brand_id: "",
+      brands: [],
       car_chairs: "",
       price: "",
       is_connect: "",
+      bag_price: "",
     },
     validationSchema: Yup.object({
       paneling_id: Yup.string().required("يرجي ادخال اسم منتج"),
       model_id: Yup.string().required("يرجي ادخال موديل"),
-      brand_id: Yup.string().required("يرجي ادخال براند"),
+      brands: Yup.array().required("يرجي ادخال براند"),
       car_chairs: Yup.string().required("يرجي ادخال عدد المقاعد"),
       price: Yup.string().required("يرجي ادخال السعر"),
-      is_connect: Yup.string().required("يرجي ادخال هل منفصل ولا متصل "),
+      // is_connect: Yup.string().required("يرجي ادخال هل منفصل ولا متصل "),
     }),
     onSubmit: (values, { resetForm }) => {
       const payload = {
         paneling_id: values.paneling_id,
-        brand_id: values.brand_id,
+        brands: values.brands.map(brandId => ({ id: brandId })),
         car_chairs: values.car_chairs,
-        is_connect: values.is_connect,
         model_id: values.model_id,
         price: values.price,
+        bag_price: values.bag_price,
+
       };
+      // Log the is_connect value to debug
+      console.log("is_connect value:", values.is_connect);
+      console.log("is_connect type:", typeof values.is_connect);
+      if (values.is_connect === "") {
+        console.log("Case 1: is_connect is empty, not adding to payload");
+      }
+      // Case 2: Do not add is_connect if it is "2" (لا شئ)
+      else if (values.is_connect == "2") {
+        console.log("Case 2: is_connect is 'لا شئ', not adding to payload");
+      }
+      // Only add is_connect for other valid values (e.g., "0" or "1")
+      else {
+        console.log("Adding is_connect to payload with value:", values.is_connect);
+        payload.is_connect = values.is_connect;
+      }
       AddSpecify(payload);
       resetForm();
     },
@@ -163,9 +189,19 @@ export default function AddSpecification() {
       key: "id",
     },
     {
-      title: "اسم البراند",
-      dataIndex: "brand_name",
-      key: "brand_name",
+      title: "اسم شعار السياره",
+      dataIndex: "brands",
+      key: "brands",
+      render: (brands) => (
+        <span>
+          {brands?.map((brand, index) => (
+            <span key={index}>
+              {brand.name}
+              {index < brands.length - 1 ? ", " : ""}
+            </span>
+          ))}
+        </span>
+      ),
     },
     {
       title: "اسم المنتج",
@@ -179,7 +215,7 @@ export default function AddSpecification() {
       key: "id",
       render: (
         id,
-        { paneling_id, is_connect, brand_id, model_id, price, car_chairs }
+        { paneling_id, is_connect, brands, model_id, price, car_chairs, bag_price }
       ) => (
         <div style={{ display: "flex", alignItems: "center" }}>
           <button
@@ -189,12 +225,13 @@ export default function AddSpecification() {
             onClick={() =>
               collectedDataToEdit(id, {
                 paneling_id: paneling_id,
-                brand_id: brand_id,
+                brands: brands,
                 id: id,
                 model_id: model_id,
                 price: price,
                 is_connect: is_connect,
                 car_chairs: car_chairs,
+                bag_price: bag_price
               })
             }
           >
@@ -246,28 +283,123 @@ export default function AddSpecification() {
       <form onSubmit={formik.handleSubmit} className="mt-3">
         <div className="container-fluid dir-ar mainFont">
           <div className="col-xs-11 text-center row align-items-lg-center">
-            <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3 mt-2">
-              <label className="fw-bold">اختر البراند</label>
-              <select
-                id="dataSelect"
-                className="form-select"
-                name="brand_id"
-                required
-                {...formik.getFieldProps("brand_id")}
-              >
-                <option value="" disabled selected>
+           {/* <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3 mt-2">
+              <label className="fw-bold">اختر شعار السياره</label>
+              <div className="dropdown">
+             
+                <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                   اختر البراند
-                </option>
-                {BrandData.map((item, index) => (
-                  <option key={index} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-              {formik.touched.brand_id && formik.errors.brand_id ? (
-                <div className="text-danger">{formik.errors.brand_id}</div>
+                </button>
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <li>
+                    <div className="dropdown-item">
+                      <input
+                        className="form-check-input me-2"
+                        type="checkbox"
+                        id="select-all-brands"
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            const allBrandIds = BrandData.map(brand => brand.id);
+                            formik.setFieldValue("brands", allBrandIds);
+                          } else {
+                            formik.setFieldValue("brands", []);
+                          }
+                        }}
+                        checked={formik.values.brands.length === BrandData.length}
+                      />
+                      <label className="form-check-label" htmlFor="select-all-brands">
+                        تحديد الكل
+                      </label>
+                    </div>
+                  </li>
+                  {BrandData.map((item, index) => (
+                    <li key={index}>
+                      <div className="dropdown-item">
+                        <input
+                          className="form-check-input me-2"
+                          type="checkbox"
+                          value={item.id}
+                          id={`brand-${item.id}`}
+                          name="brands"
+                          onChange={(e) => {
+                            const value = parseInt(e.target.value);
+                            if (e.target.checked) {
+                              formik.setFieldValue("brands", [...formik.values.brands, value]);
+                            } else {
+                              formik.setFieldValue("brands", formik.values.brands.filter(brandId => brandId !== value));
+                            }
+                          }}
+                          checked={formik.values.brands.includes(item.id)}
+                        />
+                        <label className="form-check-label" htmlFor={`brand-${item.id}`}>
+                          {item.name}
+                        </label>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {formik.touched.brands && formik.errors.brands ? (
+                <div className="text-danger">{formik.errors.brands}</div>
               ) : null}
+            </div> */}
+            <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3 ">
+              <label className="fw-bold">   اختر شعار السياره  </label>
+
+              <FormControl fullWidth>
+                {/* <InputLabel id="brand-select-label" className="fw-bold">
+                
+                </InputLabel> */}
+                <Select
+                  labelId="brand-select-label"
+                  multiple
+                  value={formik.values.brands}
+                  onChange={(event) => {
+                    const value = event.target.value;
+
+                    // Handle "Select All"
+                    if (value.includes("all")) {
+                      if (formik.values.brands.length === BrandData.length) {
+                        formik.setFieldValue("brands", []);
+                      } else {
+                        formik.setFieldValue(
+                          "brands",
+                          BrandData.map((brand) => brand.id)
+                        );
+                      }
+                    } else {
+                      formik.setFieldValue("brands", value);
+                    }
+                  }}
+                  renderValue={(selected) =>
+                    BrandData.filter((brand) => selected.includes(brand.id))
+                      .map((brand) => brand.name)
+                      .join(", ")
+                  }
+                >
+                  <MenuItem value="all">
+                    <Checkbox
+                      checked={formik.values.brands.length === BrandData.length}
+                      indeterminate={
+                        formik.values.brands.length > 0 &&
+                        formik.values.brands.length < BrandData.length
+                      }
+                    />
+                    <ListItemText primary="تحديد الكل" />
+                  </MenuItem>
+                  {BrandData.map((item) => (
+                    <MenuItem key={item.id} value={item.id}>
+                      <Checkbox checked={formik.values.brands.includes(item.id)} />
+                      <ListItemText primary={item.name} />
+                    </MenuItem>
+                  ))}
+                </Select>
+                {formik.touched.brands && formik.errors.brands ? (
+                  <div className="text-danger">{formik.errors.brands}</div>
+                ) : null}
+              </FormControl>
             </div>
+
 
             {/* pannelling */}
 
@@ -296,7 +428,7 @@ export default function AddSpecification() {
 
             {/* models  */}
             <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3 mt-2">
-              <label className="fw-bold">اختر الموديل</label>
+              <label className="fw-bold">اختر نوع السياره</label>
               <select
                 id="dataSelect"
                 className="form-select"
@@ -305,7 +437,7 @@ export default function AddSpecification() {
                 {...formik.getFieldProps("model_id")}
               >
                 <option value="" disabled selected>
-                  اختر الموديل
+                  اختر نوع السياره
                 </option>
                 {ModelData?.map((item, index) => (
                   <option key={index} value={item.id}>
@@ -319,7 +451,7 @@ export default function AddSpecification() {
             </div>
             {/*  */}
 
-            <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3 mt-2">
+            <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3">
               <label className="fw-bold">اختر عدد الكراسي </label>
               <select
                 id="dataSelect"
@@ -348,11 +480,11 @@ export default function AddSpecification() {
                 id="dataSelect"
                 className="form-select"
                 name="is_connect"
-                required
+                
                 {...formik.getFieldProps("is_connect")}
               >
                 <option value="" disabled selected>
-                  متصل او منفصل{" "}
+                  متصل او منفصل
                 </option>
                 {isConnect?.map((item, index) => (
                   <option key={index} value={item.id}>

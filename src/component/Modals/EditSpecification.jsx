@@ -61,6 +61,7 @@ export default function EditSpecification(props) {
   const isConnect = [
     { name: "متصل", id: 1 },
     { name: " منفصل", id: 0 },
+    { name: "لا شئ", id: 2 },
   ];
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -98,7 +99,7 @@ export default function EditSpecification(props) {
     initialValues: {
       paneling_id: "",
       model_id: "",
-      brand_id: "",
+      brands: [],
       car_chairs: "",
       price: "",
       is_connect: "",
@@ -106,7 +107,7 @@ export default function EditSpecification(props) {
     validationSchema: Yup.object({
       paneling_id: Yup.string().required("يرجي ادخال اسم منتج"),
       model_id: Yup.string().required("يرجي ادخال موديل"),
-      brand_id: Yup.string().required("يرجي ادخال براند"),
+      brands: Yup.array().required("يرجي ادخال براند"),
       car_chairs: Yup.string().required("يرجي ادخال عدد المقاعد"),
       price: Yup.string().required("يرجي ادخال السعر"),
       is_connect: Yup.string().required("يرجي ادخال هل منفصل ولا متصل "),
@@ -114,9 +115,10 @@ export default function EditSpecification(props) {
     onSubmit: (values, { resetForm, setSubmitting }) => {
       const formData = new FormData();
       formData.append("paneling_id", values.paneling_id);
-      formData.append("brand_id", values.brand_id);
+      // Convert brands array to a string of comma-separated values
+      formData.append("brands", JSON.stringify(values.brands.map(brandId => ({ id: brandId }))));
       formData.append("car_chairs", values.car_chairs);
-      formData.append("is_connect", values.is_connect);
+      
       formData.append("model_id", values.model_id);
       formData.append("price", values.price);
       formData.append("_method", "PUT");
@@ -128,22 +130,26 @@ export default function EditSpecification(props) {
         setSubmitting(false); // ← مهم جدًا لإعلام Formik أن الإرسال انتهى
       });
       console.log(
-        "Sending brand_id →",
-        values.brand_id,
-        typeof values.brand_id
+        "Sending brands →",
+        values.brands,
+        typeof values.brands
       );
     },
   });
 
   useEffect(() => {
-    if (props.i) {
+    if (props.i ) {
+      // Assuming props.i.brands is an array of brand objects with an 'id' property
+      // const initialBrandIds = props.i.brands.map(brand => brand.id);
       formik.setValues({
         paneling_id: props.i.paneling_id,
         model_id: props.i.model_id,
-        brand_id: props.i.brand_id,
+        // brands: initialBrandIds,
         car_chairs: props.i.car_chairs,
         price: props.i.price,
         is_connect: props.i.is_connect,
+
+        bag_price: props.i.bag_price || "",
       });
     }
   }, [props.i]);
@@ -179,30 +185,65 @@ export default function EditSpecification(props) {
               <form onSubmit={formik.handleSubmit} className="mt-3">
                 <div className="container-fluid dir-ar">
                   <div className="col-xs-11 text-center row align-items-lg-center">
-                    <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-12 mt-2">
+                   {/* <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-12 mt-2">
                       <label className="fw-bold">اختر البراند</label>
-                      <select
-                        id="dataSelect"
-                        className="form-select"
-                        name="brand_id"
-                        required
-                        {...formik.getFieldProps("brand_id")}
-                      >
-                        <option value="" disabled selected>
+                      <div className="dropdown">
+                        <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                           اختر البراند
-                        </option>
-                        {BrandData.map((item, index) => (
-                          <option key={index} value={item.id}>
-                            {item.name}
-                          </option>
-                        ))}
-                      </select>
-                      {formik.touched.brand_id && formik.errors.brand_id ? (
-                        <div className="text-danger">
-                          {formik.errors.brand_id}
-                        </div>
+                        </button>
+                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <li>
+                            <div className="dropdown-item">
+                              <input
+                                className="form-check-input me-2"
+                                type="checkbox"
+                                id="select-all-brands"
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    const allBrandIds = BrandData.map(brand => brand.id);
+                                    formik.setFieldValue("brands", allBrandIds);
+                                  } else {
+                                    formik.setFieldValue("brands", []);
+                                  }
+                                }}
+                                checked={formik.values.brands.length === BrandData.length}
+                              />
+                              <label className="form-check-label" htmlFor="select-all-brands">
+                                تحديد الكل
+                              </label>
+                            </div>
+                          </li>
+                          {BrandData.map((item, index) => (
+                            <li key={index}>
+                              <div className="dropdown-item">
+                                <input
+                                  className="form-check-input me-2"
+                                  type="checkbox"
+                                  value={item.id}
+                                  id={`brand-${item.id}`}
+                                  name="brands"
+                                  onChange={(e) => {
+                                    const value = parseInt(e.target.value);
+                                    if (e.target.checked) {
+                                      formik.setFieldValue("brands", [...formik.values.brands, value]);
+                                    } else {
+                                      formik.setFieldValue("brands", formik.values.brands.filter(brandId => brandId !== value));
+                                    }
+                                  }}
+                                  checked={formik.values.brands.includes(item.id)}
+                                />
+                                <label className="form-check-label" htmlFor={`brand-${item.id}`}>
+                                  {item.name}
+                                </label>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      {formik.touched.brands && formik.errors.brands ? (
+                        <div className="text-danger">{formik.errors.brands}</div>
                       ) : null}
-                    </div>
+                    </div> */}
 
                     {/* pannelling */}
 
@@ -321,6 +362,22 @@ export default function EditSpecification(props) {
                       {formik.touched.price && formik.errors.price ? (
                         <span className="text-danger">
                           {formik.errors.price}
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <div className="form-group col-xs-12 col-sm-2 col-md-2 col-lg-12">
+                      <label className="fw-bold">السعر </label>
+                      <input
+                        name="bag_price"
+                        type="text"
+                        className="form-control"
+                        required
+                        {...formik.getFieldProps("bag_price")}
+                      />
+                      {formik.touched.bag_price && formik.errors.bag_price ? (
+                        <span className="text-danger">
+                          {formik.errors.bag_price}
                         </span>
                       ) : null}
                     </div>
