@@ -61,6 +61,9 @@ const imagesGroup2 = [
 const Cart = () => {
   const { id } = useParams();
   const [selectedCarYear, setSelectedCarYear] = useState("");
+  const [selectedDoorCount, setSelectedDoorCount] = useState("");
+  const [selectedRoofType, setSelectedRoofType] = useState("");
+  const [selectedConnectOption, setSelectedConnectOption] = useState("");
 
   const [selectedSmallImage, setSelectedSmallImage] = useState(null);
   const [selectedLargeImage, setSelectedLargeImage] = useState(null);
@@ -470,6 +473,120 @@ const Cart = () => {
                 </div>
               )}
 
+              {selectedCarModel &&
+                (() => {
+                  const specList = apiData.car_specifications.filter(
+                    (s) => s.model === parseInt(selectedCarModel)
+                  );
+
+                  // اجمع كل القيم الفريدة
+                  const uniqueConnectOptions = [
+                    ...new Set(
+                      specList
+                        .map((s) => s.is_connect)
+                        .filter((v) => v !== null)
+                    ),
+                  ];
+
+                  const optionLabels = {
+                    1: "متصل",
+                    0: "منفصل",
+                  };
+
+                  return (
+                    <div className="mt-4">
+                      <label htmlFor="isConnectSelect">الصف الأمامي</label>
+                      <select
+                        id="isConnectSelect"
+                        className="form-select"
+                        value={selectedConnectOption}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setSelectedConnectOption(value);
+                          console.log("اختيار المستخدم للاتصال:", value);
+                        }}
+                      >
+                        <option value="">اختر الحالة</option>
+                        {uniqueConnectOptions.map((value) => (
+                          <option key={value} value={value}>
+                            {optionLabels[value] || `غير معروف (${value})`}
+                          </option>
+                        ))}
+                      </select>
+
+                      {/* عرض الملاحظة عند اختيار المستخدم */}
+                      {selectedConnectOption !== "" && (
+                        <div className="mt-3">
+                          <div className="card">
+                            <div className="card-body text-center">
+                              <h5 className="card-title">
+                                {selectedConnectOption === "1"
+                                  ? "متصل"
+                                  : "منفصل"}
+                              </h5>
+                              <p className="card-text">
+                                هذه صورة توضيحية لحالة الصف الأمامي (
+                                {selectedConnectOption === "1"
+                                  ? "متصل"
+                                  : "منفصل"}
+                                )
+                              </p>
+                              <img
+                                src={
+                                  selectedConnectOption === "1"
+                                    ? "/متصل.jpg" // ضع صورة المتصل هنا
+                                    : "/WhatsApp Image 2025-05-29 at 20.16.37_328977b7.jpg" // ضع صورة المنفصل هنا
+                                }
+                                alt={
+                                  selectedConnectOption === "1"
+                                    ? "متصل"
+                                    : "منفصل"
+                                }
+                                className="img-fluid rounded"
+                                style={{ maxWidth: "300px" }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              <div className="mt-4">
+                <label htmlFor="doorCountSelect">عدد الأبواب</label>
+                <select
+                  id="doorCountSelect"
+                  className="form-select"
+                  value={selectedDoorCount}
+                  onChange={(e) => {
+                    setSelectedDoorCount(e.target.value);
+                    console.log(
+                      "اختيار المستخدم لعدد الأبواب:",
+                      e.target.value
+                    );
+                  }}
+                >
+                  <option value="">اختر عدد الأبواب</option>
+                  <option value="2">بابين</option>
+                  <option value="4">أبواب 4</option>
+                </select>
+              </div>
+
+              <div className="mt-4">
+                <label htmlFor="roofTypeSelect">نوع السقف</label>
+                <select
+                  id="roofTypeSelect"
+                  className="form-select"
+                  onChange={(e) => {
+                    setSelectedRoofType(e.target.value);
+                    console.log("اختيار المستخدم لنوع السقف:", e.target.value);
+                  }}
+                >
+                  <option value="">اختر نوع السقف</option>
+                  <option value="fixed">ثابت</option>
+                  <option value="movable">متحرك</option>
+                </select>
+              </div>
               {/* اختيار سنة التصنيع */}
               {/* اختيار سنة التصنيع */}
               {selectedCarModel && (
@@ -495,17 +612,15 @@ const Cart = () => {
                         });
 
                         for (
-                          let year = model.start_year;
+                          let year = model.start_year + 1;
                           year < model.end_year;
                           year++
                         ) {
-                          if (year + 1 !== model.end_year) {
-                            years.push({
-                              label: `${year}-${year + 1}`,
-                              value: `${year}-${year + 1}`,
-                              type: "middle",
-                            });
-                          }
+                          years.push({
+                            label: `${year}`,
+                            value: year,
+                            type: "middle",
+                          });
                         }
 
                         years.push({

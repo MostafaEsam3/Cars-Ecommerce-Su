@@ -34,6 +34,8 @@ import "bootstrap/dist/css/bootstrap.min.css"; // ✅ Bootstrap import
 import "./DashBoard.css";
 import axiosInstance from "../../util/interceptor";
 import ProtectedRoute from "../../util/ProtectedRoute";
+import { PictureOutlined } from "@ant-design/icons";
+import Banners from "./Banners";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -115,6 +117,12 @@ const Dashboard = () => {
       "8",
       <PhoneOutlined style={{ fontSize: "25px" }} />,
       "/admin-dashboard/contactUsDashboard"
+    ),
+    getItem(
+      "صور العرض ",
+      "6",
+      <PictureOutlined style={{ fontSize: "25px" }} />,
+      "/admin-dashboard/banners"
     ),
     getItem(
       "تسجيل الخروج",
@@ -248,6 +256,14 @@ const Dashboard = () => {
                   <ProtectedRoute>
                     {" "}
                     <DeliveryPage />{" "}
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="banners"
+                element={
+                  <ProtectedRoute>
+                    <Banners />
                   </ProtectedRoute>
                 }
               />
