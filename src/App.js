@@ -29,6 +29,7 @@ import { setNestedObjectValues } from 'formik';
 import AdminLogin from './component/AuthComponent-Dachboord/AdminLogin.jsx';
 import ProtectedRoute from './component/AuthComponent-Dachboord/ProtectedRoute.jsx';
 import NotFound from './component/NotFound/NotFound.jsx';
+import Profile from './layout/header/Profile.jsx';
 const DashboardLayout = React.lazy(() => import('./Dashboard/DashboardLayout/DashboardLayout'));
 const Cart = React.lazy(() => import('./component/Cart/Cart'));
 
@@ -38,7 +39,7 @@ function App() {
     <BrowserRouter>
       <Routes>
       <Route path="/admin-login" element={<AdminLogin />} />
-
+      <Route path="/profile" element={<Profile />} />
         {/* Main Layout with Nested Routes */}
         <Route path="/" element={<Layout />}>
            {/* Main Layout with Nested Routes */}

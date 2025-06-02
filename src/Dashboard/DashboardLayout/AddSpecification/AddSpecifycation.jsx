@@ -109,7 +109,10 @@ export default function AddSpecification() {
       price: "",
       is_connect: "",
       bag_price: "",
+      doors: [],
+      roof_types: [],
     },
+
     validationSchema: Yup.object({
       paneling_id: Yup.string().required("يرجي ادخال اسم منتج"),
       model_id: Yup.string().required("يرجي ادخال موديل"),
@@ -121,7 +124,7 @@ export default function AddSpecification() {
     onSubmit: (values, { resetForm }) => {
       const payload = {
         paneling_id: values.paneling_id,
-        brands: values.brands.map(brandId => ({ id: brandId })),
+        brands: values.brands.map((brandId) => ({ id: brandId })),
         car_chairs: values.car_chairs,
         model_id: values.model_id,
         price: values.price,
@@ -139,7 +142,10 @@ export default function AddSpecification() {
       }
       // Only add is_connect for other valid values (e.g., "0" or "1")
       else {
-        console.log("Adding is_connect to payload with value:", values.is_connect);
+        console.log(
+          "Adding is_connect to payload with value:",
+          values.is_connect
+        );
         payload.is_connect = values.is_connect;
       }
       AddSpecify(payload);
@@ -191,7 +197,6 @@ export default function AddSpecification() {
       title: " شعار السياره",
       dataIndex: "brand_name",
       key: "brand_name",
-
     },
     {
       title: "اسم المنتج",
@@ -210,19 +215,32 @@ export default function AddSpecification() {
       render: (car_chairs) => {
         return (
           <span>
-            {car_chairs == "2" ? "2 كرسي" : car_chairs == "3" ? "تلاث كراسي" : "خمس كراسي"}
+            {car_chairs == "2"
+              ? "2 كرسي"
+              : car_chairs == "3"
+              ? "تلاث كراسي"
+              : "خمس كراسي"}
           </span>
         );
-      }
+      },
     },
-    
+
     {
       title: "تحديث",
       dataIndex: "id",
       key: "id",
       render: (
         id,
-        { paneling_id, is_connect, brands, model_id, price, car_chairs, bag_price, brand_id }
+        {
+          paneling_id,
+          is_connect,
+          brands,
+          model_id,
+          price,
+          car_chairs,
+          bag_price,
+          brand_id,
+        }
       ) => (
         <div style={{ display: "flex", alignItems: "center" }}>
           <button
@@ -232,13 +250,13 @@ export default function AddSpecification() {
             onClick={() =>
               collectedDataToEdit(id, {
                 paneling_id: paneling_id,
-                brand_id:brand_id, // Assuming you want to use the first brand ID
+                brand_id: brand_id, // Assuming you want to use the first brand ID
                 id: id,
                 model_id: model_id,
                 price: price,
                 is_connect: is_connect,
                 car_chairs: car_chairs,
-                bag_price: bag_price
+                bag_price: bag_price,
               })
             }
           >
@@ -290,7 +308,7 @@ export default function AddSpecification() {
       <form onSubmit={formik.handleSubmit} className="mt-3">
         <div className="container-fluid dir-ar mainFont">
           <div className="col-xs-11 text-center row align-items-lg-center">
-           {/* <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3 mt-2">
+            {/* <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3 mt-2">
               <label className="fw-bold">اختر شعار السياره</label>
               <div className="dropdown">
              
@@ -351,7 +369,7 @@ export default function AddSpecification() {
               ) : null}
             </div> */}
             <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3 ">
-              <label className="fw-bold">   اختر شعار السياره  </label>
+              <label className="fw-bold"> اختر شعار السياره </label>
 
               <FormControl fullWidth>
                 {/* <InputLabel id="brand-select-label" className="fw-bold">
@@ -396,7 +414,9 @@ export default function AddSpecification() {
                   </MenuItem>
                   {BrandData.map((item) => (
                     <MenuItem key={item.id} value={item.id}>
-                      <Checkbox checked={formik.values.brands.includes(item.id)} />
+                      <Checkbox
+                        checked={formik.values.brands.includes(item.id)}
+                      />
                       <ListItemText primary={item.name} />
                     </MenuItem>
                   ))}
@@ -406,7 +426,6 @@ export default function AddSpecification() {
                 ) : null}
               </FormControl>
             </div>
-
 
             {/* pannelling */}
 
@@ -487,7 +506,6 @@ export default function AddSpecification() {
                 id="dataSelect"
                 className="form-select"
                 name="is_connect"
-                
                 {...formik.getFieldProps("is_connect")}
               >
                 <option value="" disabled selected>
@@ -525,6 +543,71 @@ export default function AddSpecification() {
                 className="form-control"
                 {...formik.getFieldProps("bag_price")}
               />
+            </div>
+            {/* عدد الأبواب */}
+            <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3">
+              <label className="fw-bold">عدد الأبواب</label>
+              <FormControl fullWidth>
+                <Select
+                  multiple
+                  value={formik.values.doors}
+                  onChange={(event) => {
+                    formik.setFieldValue("doors", event.target.value);
+                  }}
+                  renderValue={(selected) => selected.join(", ")}
+                >
+                  <MenuItem value="بابين">
+                    <Checkbox checked={formik.values.doors.includes("بابين")} />
+                    <ListItemText primary="بابين" />
+                  </MenuItem>
+                  <MenuItem value="4 أبواب">
+                    <Checkbox
+                      checked={formik.values.doors.includes("4 أبواب")}
+                    />
+                    <ListItemText primary="4 أبواب" />
+                  </MenuItem>
+                  <MenuItem value="لا شيء">
+                    <Checkbox
+                      checked={formik.values.doors.includes("لا شيء")}
+                    />
+                    <ListItemText primary="لا شيء" />
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+
+            {/* نوع السقف */}
+            <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3">
+              <label className="fw-bold">نوع السقف</label>
+              <FormControl fullWidth>
+                <Select
+                  multiple
+                  value={formik.values.roof_types}
+                  onChange={(event) => {
+                    formik.setFieldValue("roof_types", event.target.value);
+                  }}
+                  renderValue={(selected) => selected.join(", ")}
+                >
+                  <MenuItem value="ثابت">
+                    <Checkbox
+                      checked={formik.values.roof_types.includes("ثابت")}
+                    />
+                    <ListItemText primary="ثابت" />
+                  </MenuItem>
+                  <MenuItem value="متحرك">
+                    <Checkbox
+                      checked={formik.values.roof_types.includes("متحرك")}
+                    />
+                    <ListItemText primary="متحرك" />
+                  </MenuItem>
+                  <MenuItem value="لا شيء">
+                    <Checkbox
+                      checked={formik.values.roof_types.includes("لا شيء")}
+                    />
+                    <ListItemText primary="لا شيء" />
+                  </MenuItem>
+                </Select>
+              </FormControl>
             </div>
           </div>
           <div className="text-center ">

@@ -81,6 +81,8 @@ const Cart = () => {
       group1Name: image.description,
     });
   };
+  const [includeBag, setIncludeBag] = useState(false);
+  const bagPrice = 200;
   const [selectedCarId, setSelectedCarId] = useState(null); // حفظ ID السيارة المختارة
 
   const [apiData, setApiData] = useState(null);
@@ -472,7 +474,18 @@ const Cart = () => {
                   </select>
                 </div>
               )}
-
+              <div className="mt-4">
+                <label htmlFor="bagSelect">هل تريد إضافة الشنطة؟</label>
+                <select
+                  id="bagSelect"
+                  className="form-select"
+                  value={includeBag ? "yes" : "no"}
+                  onChange={(e) => setIncludeBag(e.target.value === "yes")}
+                >
+                  <option value="no">لا</option>
+                  <option value="yes">نعم (+{bagPrice} ر.س)</option>
+                </select>
+              </div>
               {selectedCarModel &&
                 (() => {
                   const specList = apiData.car_specifications.filter(
