@@ -130,24 +130,26 @@ export default function AddSpecification() {
         price: values.price,
         bag_price: values.bag_price,
       };
-      // Log the is_connect value to debug
-      console.log("is_connect value:", values.is_connect);
-      console.log("is_connect type:", typeof values.is_connect);
-      if (values.is_connect === "") {
-        console.log("Case 1: is_connect is empty, not adding to payload");
-      }
-      // Case 2: Do not add is_connect if it is "2" (لا شئ)
-      else if (values.is_connect == "2") {
-        console.log("Case 2: is_connect is 'لا شئ', not adding to payload");
-      }
-      // Only add is_connect for other valid values (e.g., "0" or "1")
-      else {
-        console.log(
-          "Adding is_connect to payload with value:",
-          values.is_connect
-        );
+
+      // معالجة is_connect
+      if (values.is_connect !== "" && values.is_connect !== "2") {
         payload.is_connect = values.is_connect;
       }
+
+      // معالجة عدد الأبواب (doors_count)
+      // معالجة عدد الأبواب (doors_count)
+      if (values.doors !== "" && values.doors !== "none") {
+        // backend expects: 2 (2 doors), 4 (4 doors), 3 (both)
+        payload.doors_count = parseInt(values.doors);
+      }
+
+      // معالجة نوع السقف (roof_type)
+      if (values.roof_types !== "" && values.roof_types !== "none") {
+        payload.roof_type = parseInt(values.roof_types);
+      }
+
+      console.log("🚀 Payload to be sent:", JSON.stringify(payload, null, 2));
+
       AddSpecify(payload);
       resetForm();
     },
@@ -547,67 +549,39 @@ export default function AddSpecification() {
             {/* عدد الأبواب */}
             <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3">
               <label className="fw-bold">عدد الأبواب</label>
-              <FormControl fullWidth>
-                <Select
-                  multiple
-                  value={formik.values.doors}
-                  onChange={(event) => {
-                    formik.setFieldValue("doors", event.target.value);
-                  }}
-                  renderValue={(selected) => selected.join(", ")}
-                >
-                  <MenuItem value="بابين">
-                    <Checkbox checked={formik.values.doors.includes("بابين")} />
-                    <ListItemText primary="بابين" />
-                  </MenuItem>
-                  <MenuItem value="4 أبواب">
-                    <Checkbox
-                      checked={formik.values.doors.includes("4 أبواب")}
-                    />
-                    <ListItemText primary="4 أبواب" />
-                  </MenuItem>
-                  <MenuItem value="لا شيء">
-                    <Checkbox
-                      checked={formik.values.doors.includes("لا شيء")}
-                    />
-                    <ListItemText primary="لا شيء" />
-                  </MenuItem>
-                </Select>
-              </FormControl>
+              <select
+                id="doorsSelect"
+                className="form-select"
+                name="doors"
+                {...formik.getFieldProps("doors")}
+              >
+                <option value="" disabled>
+                  اختر عدد الأبواب
+                </option>
+                <option value="2">بابين</option>
+                <option value="4">4 أبواب</option>
+                <option value="3">بابين و4 أبواب</option>
+                <option value="none">لا شيء</option>
+              </select>
             </div>
 
             {/* نوع السقف */}
             <div className="mt-2 col-xs-12 col-sm-2 col-md-2 col-lg-3">
               <label className="fw-bold">نوع السقف</label>
-              <FormControl fullWidth>
-                <Select
-                  multiple
-                  value={formik.values.roof_types}
-                  onChange={(event) => {
-                    formik.setFieldValue("roof_types", event.target.value);
-                  }}
-                  renderValue={(selected) => selected.join(", ")}
-                >
-                  <MenuItem value="ثابت">
-                    <Checkbox
-                      checked={formik.values.roof_types.includes("ثابت")}
-                    />
-                    <ListItemText primary="ثابت" />
-                  </MenuItem>
-                  <MenuItem value="متحرك">
-                    <Checkbox
-                      checked={formik.values.roof_types.includes("متحرك")}
-                    />
-                    <ListItemText primary="متحرك" />
-                  </MenuItem>
-                  <MenuItem value="لا شيء">
-                    <Checkbox
-                      checked={formik.values.roof_types.includes("لا شيء")}
-                    />
-                    <ListItemText primary="لا شيء" />
-                  </MenuItem>
-                </Select>
-              </FormControl>
+              <select
+                id="roofSelect"
+                className="form-select"
+                name="roof_types"
+                {...formik.getFieldProps("roof_types")}
+              >
+                <option value="" disabled>
+                  اختر نوع السقف
+                </option>
+                <option value="1">ثابت</option>
+                <option value="2">متحرك</option>
+                <option value="3">ثابت ومتحرك</option>
+                <option value="none">لا شيء</option>
+              </select>
             </div>
           </div>
           <div className="text-center ">

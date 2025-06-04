@@ -59,11 +59,14 @@ const imagesGroup2 = [
 ];
 
 const Cart = () => {
+  const [selectedType, setSelectedType] = useState(null);
+
   const { id } = useParams();
   const [selectedCarYear, setSelectedCarYear] = useState("");
   const [selectedDoorCount, setSelectedDoorCount] = useState("");
   const [selectedRoofType, setSelectedRoofType] = useState("");
   const [selectedConnectOption, setSelectedConnectOption] = useState("");
+  const [apiData, setApiData] = useState(null);
 
   const [selectedSmallImage, setSelectedSmallImage] = useState(null);
   const [selectedLargeImage, setSelectedLargeImage] = useState(null);
@@ -73,6 +76,8 @@ const Cart = () => {
   const [cars, setCars] = useState([]);
   const [selectedCar, setSelectedCar] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [groupedSpecs, setGroupedSpecs] = useState({});
+
   const navigate = useNavigate();
   const handleSelectImageGroup1 = (image) => {
     setSelectedSmallImage(image);
@@ -82,27 +87,57 @@ const Cart = () => {
     });
   };
   const [includeBag, setIncludeBag] = useState(false);
-  const bagPrice = 200;
-  const [selectedCarId, setSelectedCarId] = useState(null); // حفظ ID السيارة المختارة
 
-  const [apiData, setApiData] = useState(null);
+  const [selectedCarId, setSelectedCarId] = useState(null); // حفظ ID السيارة المختارة
+  const selectedSpec = apiData?.car_specifications.find(
+    (s) => s.id === parseInt(selectedLargeImage?.id)
+  );
+  const bagPrice = selectedSpec?.bag_price || 0;
+
+  // const [apiData, setApiData] = useState(null);
 
   useEffect(() => {
     fetch(`https://api.admin.kapitiano.com/api/product-info/${id}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log("New API Response:", data);
-        setApiData(data.data[0]);
-        setCars(
-          data.data[0].car_specifications.map((spec) => ({
-            id: spec.brand,
-            name: spec.brand_data.name,
-            image: spec.brand_data.image,
-          }))
-        );
+        const product = data.data[0];
+        setApiData(product);
+
+        const grouped = {};
+        product.car_specifications.forEach((spec) => {
+          if (!grouped[spec.type]) {
+            grouped[spec.type] = {
+              type: spec.type,
+              brands: [],
+              prices: new Set(),
+              sampleSpec: spec,
+            };
+          }
+          grouped[spec.type].brands.push({
+            brand: spec.brand_data.name,
+            price: spec.price,
+          });
+          grouped[spec.type].prices.add(spec.price);
+        });
+        setGroupedSpecs(grouped);
+
+        // ⬇ NEW: استخراج البراندات
+        const uniqueBrands = [];
+        const seen = new Set();
+        product.car_specifications.forEach((spec) => {
+          if (!seen.has(spec.brand)) {
+            uniqueBrands.push({
+              id: spec.brand,
+              name: spec.brand_data.name,
+              image: spec.brand_data.image, // لو أردت الصورة أيضاً
+            });
+            seen.add(spec.brand);
+          }
+        });
+        setCars(uniqueBrands);
       })
-      .catch((error) => console.error("Error fetching new API data:", error));
-  }, [id]); // ✅ ضع id هنا ليُعاد استدعاء الـ useEffect عند تغيّره
+      .catch((error) => console.error("Error fetching data:", error));
+  }, [id]);
 
   const [availableSeats, setAvailableSeats] = useState([]);
   // useEffect(() => {
@@ -128,9 +163,11 @@ const Cart = () => {
   const [selectedCarModel, setSelectedCarModel] = useState(null);
 
   useEffect(() => {
-    if (selectedCarId) {
+    if (selectedCarId && selectedType) {
       const models = apiData.car_specifications
-        .filter((spec) => spec.brand === selectedCarId)
+        .filter(
+          (spec) => spec.brand === selectedCarId && spec.type === selectedType
+        )
         .map((spec) => ({
           id: spec.model,
           name: spec.model_data.name,
@@ -143,7 +180,7 @@ const Cart = () => {
         }));
       setCarModels(models);
     }
-  }, [selectedCarId, apiData]);
+  }, [selectedCarId, selectedType, apiData]);
 
   const dispatch = useDispatch();
   const handleAddToCart = () => {
@@ -316,16 +353,18 @@ const Cart = () => {
             ) : (
               <div className="row row-cols-3 g-4">
                 {selectedSmallImage &&
-                  (apiData?.car_specifications || []).map((spec) => {
+                  Object.values(groupedSpecs).map((group) => {
                     const matchedImage = imagesGroup2.find((image) =>
-                      image.description.includes(typeMapping[spec.type])
+                      image.description.includes(typeMapping[group.type])
                     );
+
+                    // استخرج الأسعار كمصفوفة
+                    const pricesArray = Array.from(group.prices);
+                    const isSinglePrice = pricesArray.length === 1;
+
                     return (
                       matchedImage && (
-                        <div
-                          key={`${selectedSmallImage.id}-${spec.id}`}
-                          className="col"
-                        >
+                        <div key={`group-${group.type}`} className="col">
                           <div className="position-relative image-container">
                             <motion.img
                               src={matchedImage.src}
@@ -336,21 +375,29 @@ const Cart = () => {
                                 maxHeight: "200px",
                                 width: "100%",
                               }}
-                              onClick={() =>
+                              onClick={() => {
                                 setSelectedLargeImage({
-                                  id: spec.id,
+                                  id: group.sampleSpec.id,
                                   description: matchedImage.description,
                                   src: matchedImage.src,
-                                  price: spec.price,
-                                })
-                              }
+                                  price: isSinglePrice ? pricesArray[0] : null,
+                                  pricesList: isSinglePrice
+                                    ? null
+                                    : pricesArray,
+                                });
+                                setSelectedType(group.type); // ⬅ نحفظ الـ type المختار هنا
+                              }}
                               whileHover={{ scale: 1.1 }}
                               transition={{ duration: 0.3 }}
                             />
                           </div>
                           <p className="text-center mt-2">
                             {matchedImage.description} -
-                            <strong>{` السعر: ${spec.price} ر.س`}</strong>
+                            <strong>
+                              {isSinglePrice
+                                ? ` السعر: ${pricesArray[0]} ر.س`
+                                : ` أسعار متعددة`}
+                            </strong>
                           </p>
                         </div>
                       )
@@ -489,7 +536,9 @@ const Cart = () => {
               {selectedCarModel &&
                 (() => {
                   const specList = apiData.car_specifications.filter(
-                    (s) => s.model === parseInt(selectedCarModel)
+                    (s) =>
+                      s.model === parseInt(selectedCarModel) &&
+                      s.type === selectedType
                   );
 
                   // اجمع كل القيم الفريدة
@@ -565,41 +614,58 @@ const Cart = () => {
                     </div>
                   );
                 })()}
-              <div className="mt-4">
-                <label htmlFor="doorCountSelect">عدد الأبواب</label>
-                <select
-                  id="doorCountSelect"
-                  className="form-select"
-                  value={selectedDoorCount}
-                  onChange={(e) => {
-                    setSelectedDoorCount(e.target.value);
-                    console.log(
-                      "اختيار المستخدم لعدد الأبواب:",
-                      e.target.value
-                    );
-                  }}
-                >
-                  <option value="">اختر عدد الأبواب</option>
-                  <option value="2">بابين</option>
-                  <option value="4">أبواب 4</option>
-                </select>
-              </div>
+              {selectedSpec && selectedSpec.doors_count !== null && (
+                <div className="mt-4">
+                  <label htmlFor="doorCountSelect">عدد الأبواب</label>
+                  <select
+                    id="doorCountSelect"
+                    className="form-select"
+                    value={selectedDoorCount}
+                    onChange={(e) => setSelectedDoorCount(e.target.value)}
+                  >
+                    <option value="">اختر عدد الأبواب</option>
+                    {selectedSpec.doors_count === 2 && (
+                      <option value="2">بابين</option>
+                    )}
+                    {selectedSpec.doors_count === 4 && (
+                      <option value="4">أربعة أبواب</option>
+                    )}
+                    {selectedSpec.doors_count === 3 && (
+                      <>
+                        <option value="2">بابين</option>
+                        <option value="4">أربعة أبواب</option>
+                      </>
+                    )}
+                  </select>
+                </div>
+              )}
 
-              <div className="mt-4">
-                <label htmlFor="roofTypeSelect">نوع السقف</label>
-                <select
-                  id="roofTypeSelect"
-                  className="form-select"
-                  onChange={(e) => {
-                    setSelectedRoofType(e.target.value);
-                    console.log("اختيار المستخدم لنوع السقف:", e.target.value);
-                  }}
-                >
-                  <option value="">اختر نوع السقف</option>
-                  <option value="fixed">ثابت</option>
-                  <option value="movable">متحرك</option>
-                </select>
-              </div>
+              {selectedSpec && selectedSpec.roof_type !== null && (
+                <div className="mt-4">
+                  <label htmlFor="roofTypeSelect">نوع السقف</label>
+                  <select
+                    id="roofTypeSelect"
+                    className="form-select"
+                    value={selectedRoofType}
+                    onChange={(e) => setSelectedRoofType(e.target.value)}
+                  >
+                    <option value="">اختر نوع السقف</option>
+                    {selectedSpec.roof_type === 1 && (
+                      <option value="fixed">ثابت</option>
+                    )}
+                    {selectedSpec.roof_type === 2 && (
+                      <option value="movable">متحرك</option>
+                    )}
+                    {selectedSpec.roof_type === 3 && (
+                      <>
+                        <option value="fixed">ثابت</option>
+                        <option value="movable">متحرك</option>
+                      </>
+                    )}
+                  </select>
+                </div>
+              )}
+
               {/* اختيار سنة التصنيع */}
               {/* اختيار سنة التصنيع */}
               {selectedCarModel && (

@@ -1,183 +1,71 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Slider.css";
-import { Helmet } from "react-helmet"; // Import Helmet
-import image from "./../../../assets/Ywgr48fKBegXCgyvqz5nfhyzVAcSni3Ssve1aKGS.webp";
+import { Helmet } from "react-helmet";
 
 export default function Slide() {
+  const [banners, setBanners] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.admin.kapitiano.com/api/all-banners")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.data) {
+          setBanners(data.data);
+        }
+      })
+      .catch((error) => {
+        console.error("❌ Error fetching banners:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    // 🔥 Inject JS script after banners are loaded
+    if (banners.length > 0) {
+      const script = document.createElement("script");
+      script.src = "/hello.js"; // مسار ملفك
+      script.async = true;
+      document.body.appendChild(script);
+
+      return () => {
+        document.body.removeChild(script);
+      };
+    }
+  }, [banners]);
+
   return (
     <>
       <div className="carousel-h">
         <div className="list">
-          <div className="item">
-            <img src={image} />
-            <div className="introduce">
-              <div className="topic">
-                سنكون سعداء بتفقدكم لمنتجاتنا والتعرف على مزايا المنتجات ومواد
-                التصنيع
+          {banners.length > 0 ? (
+            banners.map((banner) => (
+              <div className="item" key={banner.id}>
+                <img
+                  src={
+                    banner.image.startsWith("http")
+                      ? banner.image
+                      : `https://api.admin.kapitiano.com${banner.image}`
+                  }
+                  alt={banner.title}
+                />
+                <div className="introduce">
+                  <div className="topic">{banner.title}</div>
+                  <div className="des">{banner.description}</div>
+                </div>
+                <div className="detail">
+                  <div className="title">{banner.title}</div>
+                  <div className="des">{banner.description}</div>
+                </div>
               </div>
-              <div className="des">
-                {/* 20 lorem */}
-                إمكانية الفك والتركيب بسهولة لا يتم استخدام الصمغ في التركيب
-                عازلة للمياه المنتج مكون من خمس طبقات (تعرف أكثر على مميزاتها)
-                ألوان متعددة زاهية وجذابة لا يحتاج تركيبها إلى تخريم أرضية
-                المركبة أو فك الكراسي{" "}
-              </div>
-            </div>
-            <div className="detail">
-              <div className="title">
-                سنكون سعداء بتفقدكم لمنتجاتنا والتعرف على مزايا المنتجات ومواد
-                التصنيع
-              </div>
-              <div className="des">
-                {/* lorem 50 */}
-                إمكانية الفك والتركيب بسهولة لا يتم استخدام الصمغ في التركيب
-                عازلة للمياه المنتج مكون من خمس طبقات (تعرف أكثر على مميزاتها)
-                ألوان متعددة زاهية وجذابة لا يحتاج تركيبها إلى تخريم أرضية
-                المركبة أو فك الكراسي{" "}
-              </div>
-            </div>
-          </div>
-          <div className="item">
-            <img src={image} />
-            <div className="introduce">
-              <div className="topic">
-                سنكون سعداء بتفقدكم لمنتجاتنا والتعرف على مزايا المنتجات ومواد
-                التصنيع
-              </div>
-              <div className="des">
-                {/* 20 lorem */}
-                إمكانية الفك والتركيب بسهولة لا يتم استخدام الصمغ في التركيب
-                عازلة للمياه المنتج مكون من خمس طبقات (تعرف أكثر على مميزاتها)
-                ألوان متعددة زاهية وجذابة لا يحتاج تركيبها إلى تخريم أرضية
-                المركبة أو فك الكراسي{" "}
-              </div>
-            </div>
-            <div className="detail">
-              <div className="title">
-                سنكون سعداء بتفقدكم لمنتجاتنا والتعرف على مزايا المنتجات ومواد
-                التصنيع
-              </div>
-              <div className="des">
-                {/* lorem 50 */}
-                إمكانية الفك والتركيب بسهولة لا يتم استخدام الصمغ في التركيب
-                عازلة للمياه المنتج مكون من خمس طبقات (تعرف أكثر على مميزاتها)
-                ألوان متعددة زاهية وجذابة لا يحتاج تركيبها إلى تخريم أرضية
-                المركبة أو فك الكراسي{" "}
-              </div>
-            </div>
-          </div>
-          <div className="item">
-            <img src={image} />
-            <div className="introduce">
-              <div className="topic">
-                سنكون سعداء بتفقدكم لمنتجاتنا والتعرف على مزايا المنتجات ومواد
-                التصنيع
-              </div>
-              <div className="des">
-                {/* 20 lorem */}
-                تحقيق الصحة الجسدية والنفسية لم يعد أمرًا مستحيلًا؛ فكل ما
-                يحتاجه الجسم هو توازن المعادن الغذائية في خلاياه وأنسجته،
-                وبالتالي توازن عمل أعضائه.
-              </div>
-            </div>
-            <div className="detail">
-              <div className="title">
-                سنكون سعداء بتفقدكم لمنتجاتنا والتعرف على مزايا المنتجات ومواد
-                التصنيع
-              </div>
-              <div className="des">
-                {/* lorem 50 */}
-                تحقيق الصحة الجسدية والنفسية لم يعد أمرًا مستحيلًا؛ فكل ما
-                يحتاجه الجسم هو توازن المعادن الغذائية في خلاياه وأنسجته،
-                وبالتالي توازن عمل أعضائه.
-              </div>
-            </div>
-          </div>
-          <div className="item">
-            <img src={image} />
-            <div className="introduce">
-              <div className="topic">
-                سنكون سعداء بتفقدكم لمنتجاتنا والتعرف على مزايا المنتجات ومواد
-                التصنيع
-              </div>
-              <div className="des">
-                {/* 20 lorem */}
-                تحقيق الصحة الجسدية والنفسية لم يعد أمرًا مستحيلًا؛ فكل ما
-                يحتاجه الجسم هو توازن المعادن الغذائية في خلاياه وأنسجته،
-                وبالتالي توازن عمل أعضائه.
-              </div>
-            </div>
-            <div className="detail">
-              <div className="title">
-                سنكون سعداء بتفقدكم لمنتجاتنا والتعرف على مزايا المنتجات ومواد
-                التصنيع
-              </div>
-              <div className="des">
-                {/* lorem 50 */}
-                تحقيق الصحة الجسدية والنفسية لم يعد أمرًا مستحيلًا؛ فكل ما
-                يحتاجه الجسم هو توازن المعادن الغذائية في خلاياه وأنسجته،
-                وبالتالي توازن عمل أعضائه.
-              </div>
-            </div>
-          </div>
-          <div className="item">
-            <img src={image} />
-            <div className="introduce">
-              <div className="topic">
-                سنكون سعداء بتفقدكم لمنتجاتنا والتعرف على مزايا المنتجات ومواد
-                التصنيع
-              </div>
-              <div className="des">
-                {/* 20 lorem */}
-                تحقيق الصحة الجسدية والنفسية لم يعد أمرًا مستحيلًا؛ فكل ما
-                يحتاجه الجسم هو توازن المعادن الغذائية في خلاياه وأنسجته،
-                وبالتالي توازن عمل أعضائه.
-              </div>
-            </div>
-            <div className="detail">
-              <div className="title">
-                سنكون سعداء بتفقدكم لمنتجاتنا والتعرف على مزايا المنتجات ومواد
-                التصنيع
-              </div>
-              <div className="des">
-                {/* lorem 50 */}
-                تحقيق الصحة الجسدية والنفسية لم يعد أمرًا مستحيلًا؛ فكل ما
-                يحتاجه الجسم هو توازن المعادن الغذائية في خلاياه وأنسجته،
-                وبالتالي توازن عمل أعضائه.
-              </div>
-            </div>
-          </div>
-          <div className="item">
-            <img src={image} />
-            <div className="introduce">
-              <div className="topic">
-                سنكون سعداء بتفقدكم لمنتجاتنا والتعرف على مزايا المنتجات ومواد
-                التصنيع
-              </div>
-              <div className="des">
-                {/* 20 lorem */}
-                تحقيق الصحة الجسدية والنفسية لم يعد أمرًا مستحيلًا؛ فكل ما
-                يحتاجه الجسم هو توازن المعادن الغذائية في خلاياه وأنسجته،
-                وبالتالي توازن عمل أعضائه.
-              </div>
-            </div>
-            <div className="detail">
-              <div className="title">
-                سنكون سعداء بتفقدكم لمنتجاتنا والتعرف على مزايا المنتجات ومواد
-                التصنيع
-              </div>
-              <div className="des">
-                {/* lorem 50 */}
-                تحقيق الصحة الجسدية والنفسية لم يعد أمرًا مستحيلًا؛ فكل ما
-                يحتاجه الجسم هو توازن المعادن الغذائية في خلاياه وأنسجته،
-                وبالتالي توازن عمل أعضائه.
-              </div>
-            </div>
-          </div>
+            ))
+          ) : (
+            <p className="text-center">🚀 جاري تحميل البنرات...</p>
+          )}
         </div>
       </div>
+
+      {/* Helmet to inject hello.js (if needed) */}
       <Helmet>
-        <script src="hello.js" />
+        <script src="/hello.js" />
       </Helmet>
     </>
   );
